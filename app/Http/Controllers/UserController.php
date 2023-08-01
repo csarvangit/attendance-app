@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\ShiftTimeWithUsers;
+
 use Illuminate\Support\Facades\Auth; 
 use Validator;
 use Illuminate\Http\Request;
@@ -25,7 +27,7 @@ class UserController extends Controller
                 return response()->json(['success' => $success], $this->successStatus); 
             } 
             else{ 
-                return response()->json(['error'=>'Unauthorised'], 401); 
+                return response()->json(['error'=>'Invalid UserName or Password'], 401); 
             } 
         }
         catch (\Throwable $exception) {
@@ -38,6 +40,7 @@ class UserController extends Controller
             return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
         }   
     }
+    
 
     /* Register api 
      * 
@@ -69,8 +72,45 @@ class UserController extends Controller
             $input['createdOn'] =  Carbon::now();                     
             
             $user = User::create($input); 
+
             $success['token'] =  $user->createToken('MyApp')->accessToken; 
             $success['name'] =  $user->firstName.' '.$user->lastName;
+
+            return response()->json(['success'=> true], $this->successStatus); 
+        }
+        catch (\Throwable $exception) {
+            return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        } catch (\Illuminate\Database\QueryException $exception) {
+            return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        } catch (\PDOException $exception) {
+            return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        } catch (\Exception $exception) {
+            return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        }        
+    }
+
+    /* Setup shift time for user 
+     * 
+     * @return \Illuminate\Http\Response 
+     */ 
+    public function addUserShift(Request $request) 
+    { 
+        try {
+             $validator = Validator::make($request->all(), [ 
+                'userId' => 'required',
+                'shiftId' => 'required', 
+            ]);
+            if ($validator->fails()) { 
+                return response()->json(['error'=>$validator->errors()], 401);            
+            }
+            $input = $request->all(); 
+            $input['status'] =  'A'; 
+            $input['effectiveFrom'] =  Carbon::now();
+            $input['effectiveTo'] =  '9999-12-31';
+            $input['createdBy'] =  '0'; 
+            $input['createdOn'] =  Carbon::now();                     
+            
+            $shifttimewithusers = ShiftTimeWithUsers::create($input);            
 
             return response()->json(['success'=> true], $this->successStatus); 
         }
