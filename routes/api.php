@@ -31,5 +31,6 @@ Route::post('/admin/shifttimewithusers', [App\Http\Controllers\UserController::c
 /* ================== Authenticate API Routes ================== */
 //Route::post('/staff/attendance/create', ['middleware' => 'checkHost', 'uses' => 'AttendanceController@create']); 
 
-Route::post('/staff/attendance/in', [App\Http\Controllers\AttendanceController::class, 'store'])->name('store');
-Route::post('/staff/attendance/out/{id}', [App\Http\Controllers\AttendanceController::class, 'update'])->name('update');
+Route::post('/staff/attendance/in', [App\Http\Controllers\AttendanceController::class, 'in'])->name('in');
+Route::post('/staff/attendance/out/', [App\Http\Controllers\AttendanceController::class, 'out'])->name('out');
+//Route::post('/staff/attendance/out/{id}', [App\Http\Controllers\AttendanceController::class, 'update'])->name('update');
