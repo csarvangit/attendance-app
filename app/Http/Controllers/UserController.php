@@ -57,6 +57,7 @@ class UserController extends Controller
                 'mobile' => 'required', 
                 'gender' => 'required', 
                 'DOB' => 'required', 
+                'role' => 'required', 
                 //'c_password' => 'required|same:password', 
             ]);
             if ($validator->fails()) { 
@@ -66,6 +67,7 @@ class UserController extends Controller
             $input['password'] = bcrypt($input['password']); 
 
             $input['status'] =  'A'; 
+            $input['role'] =  $input['role'] ? $input['role'] : 2;
             $input['effectiveFrom'] =  Carbon::now();
             $input['effectiveTo'] =  '9999-12-31';
             $input['createdBy'] =  '0'; 

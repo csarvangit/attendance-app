@@ -25,6 +25,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('login', [App\Http\Controllers\UserController::class, 'login'])->name('login');
 Route::post('/admin/register', [App\Http\Controllers\UserController::class, 'register'])->name('register');
+
+Route::post('/admin/shifttime/add', [App\Http\Controllers\ShiftTimeController::class, 'store'])->name('store');
+Route::post('/admin/shifttime/edit', [App\Http\Controllers\ShiftTimeController::class, 'update'])->name('update');
+
+Route::post('/admin/role/add', [App\Http\Controllers\UserRoleController::class, 'store'])->name('store');
+Route::post('/admin/role/edit', [App\Http\Controllers\UserRoleController::class, 'update'])->name('update');
 Route::post('/admin/shifttimewithusers', [App\Http\Controllers\UserController::class, 'addUserShift'])->name('addUserShift');
 
 

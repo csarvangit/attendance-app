@@ -70,7 +70,7 @@ class AttendanceController extends Controller
                'userId' => 'required',
                'shiftId' => 'required', 
                'associatedId' => 'required', 
-               'imageUrl' => 'required',                
+               'imageUrl' => 'required',
            ]);
            if ($validator->fails()) { 
                return response()->json(['error'=>$validator->errors()], 401);            

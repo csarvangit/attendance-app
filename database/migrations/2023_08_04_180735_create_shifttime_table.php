@@ -11,21 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {           
-            $table->id('userId')->startingValue(100001);
-            $table->string('firstName');
-            $table->string('lastName');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
-            $table->string('mobile');                 
-            $table->char('gender');
-            $table->date('DOB');
+        Schema::create('shifttime', function (Blueprint $table) {
+            $table->id('shiftId')->startingValue(20001);
+            $table->string('shiftName');
+            $table->time('startTime', $precision = 0);
+            $table->time('endTime', $precision = 0);
             $table->string('status');
-            $table->integer('role');
             $table->date('effectiveFrom');
-            $table->date('effectiveTo');
+            $table->date('effectiveTo');  
             $table->bigInteger('createdBy');
             $table->dateTime('createdOn');
             $table->bigInteger('modifiedBy')->nullable();
@@ -39,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('shifttime');
     }
 };
