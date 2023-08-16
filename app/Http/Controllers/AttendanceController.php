@@ -9,6 +9,7 @@ use Validator;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
+use File;
 
 class AttendanceController extends Controller
 {
@@ -63,6 +64,15 @@ class AttendanceController extends Controller
         //
     }
 
+    public function createDirectory()
+    {
+        $path = public_path('uploads/staffs');
+
+        if(!File::isDirectory($path)){
+            File::makeDirectory($path, 0777, true, true);        
+        }   
+    }
+
     public function in(Request $request)
     {
         try {
@@ -79,34 +89,28 @@ class AttendanceController extends Controller
            $input = $request->all(); 
            DB::enableQueryLog();
            $dt = Carbon::now();
-          /* */ $hasAttendance = Attendance::where('userId', $input['userId'])
+           $hasAttendance = Attendance::where('userId', $input['userId'])
                 ->where('startDate', $dt->toDateString())
-                ->get();                
+                ->get(); 
 
-                /**/ 
-               // dd($hasAttendance->toArray());
-			// Query	
-			//dd(DB::getQueryLog()); exit; 
+            if( $hasAttendance->count() > 0 ){	
+                return response()->json(['success'=> true, 'message' => 'Already Login'], $this->successStatus);
+            }else{
+                $this->createDirectory();
+                $fileName = time().'.'.$request->imageUrl->extension();      
+                $request->imageUrl->move(public_path('uploads/staffs'), $fileName);
+                $input['imageUrl'] = $fileName;
 
-                if( $hasAttendance->count() > 0 ){	
-                    return response()->json(['success'=> true, 'message' => 'Already Login'], $this->successStatus);
-                }else{
-                    //$fileName = time().'.'.$request->imageUrl->extension();      
-                    // $request->imageUrl->move(public_path('public/uploads/staff_attendance'), $fileName);
-                    //$input['imageUrl'] = $fileName;
+                $input['startTime'] =  Carbon::now();
+                $input['startDate'] =  Carbon::now();
+                $input['status'] =  'A'; 
+                $input['createdBy'] =  '0'; 
+                $input['createdOn'] =  Carbon::now();                     
+                
+                $attendance = Attendance::create($input);                     
 
-                    $input['startTime'] =  Carbon::now();
-                    $input['startDate'] =  Carbon::now();
-                    $input['status'] =  'A'; 
-                    $input['createdBy'] =  '0'; 
-                    $input['createdOn'] =  Carbon::now();                     
-                    
-                    $attendance = Attendance::create($input);                     
-
-                    return response()->json(['success'=> true, 'message' => 'Login Success'], $this->successStatus);
-                } 
-          // dd($hasAttendance);             
-           
+                return response()->json(['success'=> true, 'message' => 'Login Success'], $this->successStatus);
+            } 
         }
         catch (\Throwable $exception) {
            return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
@@ -133,14 +137,8 @@ class AttendanceController extends Controller
            $input['endTime'] =  Carbon::now();
            $input['endDate'] =  Carbon::now();          
            $input['modifiedBy'] =  $input['userId'];
-           $input['modifiedOn'] =  Carbon::now();                          
-        
-           /* $find['attandanceId'] =  $id;
-           $find['status'] =  'A';
-           $find['startDate '] =  Carbon::now(); 
-
-           $attendance = Attendance::find($id)->update($input);  
-           */ 
+           $input['modifiedOn'] =  Carbon::now(); 
+          
            $dt = Carbon::now();
            $hasAttendance = Attendance::where('userId', $input['userId'])
                 ->where('startDate', $dt->toDateString())

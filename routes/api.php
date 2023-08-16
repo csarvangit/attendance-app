@@ -33,6 +33,7 @@ Route::post('/admin/role/add', [App\Http\Controllers\UserRoleController::class, 
 Route::post('/admin/role/edit', [App\Http\Controllers\UserRoleController::class, 'update'])->name('update');
 Route::post('/admin/shifttimewithusers', [App\Http\Controllers\UserController::class, 'addUserShift'])->name('addUserShift');
 
+Route::post('logout', [App\Http\Controllers\UserController::class, 'logout'])->name('logout');
 
 /* ================== Authenticate API Routes ================== */
 //Route::post('/staff/attendance/create', ['middleware' => 'checkHost', 'uses' => 'AttendanceController@create']); 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\ShiftTimeWithUsers;
+use App\Models\ShiftTime;
 
 use Illuminate\Support\Facades\Auth; 
 use Validator;
@@ -23,6 +24,22 @@ class UserController extends Controller
         try {
             if(Auth::attempt(['mobile' => request('mobile'), 'password' => request('password')])){ 
                 $user = Auth::user(); 
+                $userId = $user->userId; 
+                $name = $user->firstName . ' ' .$user->lastName;
+
+                $success['userId'] = $userId;
+                $success['username'] = $name;
+
+                $shifttimewithusers = ShiftTimeWithUsers::where('userId', $userId)->first();                 
+                $shiftId = $shifttimewithusers->shiftId;
+                if( $shifttimewithusers->count() > 0 ){
+                    $ShiftTime = ShiftTime::where('shiftId', $shiftId)->first(); 
+                    if( $ShiftTime->count() > 0 ){
+                        $shiftName = $ShiftTime->shiftName;  
+                        $success['shiftname'] = $shiftName;   
+                    }                    
+                }                 
+                
                 $success['token'] =  $user->createToken('MyApp')->accessToken; 
                 return response()->json(['success' => $success], $this->successStatus); 
             } 
@@ -125,5 +142,17 @@ class UserController extends Controller
         } catch (\Exception $exception) {
             return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
         }        
+    }
+
+    /* Logout api 
+     * 
+     * @return \Illuminate\Http\Response 
+     */ 
+    public function logout(Request $request)
+    {       
+        Auth::logout();
+
+        $success['message'] = 'logged out success'; 
+        return response()->json(['success'=> $success], $this->successStatus); 
     }
 }
