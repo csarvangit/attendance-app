@@ -8,8 +8,11 @@ use Illuminate\Support\Facades\Auth;
 use Validator;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Carbon\CarbonInterface;
 use Illuminate\Database\QueryException;
 use File;
+
+use App\Http\Controllers\ShiftTimeController;
 
 class AttendanceController extends Controller
 {
@@ -88,24 +91,42 @@ class AttendanceController extends Controller
            //dd($request->all()); exit;
            $input = $request->all(); 
            DB::enableQueryLog();
-           $dt = Carbon::now();
-           $hasAttendance = Attendance::where('userId', $input['userId'])
-                ->where('startDate', $dt->toDateString())
-                ->get(); 
+          
+           $userId = $input['userId'];
+           $currentTime = Carbon::now();
+           $hasAttendance = Attendance::where('userId', $userId)
+                ->where('startDate', $currentTime->toDateString())
+                ->get();           
 
             if( $hasAttendance->count() > 0 ){	
                 return response()->json(['success'=> true, 'message' => 'Already Login'], $this->successStatus);
-            }else{
+            }else{                
+                /* To find Time Difference */
+               /* $ShiftTime = (new ShiftTimeController)->getUserShiftTime($userId); 
+                $ShiftTime = $ShiftTime->getData();        
+                if( $ShiftTime->success == true ){   
+                    $options = [
+                        'join' => ': ',
+                        'parts' => 2,
+                        'syntax' => CarbonInterface::DIFF_ABSOLUTE,
+                      ];
+                    
+                    $startTime = Carbon::parse($ShiftTime->data->startTime);              
+                    //$startTime = Carbon::parse('00:55:00');  
+                    $diffInHours = $startTime->diffForHumans($currentTime, $options);          
+                    dd($diffInHours);
+                }  */
+
                 $this->createDirectory();
                 $fileName = time().'.'.$request->imageUrl->extension();      
                 $request->imageUrl->move(public_path('uploads/staffs'), $fileName);
                 $input['imageUrl'] = $fileName;
 
-                $input['startTime'] =  Carbon::now();
-                $input['startDate'] =  Carbon::now();
-                $input['status'] =  'A'; 
+                $input['startTime'] =  $currentTime;
+                $input['startDate'] =  $currentTime;
+                $input['status']    =  'A'; 
                 $input['createdBy'] =  '0'; 
-                $input['createdOn'] =  Carbon::now();                     
+                $input['createdOn'] =  $currentTime;                     
                 
                 $attendance = Attendance::create($input);                     
 
@@ -139,14 +160,14 @@ class AttendanceController extends Controller
            $input['modifiedBy'] =  $input['userId'];
            $input['modifiedOn'] =  Carbon::now(); 
           
-           $dt = Carbon::now();
+           $currentTime = Carbon::now();
            $hasAttendance = Attendance::where('userId', $input['userId'])
-                ->where('startDate', $dt->toDateString())
+                ->where('startDate', $currentTime->toDateString())
                 ->get(); 
 
             if( $hasAttendance->count() > 0 ){	
                 $hasAttendance = Attendance::where('userId', $input['userId'])
-                ->where('startDate', $dt->toDateString())
+                ->where('startDate', $currentTime->toDateString())
                 ->update($input); 
 
                 return response()->json(['success'=> true, 'message' => 'Out Success'], $this->successStatus);
@@ -163,6 +184,39 @@ class AttendanceController extends Controller
          } catch (\Exception $exception) {
            return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
         }   
+    }
+
+    /**
+     * get a listing of the resource.
+     */
+    public function logs(string $id)
+    {
+        try {
+            if (!empty($id)){  
+                $attendanceLogs = Attendance::select(['attandanceId', 'userId', 'startTime', 'endTime', 'startDate', 'endDate'])                  
+                        ->orderBy('attandanceId', 'desc')        
+                        ->where('userId', '=', $id)  
+                         ->paginate(10);
+               
+                if( $attendanceLogs->total() > 0 ){
+                    return response()->json(['success'=> true, 'message' => 'Has Log Entries', 'logs' => $attendanceLogs ], $this->successStatus);
+                }else{
+                    return response()->json(['success'=> false, 'message' => 'No records found for this user', 'logs' => NULL ], $this->successStatus);    
+                }               
+
+            } else {
+                return response()->json(['success'=> false, 'message' => 'User Id required'], $this->successStatus);     
+            }    
+        }
+        catch (\Throwable $exception) {
+           return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        } catch (\Illuminate\Database\QueryException $exception) {
+           return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        } catch (\PDOException $exception) {
+           return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+         } catch (\Exception $exception) {
+           return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        }  
     }
 
     /**

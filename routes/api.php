@@ -40,4 +40,5 @@ Route::post('logout', [App\Http\Controllers\UserController::class, 'logout'])->n
 
 Route::post('/staff/attendance/in', [App\Http\Controllers\AttendanceController::class, 'in'])->name('in');
 Route::post('/staff/attendance/out/', [App\Http\Controllers\AttendanceController::class, 'out'])->name('out');
+Route::post('/staff/attendance/logs/{id}', [App\Http\Controllers\AttendanceController::class, 'logs'])->name('logs');
 //Route::post('/staff/attendance/out/{id}', [App\Http\Controllers\AttendanceController::class, 'update'])->name('update');

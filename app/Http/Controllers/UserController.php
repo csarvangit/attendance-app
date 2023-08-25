@@ -12,6 +12,8 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 
+use App\Http\Controllers\ShiftTimeController;
+
 class UserController extends Controller
 {
     public $successStatus = 200;
@@ -30,7 +32,7 @@ class UserController extends Controller
                 $success['userId'] = $userId;
                 $success['username'] = $name;
 
-                $shifttimewithusers = ShiftTimeWithUsers::where('userId', $userId)->first();                 
+                /* $shifttimewithusers = ShiftTimeWithUsers::where('userId', $userId)->first();                 
                 $shiftId = $shifttimewithusers->shiftId;
                 if( $shifttimewithusers->count() > 0 ){
                     $ShiftTime = ShiftTime::where('shiftId', $shiftId)->first(); 
@@ -38,7 +40,18 @@ class UserController extends Controller
                         $shiftName = $ShiftTime->shiftName;  
                         $success['shiftname'] = $shiftName;   
                     }                    
-                }                 
+                }   */  
+               
+                $ShiftTime = (new ShiftTimeController)->getUserShiftTime($userId); 
+                $ShiftTime = $ShiftTime->getData();
+                // dd($ShiftTime); return;
+
+                if( $ShiftTime->success == true ){
+                    $shiftName = $ShiftTime->data->shiftName;  
+                    $success['shiftname'] = $shiftName;  
+                }else{
+                    $success['shiftname'] = 'Not Yet Allocated';  
+                }
                 
                 $success['token'] =  $user->createToken('MyApp')->accessToken; 
                 return response()->json(['success' => $success], $this->successStatus); 
@@ -142,7 +155,7 @@ class UserController extends Controller
         } catch (\Exception $exception) {
             return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
         }        
-    }
+    }    
 
     /* Logout api 
      * 

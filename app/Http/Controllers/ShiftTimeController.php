@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\ShiftTime;
+use App\Models\ShiftTimeWithUsers;
+
 use Illuminate\Support\Facades\Auth; 
 use Validator;
 use Illuminate\Http\Request;
@@ -120,6 +122,38 @@ class ShiftTimeController extends Controller
            return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
        }  
     }
+
+
+    /* Setup shift time for user 
+     * 
+     * @return \Illuminate\Http\Response 
+     */ 
+    public function getUserShiftTime($userId) 
+    { 
+        try {
+            $shifttimewithusers = ShiftTimeWithUsers::where('userId', $userId)->first();                 
+            $shiftId = $shifttimewithusers->shiftId;
+            if( $shifttimewithusers->count() > 0 ){
+                $ShiftTime = ShiftTime::where('shiftId', $shiftId)->first(); 
+                if( $ShiftTime->count() > 0 ){
+                    return response()->json(['success'=> true, 'data' => $ShiftTime], $this->successStatus); 
+                }else{
+                    return response()->json(['success'=> false, 'data' => 'No shift time found'], $this->successStatus); 
+                }                    
+            }else{
+                return response()->json(['success'=> false, 'data' => 'No shift time allocated for this user'], $this->successStatus); 
+            }   
+        }
+        catch (\Throwable $exception) {
+            return response()->json(['success'=> false, 'error'=> json_encode($exception->getMessage(), true)], 400 );
+        } catch (\Illuminate\Database\QueryException $exception) {
+            return response()->json(['success'=> false, 'error'=> json_encode($exception->getMessage(), true)], 400 );
+        } catch (\PDOException $exception) {
+            return response()->json(['success'=> false, 'error'=> json_encode($exception->getMessage(), true)], 400 );
+        } catch (\Exception $exception) {
+            return response()->json(['success'=> false, 'error'=> json_encode($exception->getMessage(), true)], 400 );
+        }        
+    }    
 
     /**
      * Remove the specified resource from storage.
