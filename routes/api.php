@@ -19,11 +19,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-//Route::post('login', 'API\UserController@login');
-//Route::post('register', 'UserController@register');
-//Route::post('register', [UserController::class, 'register']);
 
+/* ================== LOGIN ================== */
 Route::post('login', [App\Http\Controllers\UserController::class, 'login'])->name('login');
+
+/* ================== ADMIN API Routes ================== */
 Route::post('/admin/register', [App\Http\Controllers\UserController::class, 'register'])->name('register');
 
 Route::post('/admin/shifttime/add', [App\Http\Controllers\ShiftTimeController::class, 'store'])->name('store');
@@ -33,12 +33,17 @@ Route::post('/admin/role/add', [App\Http\Controllers\UserRoleController::class, 
 Route::post('/admin/role/edit', [App\Http\Controllers\UserRoleController::class, 'update'])->name('update');
 Route::post('/admin/shifttimewithusers', [App\Http\Controllers\UserController::class, 'addUserShift'])->name('addUserShift');
 
-Route::post('logout', [App\Http\Controllers\UserController::class, 'logout'])->name('logout');
-
 /* ================== Authenticate API Routes ================== */
 //Route::post('/staff/attendance/create', ['middleware' => 'checkHost', 'uses' => 'AttendanceController@create']); 
 
+/* ================== STAFFs API Routes ================== */
 Route::post('/staff/attendance/in', [App\Http\Controllers\AttendanceController::class, 'in'])->name('in');
 Route::post('/staff/attendance/out/', [App\Http\Controllers\AttendanceController::class, 'out'])->name('out');
 Route::post('/staff/attendance/logs/{id}', [App\Http\Controllers\AttendanceController::class, 'logs'])->name('logs');
-//Route::post('/staff/attendance/out/{id}', [App\Http\Controllers\AttendanceController::class, 'update'])->name('update');
+Route::post('/staff/islogin/{id}', [App\Http\Controllers\AttendanceController::class, 'islogin'])->name('islogin');
+
+Route::post('/staff/getshift/{id}', [App\Http\Controllers\ShiftTimeController::class, 'getUserShiftTime'])->name('getUserShiftTime');
+
+
+/* ================== LOGOUT ================== */
+Route::post('logout', [App\Http\Controllers\UserController::class, 'logout'])->name('logout');

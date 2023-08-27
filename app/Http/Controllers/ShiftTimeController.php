@@ -128,14 +128,17 @@ class ShiftTimeController extends Controller
      * 
      * @return \Illuminate\Http\Response 
      */ 
-    public function getUserShiftTime($userId) 
+    public function getUserShiftTime(string $userId) 
     { 
         try {
-            $shifttimewithusers = ShiftTimeWithUsers::where('userId', $userId)->first();                 
-            $shiftId = $shifttimewithusers->shiftId;
-            if( $shifttimewithusers->count() > 0 ){
-                $ShiftTime = ShiftTime::where('shiftId', $shiftId)->first(); 
-                if( $ShiftTime->count() > 0 ){
+            $shifttimewithusers = ShiftTimeWithUsers::select(['userId', 'shiftId'])
+            ->where('userId', $userId)->first();                 
+           
+            if( !is_null($shifttimewithusers) ){
+                $shiftId = $shifttimewithusers->shiftId;
+                $ShiftTime = ShiftTime::select(['shiftId', 'shiftName', 'startTime', 'endTime', 'effectiveFrom', 'effectiveTo'])
+                ->where('shiftId', $shiftId)->first(); 
+                if( !is_null($ShiftTime) ){
                     return response()->json(['success'=> true, 'data' => $ShiftTime], $this->successStatus); 
                 }else{
                     return response()->json(['success'=> false, 'data' => 'No shift time found'], $this->successStatus); 

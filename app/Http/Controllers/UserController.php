@@ -23,7 +23,7 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response 
      */ 
     public function login(){ 
-        try {
+        try {         
             if(Auth::attempt(['mobile' => request('mobile'), 'password' => request('password')])){ 
                 $user = Auth::user(); 
                 $userId = $user->userId; 
@@ -31,21 +31,10 @@ class UserController extends Controller
 
                 $success['userId'] = $userId;
                 $success['username'] = $name;
-
-                /* $shifttimewithusers = ShiftTimeWithUsers::where('userId', $userId)->first();                 
-                $shiftId = $shifttimewithusers->shiftId;
-                if( $shifttimewithusers->count() > 0 ){
-                    $ShiftTime = ShiftTime::where('shiftId', $shiftId)->first(); 
-                    if( $ShiftTime->count() > 0 ){
-                        $shiftName = $ShiftTime->shiftName;  
-                        $success['shiftname'] = $shiftName;   
-                    }                    
-                }   */  
                
                 $ShiftTime = (new ShiftTimeController)->getUserShiftTime($userId); 
                 $ShiftTime = $ShiftTime->getData();
-                // dd($ShiftTime); return;
-
+               
                 if( $ShiftTime->success == true ){
                     $shiftName = $ShiftTime->data->shiftName;  
                     $success['shiftname'] = $shiftName;  

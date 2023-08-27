@@ -67,6 +67,37 @@ class AttendanceController extends Controller
         //
     }
 
+    public function islogin(string $userId)
+    {
+        try {
+            if($userId != NULL || $userId != ''){
+                $currentTime = Carbon::now();
+                $hasAttendance = Attendance::where('userId', $userId)
+                ->where('startDate', $currentTime->toDateString())
+                ->get();  
+                if( $hasAttendance->count() > 0 ){	
+                    $loginData['startTime'] = $hasAttendance[0]['startTime'];
+                    $loginData['endTime'] = $hasAttendance[0]['endTime'];
+
+                    return response()->json(['success'=> true, 'data' => $loginData], $this->successStatus);
+                }else{ 
+                    return response()->json(['success'=> false], $this->successStatus);
+                }
+            }else{
+                return response()->json(['success'=> false, 'message' => 'Invalid User Id'], $this->successStatus);     
+            } 
+        }
+        catch (\Throwable $exception) {
+            return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        } catch (\Illuminate\Database\QueryException $exception) {
+            return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        } catch (\PDOException $exception) {
+            return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+            } catch (\Exception $exception) {
+            return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        }      
+    }
+
     public function createDirectory()
     {
         $path = public_path('uploads/staffs');
@@ -88,17 +119,17 @@ class AttendanceController extends Controller
            if ($validator->fails()) { 
                return response()->json(['error'=>$validator->errors()], 401);            
            }
-           //dd($request->all()); exit;
+           //dd($request->all()); 
            $input = $request->all(); 
-           DB::enableQueryLog();
+           //DB::enableQueryLog();
           
-           $userId = $input['userId'];
-           $currentTime = Carbon::now();
-           $hasAttendance = Attendance::where('userId', $userId)
-                ->where('startDate', $currentTime->toDateString())
-                ->get();           
+            $userId = $input['userId'];
+            $currentTime = Carbon::now();
+                         
+            $islogin = $this->islogin($userId);
+            $islogin = $islogin->getData();
 
-            if( $hasAttendance->count() > 0 ){	
+            if( $islogin->success == true ){	
                 return response()->json(['success'=> true, 'message' => 'Already Login'], $this->successStatus);
             }else{                
                 /* To find Time Difference */
@@ -160,19 +191,21 @@ class AttendanceController extends Controller
            $input['modifiedBy'] =  $input['userId'];
            $input['modifiedOn'] =  Carbon::now(); 
           
-           $currentTime = Carbon::now();
-           $hasAttendance = Attendance::where('userId', $input['userId'])
-                ->where('startDate', $currentTime->toDateString())
-                ->get(); 
+            $currentTime = Carbon::now();
+            $islogin = $this->islogin($input['userId']);
+            $islogin = $islogin->getData();
 
-            if( $hasAttendance->count() > 0 ){	
-                $hasAttendance = Attendance::where('userId', $input['userId'])
-                ->where('startDate', $currentTime->toDateString())
-                ->update($input); 
+            if( $islogin->success == true ){  
+
+                if( is_null ($islogin->data->endTime) ){
+                    $hasAttendance = Attendance::where('userId', $input['userId'])
+                    ->where('startDate', $currentTime->toDateString())
+                    ->update($input); 
+                }               
 
                 return response()->json(['success'=> true, 'message' => 'Out Success'], $this->successStatus);
             }else{
-                return response()->json(['success'=> false, 'message' => 'No record for you today'], $this->successStatus);     
+                return response()->json(['success'=> false, 'message' => 'You are not punch in today'], $this->successStatus);     
             }
         }
         catch (\Throwable $exception) {
