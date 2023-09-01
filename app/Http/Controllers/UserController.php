@@ -13,7 +13,6 @@ use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 
 use App\Http\Controllers\ShiftTimeController;
-
 class UserController extends Controller
 {
     public $successStatus = 200;
@@ -157,4 +156,10 @@ class UserController extends Controller
         $success['message'] = 'logged out success'; 
         return response()->json(['success'=> $success], $this->successStatus); 
     }
+    public function index()
+    {
+        $users = User::all();
+        return view('users', compact('users'));
+    }
+
 }
