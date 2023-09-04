@@ -1,8 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use App\Models\Attendance;
+// use App\Models\User;
+use App\Models\attendance;
 use DB;
 use Illuminate\Support\Facades\Auth; 
 use Validator;
