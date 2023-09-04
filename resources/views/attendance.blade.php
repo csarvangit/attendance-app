@@ -7,14 +7,14 @@
         <th>Mobile</th>
         <th>Role</th>
     </tr>
-    @foreach($users as $user)
+    @foreach($attendance as $user)
         <tr>
             <td>{{ $user->userId }}</td>
-            <td>{{ $user->firstName }}</td>
+            <!-- <td>{{ $user->firstName }}</td>
             <td>{{ $user->lastName }}</td>
             <td>{{ $user->email }}</td>
             <td>{{ $user->mobile }}</td>
-            <td>{{ $user->role }}</td>
+            <td>{{ $user->role }}</td> -->
         </tr>
     @endforeach
 </table>

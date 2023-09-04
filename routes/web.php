@@ -22,7 +22,7 @@ Route::get('/', function () {
 // });
 // routes/web.php 
 Route::get('/users', [UserController::class, 'index']);
-Route::get('/attendance', [UserController::class, 'index']);
+Route::get('/attendance', [AttendanceController::class, 'index']);
 
 /* ================== Clear Cache Routes ================== */
 Route::get('/clear-cache', function() {
