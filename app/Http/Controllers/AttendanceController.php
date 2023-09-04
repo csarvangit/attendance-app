@@ -1,12 +1,12 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\User;
-use App\Models\attendance;
+
+use App\Models\Attendance;
 use DB;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth; 
 use Validator;
+use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
 use Illuminate\Database\QueryException;
@@ -22,12 +22,11 @@ class AttendanceController extends Controller
     /**
      * Display a listing of the resource.
      */
-
-    public function index() 
-    { 
-        $attendance = User::all(); 
-        return view('attendance', compact('attendance')); 
+    public function index()
+    {
+        //
     }
+
     /**
      * Show the form for creating a new resource.
      */

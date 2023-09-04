@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\AttendanceController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -23,8 +22,7 @@ Route::get('/', function () {
 // });
 // routes/web.php 
 Route::get('/users', [UserController::class, 'index']);
-// Route::get('/attendance', [AttendanceController::class, 'index']);
-Route::get('/attendance', [AttendanceController::class, 'index']);
+
 /* ================== Clear Cache Routes ================== */
 Route::get('/clear-cache', function() {
     $exitCode = Artisan::call('cache:clear');
