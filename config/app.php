@@ -144,6 +144,11 @@ return [
         // 'store'  => 'redis',
     ],
 
+
+    'punch_in_button_enable_time'  => env('PUNCH_IN_BUTTON_ENABLE_TIME', 15),
+    'punch_out_button_enable_time' => env('PUNCH_OUT_BUTTON_ENABLE_TIME', 15),
+
+
     /*
     |--------------------------------------------------------------------------
     | Autoloaded Service Providers

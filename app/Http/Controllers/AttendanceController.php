@@ -67,6 +67,33 @@ class AttendanceController extends Controller
         //
     }
 
+    public function isPunchInLate(string $userId){
+
+        $diffInHours = 0;  
+        $isPast = false;   
+        $success['lateBy'] = $diffInHours;  
+
+        /* To find Time Difference */                
+        $ShiftTime = (new ShiftTimeController)->getUserShiftTime($userId); 
+        $ShiftTime = $ShiftTime->getData();        
+        if( $ShiftTime->success == true ){   
+            $options = [
+                'join' => ': ',
+                'parts' => 1,
+                'syntax' => CarbonInterface::DIFF_ABSOLUTE,
+            ];
+            $currentTime = Carbon::now();
+            $startTime = Carbon::parse($ShiftTime->data->startTime);              
+             $startTime = Carbon::parse('01:26:00');  
+            $diffInHours = $startTime->diffForHumans($currentTime, $options); 
+            $isPast = $startTime->isPast();  
+            if($isPast){
+                $success['lateBy'] = $diffInHours;
+            }        
+            return $success;
+        }  
+    }
+
     public function islogin(string $userId)
     {
         try {
@@ -76,8 +103,11 @@ class AttendanceController extends Controller
                 ->where('startDate', $currentTime->toDateString())
                 ->get();  
                 if( $hasAttendance->count() > 0 ){	
-                    $loginData['startTime'] = $hasAttendance[0]['startTime'];
-                    $loginData['endTime'] = $hasAttendance[0]['endTime'];
+                    $loginData['punchInTime'] = $hasAttendance[0]['startTime'];
+                    $loginData['punchOutTime'] = $hasAttendance[0]['endTime'];
+
+                    $result = $this->isPunchInLate($userId);
+                    $loginData['lateBy'] = $result['lateBy'];
 
                     return response()->json(['success'=> true, 'data' => $loginData], $this->successStatus);
                 }else{ 
@@ -127,27 +157,15 @@ class AttendanceController extends Controller
             $currentTime = Carbon::now();
                          
             $islogin = $this->islogin($userId);
-            $islogin = $islogin->getData();
+            $islogin = $islogin->getData();               
+
+            $result = $this->isPunchInLate($userId);
+            $success['lateBy'] = $result['lateBy'];  
 
             if( $islogin->success == true ){	
-                return response()->json(['success'=> true, 'message' => 'Already Login'], $this->successStatus);
-            }else{                
-                /* To find Time Difference */
-               /* $ShiftTime = (new ShiftTimeController)->getUserShiftTime($userId); 
-                $ShiftTime = $ShiftTime->getData();        
-                if( $ShiftTime->success == true ){   
-                    $options = [
-                        'join' => ': ',
-                        'parts' => 2,
-                        'syntax' => CarbonInterface::DIFF_ABSOLUTE,
-                      ];
-                    
-                    $startTime = Carbon::parse($ShiftTime->data->startTime);              
-                    //$startTime = Carbon::parse('00:55:00');  
-                    $diffInHours = $startTime->diffForHumans($currentTime, $options);          
-                    dd($diffInHours);
-                }  */
-
+                $success['message'] = 'Already Punch In';
+                return response()->json(['success'=> true, 'data' => $success], $this->successStatus);
+            }else{  
                 $this->createDirectory();
                 $fileName = time().'.'.$request->imageUrl->extension();      
                 $request->imageUrl->move(public_path('uploads/staffs'), $fileName);
@@ -159,9 +177,11 @@ class AttendanceController extends Controller
                 $input['createdBy'] =  '0'; 
                 $input['createdOn'] =  $currentTime;                     
                 
-                $attendance = Attendance::create($input);                     
+                $attendance = Attendance::create($input);                                 
+               
+                $success['message'] = 'Punch In Success'; 
 
-                return response()->json(['success'=> true, 'message' => 'Login Success'], $this->successStatus);
+                return response()->json(['success'=> true, 'data' => $success], $this->successStatus);
             } 
         }
         catch (\Throwable $exception) {

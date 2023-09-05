@@ -13,6 +13,7 @@ use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 
 use App\Http\Controllers\ShiftTimeController;
+use Config;
 
 class UserController extends Controller
 {
@@ -31,15 +32,21 @@ class UserController extends Controller
 
                 $success['userId'] = $userId;
                 $success['username'] = $name;
+
+                $punch_in_button_enable_time = Config::get('app.punch_in_button_enable_time'); 
+                $punch_out_button_enable_time = Config::get('app.punch_out_button_enable_time');                 
                
                 $ShiftTime = (new ShiftTimeController)->getUserShiftTime($userId); 
                 $ShiftTime = $ShiftTime->getData();
                
-                if( $ShiftTime->success == true ){
-                    $shiftName = $ShiftTime->data->shiftName;  
-                    $success['shiftname'] = $shiftName;  
+                if( $ShiftTime->success == true ){                 
+                    $success['shiftname']       = $ShiftTime->data->shiftName;
+                    $success['startTime']       = $ShiftTime->data->startTime;
+                    $success['endTime']         = $ShiftTime->data->endTime; 
+                    $success['punchInBtnTime']  = $ShiftTime->data->punchInBtnTime; 
+                    $success['punchOutBtnTime'] = $ShiftTime->data->punchOutBtnTime;  
                 }else{
-                    $success['shiftname'] = 'Not Yet Allocated';  
+                    $success['shiftname'] = 'Shift Not Yet Allocated';  
                 }
                 
                 $success['token'] =  $user->createToken('MyApp')->accessToken; 

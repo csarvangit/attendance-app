@@ -10,6 +10,7 @@ use Validator;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
+use Config;
 
 class ShiftTimeController extends Controller
 {
@@ -139,6 +140,19 @@ class ShiftTimeController extends Controller
                 $ShiftTime = ShiftTime::select(['shiftId', 'shiftName', 'startTime', 'endTime', 'effectiveFrom', 'effectiveTo'])
                 ->where('shiftId', $shiftId)->first(); 
                 if( !is_null($ShiftTime) ){
+
+                    $punch_in_button_enable_time = Config::get('app.punch_in_button_enable_time'); 
+                    $punch_out_button_enable_time = Config::get('app.punch_out_button_enable_time'); 
+
+                    $carbonStartTime = Carbon::parse($ShiftTime->startTime);                    
+                    $carbonStartTime = $carbonStartTime->subMinutes($punch_in_button_enable_time)->format('H:i:s');
+
+                    $carbonEndTime = Carbon::parse($ShiftTime->endTime);                    
+                    $carbonEndTime = $carbonEndTime->subMinutes($punch_out_button_enable_time)->format('H:i:s');
+
+                    $ShiftTime['punchInBtnTime'] = $carbonStartTime; 
+                    $ShiftTime['punchOutBtnTime'] = $carbonEndTime; 
+
                     return response()->json(['success'=> true, 'data' => $ShiftTime], $this->successStatus); 
                 }else{
                     return response()->json(['success'=> false, 'data' => 'No shift time found'], $this->successStatus); 
@@ -156,7 +170,7 @@ class ShiftTimeController extends Controller
         } catch (\Exception $exception) {
             return response()->json(['success'=> false, 'error'=> json_encode($exception->getMessage(), true)], 400 );
         }        
-    }    
+    }      
 
     /**
      * Remove the specified resource from storage.
