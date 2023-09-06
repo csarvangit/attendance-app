@@ -35,7 +35,7 @@ class UserController extends Controller
 
                 $punch_in_button_enable_time = Config::get('app.punch_in_button_enable_time'); 
                 $punch_out_button_enable_time = Config::get('app.punch_out_button_enable_time');                 
-               
+                $currentTime = Carbon::now();
                 $ShiftTime = (new ShiftTimeController)->getUserShiftTime($userId); 
                 $ShiftTime = $ShiftTime->getData();
                
