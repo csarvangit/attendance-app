@@ -143,13 +143,13 @@ class ShiftTimeController extends Controller
 
                     $punch_in_button_enable_time = Config::get('app.punch_in_button_enable_time'); 
                     $punch_out_button_enable_time = Config::get('app.punch_out_button_enable_time'); 
-
+                    $currentTime = Carbon::now();
                     $carbonStartTime = Carbon::parse($ShiftTime->startTime);                    
                     $carbonStartTime = $carbonStartTime->subMinutes($punch_in_button_enable_time)->format('H:i:s');
 
                     $carbonEndTime = Carbon::parse($ShiftTime->endTime);                    
                     $carbonEndTime = $carbonEndTime->subMinutes($punch_out_button_enable_time)->format('H:i:s');
-
+                    $ShiftTime['currentTime'] = $currentTime->format('Y-m-d h:i:s');
                     $ShiftTime['punchInBtnTime'] = $carbonStartTime; 
                     $ShiftTime['punchOutBtnTime'] = $carbonEndTime; 
 

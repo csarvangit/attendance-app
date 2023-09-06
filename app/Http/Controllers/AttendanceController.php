@@ -84,7 +84,7 @@ class AttendanceController extends Controller
             ];
             $currentTime = Carbon::now();
             $startTime = Carbon::parse($ShiftTime->data->startTime);              
-             $startTime = Carbon::parse('01:26:00');  
+             //$startTime = Carbon::parse('01:26:00');  
             $diffInHours = $startTime->diffForHumans($currentTime, $options); 
             $isPast = $startTime->isPast();  
             if($isPast){
@@ -103,11 +103,12 @@ class AttendanceController extends Controller
                 ->where('startDate', $currentTime->toDateString())
                 ->get();  
                 if( $hasAttendance->count() > 0 ){	
+                    $loginData['currentTime'] = $currentTime->format('Y-m-d h:i:s');
                     $loginData['punchInTime'] = $hasAttendance[0]['startTime'];
                     $loginData['punchOutTime'] = $hasAttendance[0]['endTime'];
 
                     $result = $this->isPunchInLate($userId);
-                    $loginData['lateBy'] = $result['lateBy'];
+                    $loginData['lateBy'] = $result['lateBy'];                                    
 
                     return response()->json(['success'=> true, 'data' => $loginData], $this->successStatus);
                 }else{ 
@@ -160,6 +161,8 @@ class AttendanceController extends Controller
             $islogin = $islogin->getData();               
 
             $result = $this->isPunchInLate($userId);
+            $success['currentTime'] = $currentTime->format('Y-m-d h:i:s');
+            $success['punchInTime'] = $currentTime->format('Y-m-d h:i:s');
             $success['lateBy'] = $result['lateBy'];  
 
             if( $islogin->success == true ){	
@@ -180,6 +183,7 @@ class AttendanceController extends Controller
                 $attendance = Attendance::create($input);                                 
                
                 $success['message'] = 'Punch In Success'; 
+                
 
                 return response()->json(['success'=> true, 'data' => $success], $this->successStatus);
             } 
