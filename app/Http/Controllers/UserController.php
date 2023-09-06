@@ -164,4 +164,10 @@ class UserController extends Controller
         $success['message'] = 'logged out success'; 
         return response()->json(['success'=> $success], $this->successStatus); 
     }
+    public function index()
+    {
+        $users = User::all();
+        return view('users', compact('users'));
+    }
+
 }

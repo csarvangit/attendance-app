@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\UserController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -17,6 +17,11 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// Route::get('/user', function () {
+//     return view('user');
+// });
+// routes/web.php 
+Route::get('/users', [UserController::class, 'index']);
 
 /* ================== Clear Cache Routes ================== */
 Route::get('/clear-cache', function() {
