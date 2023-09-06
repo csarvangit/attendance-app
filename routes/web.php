@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AttendanceController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -21,7 +22,13 @@ Route::get('/', function () {
 //     return view('user');
 // });
 // routes/web.php 
-Route::get('/users', [UserController::class, 'index']);
+
+
+Route::prefix('admin')->group(function () {
+    Route::get('/users', [UserController::class, 'index']);
+    Route::get('/users/logs/', [AttendanceController::class, 'allLogs']);
+    Route::get('/users/logs/{id}', [AttendanceController::class, 'userlog'])->name('userlog');;
+});
 
 /* ================== Clear Cache Routes ================== */
 Route::get('/clear-cache', function() {

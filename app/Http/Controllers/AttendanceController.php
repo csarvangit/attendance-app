@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Attendance;
+use App\Models\User;
 use DB;
 use Illuminate\Support\Facades\Auth; 
 use Validator;
@@ -264,6 +265,52 @@ class AttendanceController extends Controller
             } else {
                 return response()->json(['success'=> false, 'message' => 'User Id required'], $this->successStatus);     
             }    
+        }
+        catch (\Throwable $exception) {
+           return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        } catch (\Illuminate\Database\QueryException $exception) {
+           return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        } catch (\PDOException $exception) {
+           return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+         } catch (\Exception $exception) {
+           return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        }  
+    }
+
+    
+    /* Get all user logs */
+    public function allLogs()
+    {
+        try {  
+            $attendancelogs =  Attendance::join('users', 'users.userId', '=', 'attendance.userId') 
+                    ->select(['users.userId', 'users.firstName', 'users.lastName', 'attendance.attandanceId', 'attendance.userId', 'attendance.startTime', 'attendance.endTime', 'attendance.startDate', 'attendance.endDate'])
+                    ->orderBy('attendance.attandanceId', 'desc')
+                    ->paginate(10);
+            
+            return view('admin.user-logs', compact('attendancelogs'));
+        }
+        catch (\Throwable $exception) {
+           return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        } catch (\Illuminate\Database\QueryException $exception) {
+           return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        } catch (\PDOException $exception) {
+           return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+         } catch (\Exception $exception) {
+           return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        }  
+    }
+
+    /* Get user log by its ID */
+    public function userlog(string $id)
+    {
+        try {
+                $attendancelogs =  Attendance::join('users', 'users.userId', '=', 'attendance.userId') 
+                ->select(['users.userId', 'users.firstName', 'users.lastName', 'attendance.attandanceId', 'attendance.userId', 'attendance.startTime', 'attendance.endTime', 'attendance.startDate', 'attendance.endDate'])
+                ->where('attendance.userId', '=', $id)  
+                ->orderBy('attendance.attandanceId', 'desc')
+                ->paginate(10);
+               
+                return view('admin.user-logs', compact('attendancelogs'));    
         }
         catch (\Throwable $exception) {
            return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );

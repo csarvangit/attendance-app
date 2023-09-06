@@ -1,0 +1,12 @@
+.pagination-nav button svg,
+.pagination-nav span svg{
+    width: 18px;
+    height: 18px;
+    display: inline;
+}
+
+.pagination-nav nav{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
