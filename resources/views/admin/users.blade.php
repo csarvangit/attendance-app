@@ -5,8 +5,7 @@
 <table class="table">
     <tr>
         <th>User ID</th>
-        <th>First Name</th>
-        <th>Last Name</th>
+        <th>Name</th>
         <th>Email</th>
         <th>Mobile</th>
         <th>Role</th>
@@ -16,8 +15,7 @@
         @foreach($users as $user)
             <tr>
                 <td>{{ $user->userId }}</td>
-                <td>{{ $user->firstName }}</td>
-                <td>{{ $user->lastName }}</td>
+                <td>{{ $user->firstName }} {{ $user->lastName }}</td>               
                 <td>{{ $user->email }}</td>
                 <td>{{ $user->mobile }}</td>
                 <td>{{ $user->role }}</td>
@@ -27,7 +25,7 @@
         @endforeach
     @else
         <tr>
-            <td colspan="9" class="text-center">No Records Found</td>           
+            <td colspan="6" class="text-center">No Records Found</td>           
         </tr>
     @endif
 </table>

@@ -5,10 +5,8 @@
 <table class="table">
     <tr>
         <th>SL No</th>
-        <th>Attendance ID</th>
         <th>User ID</th>
-        <th>First Name</th>
-        <th>Last Name</th>
+        <th>Name</th>
         <th>Punch In Time</th>
         <th>Punch Out Time</th>
         <th>Punch In Date</th>
@@ -20,10 +18,8 @@
         @foreach($attendancelogs as $key => $attendancelog)
             <tr>
                 <td>{{ $attendancelogs->firstItem() + $key}}</td>
-                <td>{{ $attendancelog->attandanceId }}</td>
                 <td>{{ $attendancelog->userId }}</td>
-                <td>{{ $attendancelog->firstName }}</td>
-                <td>{{ $attendancelog->lastName }}</td>
+                <td>{{ $attendancelog->firstName }} {{ $attendancelog->lastName }}</td>  
                 <td>{{ $attendancelog->startTime }}</td>
                 <td>{{ $attendancelog->endTime }}</td>
                 <td>{{ $attendancelog->startDate }}</td>
@@ -32,7 +28,7 @@
         @endforeach
     @else
         <tr>
-            <td colspan="9" class="text-center">No Records Found</td>           
+            <td colspan="7" class="text-center">No Records Found</td>           
         </tr>
     @endif
 </table>

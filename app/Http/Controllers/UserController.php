@@ -138,11 +138,20 @@ class UserController extends Controller
             $input['effectiveFrom'] =  Carbon::now();
             $input['effectiveTo'] =  '9999-12-31';
             $input['createdBy'] =  '0'; 
-            $input['createdOn'] =  Carbon::now();                     
+            $input['createdOn'] =  Carbon::now();      
             
-            $shifttimewithusers = ShiftTimeWithUsers::create($input);            
-
-            return response()->json(['success'=> true], $this->successStatus); 
+            $hasshifttimewithusers = ShiftTimeWithUsers::where('userId', $input['userId'])
+                ->where('shiftId', $input['shiftId'])
+                ->get();
+                
+            if( $hasshifttimewithusers->count() > 0 ){	
+                $shiftData['message'] = 'Shift Already Associated to this user';
+                return response()->json(['success'=> false, 'data' => $shiftData], $this->successStatus); 
+            }else{
+                $shifttimewithusers = ShiftTimeWithUsers::create($input);
+                $shiftData['message'] = 'Shift Associated Successfully to this user';
+                return response()->json(['success'=> true, 'data' => $shiftData], $this->successStatus);  
+            }  
         }
         catch (\Throwable $exception) {
             return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
@@ -166,6 +175,11 @@ class UserController extends Controller
         $success['message'] = 'logged out success'; 
         return response()->json(['success'=> $success], $this->successStatus); 
     }
+
+    /* 
+    * Web View 
+    * Get All Users List
+    */
     public function index()
     {
         $users = User::paginate(10);

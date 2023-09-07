@@ -70,7 +70,7 @@ class AttendanceController extends Controller
 
     public function isPunchInLate(string $userId){
 
-        $diffInHours = 0;  
+        $diffInHours = "";  
         $isPast = false;   
         $success['lateBy'] = $diffInHours;  
 
@@ -102,18 +102,29 @@ class AttendanceController extends Controller
                 $currentTime = Carbon::now();
                 $hasAttendance = Attendance::where('userId', $userId)
                 ->where('startDate', $currentTime->toDateString())
-                ->get();  
+                ->get();
+                
+                $loginData['currentTime'] = $currentTime->format('Y-m-d h:i:s');
+                
                 if( $hasAttendance->count() > 0 ){	
-                    $loginData['currentTime'] = $currentTime->format('Y-m-d h:i:s');
+                    
                     $loginData['punchInTime'] = $hasAttendance[0]['startTime'];
                     $loginData['punchOutTime'] = $hasAttendance[0]['endTime'];
 
                     $result = $this->isPunchInLate($userId);
-                    $loginData['lateBy'] = $result['lateBy'];                                    
+                    $loginData['lateBy'] = $result['lateBy'];
+
+                    if( $loginData['punchInTime'] ){
+                        $loginData['atStatus'] = 1; // Punch In
+                    }
+                    if( $loginData['punchOutTime'] ){
+                        $loginData['atStatus'] = 2; // Punch Out
+                    }                                                    
 
                     return response()->json(['success'=> true, 'data' => $loginData], $this->successStatus);
                 }else{ 
-                    return response()->json(['success'=> false], $this->successStatus);
+                    $loginData['atStatus'] = 0; // No Yet Punch In
+                    return response()->json(['success'=> false, 'data' => $loginData], $this->successStatus);
                 }
             }else{
                 return response()->json(['success'=> false, 'message' => 'Invalid User Id'], $this->successStatus);     
@@ -165,8 +176,10 @@ class AttendanceController extends Controller
             $success['currentTime'] = $currentTime->format('Y-m-d h:i:s');
             $success['punchInTime'] = $currentTime->format('Y-m-d h:i:s');
             $success['lateBy'] = $result['lateBy'];  
+            
 
-            if( $islogin->success == true ){	
+            if( $islogin->success == true ){	    
+                $success['atStatus'] = 3; // Already Punch In            
                 $success['message'] = 'Already Punch In';
                 return response()->json(['success'=> true, 'data' => $success], $this->successStatus);
             }else{  
@@ -181,10 +194,10 @@ class AttendanceController extends Controller
                 $input['createdBy'] =  '0'; 
                 $input['createdOn'] =  $currentTime;                     
                 
-                $attendance = Attendance::create($input);                                 
+                $attendance = Attendance::create($input);                  
                
-                $success['message'] = 'Punch In Success'; 
-                
+                $success['atStatus'] = 1; // Punch In
+                $success['message'] = 'Punch In Success';                 
 
                 return response()->json(['success'=> true, 'data' => $success], $this->successStatus);
             } 
@@ -222,7 +235,7 @@ class AttendanceController extends Controller
 
             if( $islogin->success == true ){  
 
-                if( is_null ($islogin->data->endTime) ){
+                if( is_null ($islogin->data->punchOutTime) ){
                     $hasAttendance = Attendance::where('userId', $input['userId'])
                     ->where('startDate', $currentTime->toDateString())
                     ->update($input); 
