@@ -27,7 +27,9 @@ Route::get('/', function () {
 Route::prefix('admin')->group(function () {
     Route::get('/users', [UserController::class, 'index']);
     Route::get('/users/logs/', [AttendanceController::class, 'allLogs']);
-    Route::get('/users/logs/{id}', [AttendanceController::class, 'userlog'])->name('userlog');;
+    Route::get('/users/logs/{id}', [AttendanceController::class, 'userlog'])->name('userlog');
+
+    Route::get('/user-export/{id}', [AttendanceController::class, 'exportAttendenceLogs'])->name('attendancelogs.export');
 });
 
 /* ================== Clear Cache Routes ================== */

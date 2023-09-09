@@ -21,16 +21,18 @@
                 <td>{{ $user->firstName }} {{ $user->lastName }}</td>               
                 <td>{{ $user->email }}</td>
                 <td>{{ $user->mobile }}</td>
-                <td>{{ $user->shiftName }}</td>
+                <td>{{ $user->shiftName }} </td>
                 <!-- <td>{{ $user->startTime ? $user->startTime : '-' }}</td>
                 <td>{{ $user->endTime ? $user->endTime : '-' }}</td> -->
                 <td>
-                @if( file_exists(public_path('/uploads/staffs/'.$user->imageUrl)))
-                @php $img = URL::to('/public/uploads/staffs/'.$user->imageUrl ); @endphp
-                @else
-                @php $img = URL::to('/public/uploads/thumb/user-thumb.png'); @endphp
-                @endif
-                <img src="{{ $img  }}" width="48" height="48">
+                    @if( $user->imageUrl != '' && file_exists(public_path('/uploads/staffs/'.$user->imageUrl)) )
+                        @php $img_src = URL::to('/public/uploads/staffs/'.$user->imageUrl ); @endphp
+                    @else
+                        @php $img_src = URL::to('/public/uploads/thumb/user-thumb.png'); @endphp
+                    @endif             
+                    <a href="{{ $img_src }}" data-toggle="lightbox" data-caption="{{ $user->firstName }} {{ $user->lastName }}" data-size="sm" data-constrain="true" class="col-sm-4">
+                        <img class="img-fluid" src="{{ $img_src }}" width="48" height="48" />
+                    </a>
                 </td>
                 <td><a class="btn btn-info btn-sm" href="{{route('userlog', $user->userId)}}" target="_blank">View Log</a></td>
             </tr>

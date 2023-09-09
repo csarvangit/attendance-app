@@ -183,8 +183,8 @@ class UserController extends Controller
     */
     public function index()
     {
-        $users = User::paginate(10);
-        DB::enableQueryLog();
+        //$users = User::paginate(10);
+       // DB::enableQueryLog();
         $currentTime = Carbon::now();
     //$users =  User::select(['users.*', 'attendance.*']) 
        // ->leftJoin('attendance', 'attendance.userId', '=', 'users.userId')
@@ -205,10 +205,14 @@ class UserController extends Controller
             'a.endTime',
             'a.imageUrl',
             's.shiftId as shid',
+            'su.shiftId as suid',
             's.shiftName', 
         )
         ->leftJoin('attendance as a', 'a.userId', '=', 'u.userId') 
-        ->leftJoin('shifttime as s', 's.shiftId', '=', 'a.shiftId')     
+        //->leftJoin('shifttime as s', 's.shiftId', '=', 'a.shiftId') 
+        //->leftJoin('shifttimewithusers as su', 'su.shiftId', '=', 's.shiftId') 
+        ->leftJoin('shifttimewithusers as su', 'su.userId', '=', 'u.userId') 
+        ->leftJoin('shifttime as s', 's.shiftId', '=', 'su.shiftId')            
         //->where('a.startDate', '=',  $currentTime->toDateString())
         ->groupBy('u.userId') 
         ->groupBy('a.userId') 
@@ -217,6 +221,46 @@ class UserController extends Controller
 
        // dd(\DB::getQueryLog());
         return view('admin.users', compact('users'));
+    }
+
+    public function getFullNameAttribute($firstname, $lastname, $format='capital' )
+    {
+        if( $format == 'capital' ){
+            $fullname = ucfirst($firstname) . ' ' . ucfirst($lastname);
+        }
+        else if( $format == 'upper' ){
+            $fullname = strtoupper($firstname) . ' ' . strtoupper($lastname);
+        }
+        else if( $format == 'lower' ){
+            $fullname = strtolower($firstname) . ' ' . strtolower($lastname);
+        }
+        else if( $format == 'slug' ){
+            $fullname = strtolower($firstname).'-' .strtolower($lastname);
+            $fullname = str_replace(' ', '-', $fullname);
+        }else{
+            $fullname = $firstname .' ' .$lastname;
+        }
+        return trim($fullname);
+    }
+
+    public function getUserById(string $userId)
+    {    
+        try {
+            if($userId != NULL || $userId != ''){           
+                $users = User::where('userId', $userId)->first();
+                return response()->json(['success'=> true, 'data' => $users ], $this->successStatus);
+            }    
+        }
+        catch (\Throwable $exception) {
+            return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        } catch (\Illuminate\Database\QueryException $exception) {
+            return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        } catch (\PDOException $exception) {
+            return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        } catch (\Exception $exception) {
+            return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        } 
+       
     }
 
 }

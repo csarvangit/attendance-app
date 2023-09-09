@@ -10,3 +10,7 @@
     align-items: center;
     justify-content: space-between;
 }
+.pos-realtive{
+    position: relative;
+}
+

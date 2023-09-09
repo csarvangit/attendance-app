@@ -12,8 +12,11 @@ use Carbon\Carbon;
 use Carbon\CarbonInterface;
 use Illuminate\Database\QueryException;
 use File;
-
 use App\Http\Controllers\ShiftTimeController;
+use App\Http\Controllers\UserController;
+
+use App\Exports\AttendanceExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AttendanceController extends Controller
 {
@@ -416,6 +419,24 @@ class AttendanceController extends Controller
          } catch (\Exception $exception) {
            return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
         }  
+    }
+
+    /**
+    * @return \Illuminate\Support\Collection
+    */
+    public function exportAttendenceLogs(Request $request) 
+    {
+        if($request->id != NULL || $request->id != ''){ 
+            $fileName = $request->id.'.xlsx';
+
+            $user = (new UserController)->getUserById($request->id); 
+            $user = $user->getData();        
+            if( $user->success == true ){  
+                $userName = (new UserController)->getFullNameAttribute($user->data->firstName, $user->data->lastName, 'slug');
+                $fileName = $request->id.'-'.$userName.'.xlsx';
+            }          
+            return Excel::download(new AttendanceExport($request->id), $fileName);
+        }
     }
 
     /**
