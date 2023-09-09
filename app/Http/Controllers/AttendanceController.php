@@ -99,6 +99,78 @@ class AttendanceController extends Controller
     {
         try {
             if($userId != NULL || $userId != ''){
+                $currentTime = Carbon::now();                  
+
+                $hasAttendance = Attendance::where('userId', $userId)
+                ->where('startDate', $currentTime->toDateString())
+                ->get();
+                
+                $loginData['currentTime'] = $currentTime->format('Y-m-d h:i:s');
+                $result = $this->isPunchInLate($userId);
+
+                if( $hasAttendance->count() > 0 ){	
+                    
+                    $loginData['punchInTime'] = $hasAttendance[0]['startTime'];
+                    $loginData['punchOutTime'] = $hasAttendance[0]['endTime'];
+
+                    
+                    $loginData['lateBy'] = $result['lateBy'];
+
+                    if( $loginData['punchInTime'] ){
+                        $loginData['atStatus'] = 2; // Punched In
+                    }
+                    if( $loginData['punchOutTime'] ){
+                        $loginData['atStatus'] = 3; // Punched Out
+                    }                                                    
+
+                    return response()->json(['success'=> true, 'data' => $loginData], $this->successStatus);
+                }else{ 
+
+                          
+                    /* To find Time Difference */                
+                    $ShiftTime = (new ShiftTimeController)->getUserShiftTime($userId); 
+                    $ShiftTime = $ShiftTime->getData();        
+                    if( $ShiftTime->success == true ){ 
+                        $loginData['punchInBtnTime'] = $ShiftTime->data->punchInBtnTime; 
+                        $options = [
+                            'join' => ': ',
+                            'parts' => 1,
+                            'syntax' => CarbonInterface::DIFF_ABSOLUTE,
+                        ];
+                        $currentTime = Carbon::now();
+                        $punchInBtnTime = Carbon::parse($ShiftTime->data->punchInBtnTime);                                               
+                        $diffInHours = $punchInBtnTime->diffForHumans($currentTime, $options); 
+                        $isPast = $punchInBtnTime->isPast();  
+                        if($isPast){
+                            $loginData['atStatus'] = 1; // Allow Punch Button to Enable
+                        }  else{
+                            $loginData['atStatus'] = 0; // Dont Allow Punch Button 
+                        }                       
+                          
+                    } else{
+                        $loginData['atStatus'] = 0; // Dont Allow Punch Button 
+                    } 
+                    return response()->json(['success'=> false, 'data' => $loginData], $this->successStatus);
+                }
+            }else{
+                return response()->json(['success'=> false, 'message' => 'Invalid User Id'], $this->successStatus);     
+            } 
+        }
+        catch (\Throwable $exception) {
+            return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        } catch (\Illuminate\Database\QueryException $exception) {
+            return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        } catch (\PDOException $exception) {
+            return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+            } catch (\Exception $exception) {
+            return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        }      
+    }
+
+    public function old_keep_it_islogin(string $userId)
+    {
+        try {
+            if($userId != NULL || $userId != ''){
                 $currentTime = Carbon::now();
                 $hasAttendance = Attendance::where('userId', $userId)
                 ->where('startDate', $currentTime->toDateString())
@@ -175,11 +247,10 @@ class AttendanceController extends Controller
             $result = $this->isPunchInLate($userId);
             $success['currentTime'] = $currentTime->format('Y-m-d h:i:s');
             $success['punchInTime'] = $currentTime->format('Y-m-d h:i:s');
-            $success['lateBy'] = $result['lateBy'];  
-            
+            $success['lateBy'] = $result['lateBy'];              
 
             if( $islogin->success == true ){	    
-                $success['atStatus'] = 3; // Already Punch In            
+                $success['atStatus'] = 1; // Already Punch In            
                 $success['message'] = 'Already Punch In';
                 return response()->json(['success'=> true, 'data' => $success], $this->successStatus);
             }else{  
@@ -317,10 +388,21 @@ class AttendanceController extends Controller
     public function userlog(string $id)
     {
         try {
-                $attendancelogs =  Attendance::join('users', 'users.userId', '=', 'attendance.userId') 
+               /* $attendancelogs =  Attendance::join('users', 'users.userId', '=', 'attendance.userId') 
                 ->select(['users.userId', 'users.firstName', 'users.lastName', 'attendance.attandanceId', 'attendance.userId', 'attendance.startTime', 'attendance.endTime', 'attendance.startDate', 'attendance.endDate'])
                 ->where('attendance.userId', '=', $id)  
+                ->selectRaw('SEC_TO_TIME((TIME_TO_SEC(CASE WHEN SUBTIME(IFNULL(attendance.endTime,0),IFNULL(attendance.startTime,0)) > "00:00:00" THEN SUBTIME(IFNULL(attendance.endTime,0),IFNULL(attendance.startTime,0)) ELSE "00:00:00" END))) as total_hours')
                 ->orderBy('attendance.attandanceId', 'desc')
+                ->paginate(10); */
+                               
+                $attendancelogs =  DB::table('attendance as a1')
+                ->where('a1.userId', '=', $id)	
+                ->select( 'u.*', 'a1.userId as auId', 'a1.attandanceId', 'a1.startTime', 'a1.endTime', 'a1.startDate', 'a1.endDate', 'a1.imageUrl', 's.shiftId as shid', 's.shiftName', DB::raw("TIME(a1.endTime) as eTime") , DB::raw("TIME(a1.startTime) as sTime") , DB::raw("TIME_FORMAT(SEC_TO_TIME((TIME_TO_SEC(CASE WHEN SUBTIME(IFNULL(TIME(a1.endTime),0),IFNULL(TIME(a1.startTime),0)) > '00:00:00' THEN SUBTIME(IFNULL(TIME(a1.endTime),0),IFNULL(TIME(a1.startTime),0)) ELSE '00:00:00' END))), '%H:%i:%s' )as total_hours ") )
+                ->leftJoin('users as u', 'u.userId', '=', 'a1.userId')		
+                ->leftJoin('shifttime as s', 's.shiftId', '=', 'a1.shiftId') 									
+                ->groupBy('a1.userId')	
+                ->groupBy('a1.attandanceId')
+                ->orderBy('a1.attandanceId', 'desc')
                 ->paginate(10);
                
                 return view('admin.user-logs', compact('attendancelogs'));    

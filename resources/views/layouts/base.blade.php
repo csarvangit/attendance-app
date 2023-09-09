@@ -13,7 +13,9 @@
     <title>{{ config('app.name', 'Attendance App') }}</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" >
-   
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/css/bootstrap-datetimepicker.min.css">
+</head>
+<body>
 
     <!-- Custom Fonts -->
     <link rel="stylesheet" href="{{asset('/resources/css/app.css')}}">
@@ -37,10 +39,7 @@
         <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="{{ url('/admin/users')}}">  Users</a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{url('/admin/users/logs')}}"> All User Logs</a>
-        </li>
-      
+           
       </ul>      
   
     </div>
@@ -54,10 +53,14 @@
 
     <!-- Jquery -->
     <!-- Bootstrap Core JavaScript  -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script> 
-  
-</body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/js/bootstrap-datetimepicker.min.js"></script>
+
+    <script src="{{asset('/resources/js/app.js')}}"></script> 
+  </body>
 
 </html>

@@ -14,6 +14,7 @@ use Illuminate\Database\QueryException;
 
 use App\Http\Controllers\ShiftTimeController;
 use Config;
+use DB;
 
 class UserController extends Controller
 {
@@ -143,7 +144,7 @@ class UserController extends Controller
             $hasshifttimewithusers = ShiftTimeWithUsers::where('userId', $input['userId'])
                 ->where('shiftId', $input['shiftId'])
                 ->get();
-                
+
             if( $hasshifttimewithusers->count() > 0 ){	
                 $shiftData['message'] = 'Shift Already Associated to this user';
                 return response()->json(['success'=> false, 'data' => $shiftData], $this->successStatus); 
@@ -183,6 +184,38 @@ class UserController extends Controller
     public function index()
     {
         $users = User::paginate(10);
+        DB::enableQueryLog();
+        $currentTime = Carbon::now();
+    //$users =  User::select(['users.*', 'attendance.*']) 
+       // ->leftJoin('attendance', 'attendance.userId', '=', 'users.userId')
+      // ->orWhere('attendance.startDate', $currentTime->toDateString())
+      //->groupBy('attendance.userId') 
+      //->orderBy('users.userId', 'asc')
+      //->get();
+       //->select(['users.*', 'attendance.attandanceId', 'attendance.userId', 'attendance.startTime', 'attendance.endTime', 'attendance.startDate', 'attendance.endDate'])
+       
+           
+       $users = DB::table('users as u')
+        ->select(
+            'u.*',
+            'a.userId as uid',  
+            'a.attandanceId',
+            'a.startDate',
+            'a.startTime',
+            'a.endTime',
+            'a.imageUrl',
+            's.shiftId as shid',
+            's.shiftName', 
+        )
+        ->leftJoin('attendance as a', 'a.userId', '=', 'u.userId') 
+        ->leftJoin('shifttime as s', 's.shiftId', '=', 'a.shiftId')     
+        //->where('a.startDate', '=',  $currentTime->toDateString())
+        ->groupBy('u.userId') 
+        ->groupBy('a.userId') 
+         ->orderBy('u.userId', 'asc')
+        ->paginate(10); 
+
+       // dd(\DB::getQueryLog());
         return view('admin.users', compact('users'));
     }
 
