@@ -17,6 +17,7 @@ use App\Http\Controllers\UserController;
 
 use App\Exports\AttendanceExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Redirect;
 
 class AttendanceController extends Controller
 {
@@ -426,17 +427,39 @@ class AttendanceController extends Controller
     */
     public function exportAttendenceLogs(Request $request) 
     {
-        if($request->id != NULL || $request->id != ''){ 
-            $fileName = $request->id.'.xlsx';
+        try { 
+            $userId = $request->id;
+            $date = $request->date;
 
-            $user = (new UserController)->getUserById($request->id); 
-            $user = $user->getData();        
-            if( $user->success == true ){  
-                $userName = (new UserController)->getFullNameAttribute($user->data->firstName, $user->data->lastName, 'slug');
-                $fileName = $request->id.'-'.$userName.'.xlsx';
-            }          
-            return Excel::download(new AttendanceExport($request->id), $fileName);
+            if($userId != NULL || $userId != ''){ 
+                $fileName = $userId.'.xlsx';
+
+                $user = (new UserController)->getUserById($userId); 
+                $user = $user->getData();        
+                if( $user->success == true ){  
+                    $userName = (new UserController)->getFullNameAttribute($user->data->firstName, $user->data->lastName, 'slug');
+                    $m = $request->date ? $request->date : 'all';
+                    $fileName = $userId.'-'.$userName.'-'.$m.'.xlsx';
+                }         
+                $exportData = new AttendanceExport($userId, $date);
+            
+                if( !is_null($exportData) || $exportData != null ){
+                    
+                    try {
+                        return Excel::download($exportData, $fileName);
+                    }
+                    catch (\Throwable $exception) {
+                        throw new \Exception("No Records Found for the month $date");
+                    }
+                    
+                }else{                    
+                    throw new \Exception("No Records Found  for the month $date");
+                }                
+            }
         }
+        catch (\Throwable $exception) {           
+          return back()->withErrors(['error' => json_encode($exception->getMessage(), true)]);
+        }  
     }
 
     /**

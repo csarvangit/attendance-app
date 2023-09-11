@@ -30,6 +30,7 @@ Route::prefix('admin')->group(function () {
     Route::get('/users/logs/{id}', [AttendanceController::class, 'userlog'])->name('userlog');
 
     Route::get('/user-export/{id}', [AttendanceController::class, 'exportAttendenceLogs'])->name('attendancelogs.export');
+    Route::post('/user-export/', [AttendanceController::class, 'exportAttendenceLogs'])->name('attendancelogs.export');
 });
 
 /* ================== Clear Cache Routes ================== */

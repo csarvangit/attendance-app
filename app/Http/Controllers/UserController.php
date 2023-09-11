@@ -183,17 +183,20 @@ class UserController extends Controller
     */
     public function index()
     {
-        //$users = User::paginate(10);
-       // DB::enableQueryLog();
-        $currentTime = Carbon::now();
-    //$users =  User::select(['users.*', 'attendance.*']) 
-       // ->leftJoin('attendance', 'attendance.userId', '=', 'users.userId')
-      // ->orWhere('attendance.startDate', $currentTime->toDateString())
-      //->groupBy('attendance.userId') 
-      //->orderBy('users.userId', 'asc')
-      //->get();
-       //->select(['users.*', 'attendance.attandanceId', 'attendance.userId', 'attendance.startTime', 'attendance.endTime', 'attendance.startDate', 'attendance.endDate'])
-       
+        $currentTime = Carbon::now();  
+
+        $attendance = DB::table('attendance')
+        ->select(            
+            'userId',  
+            'attandanceId',
+            'startDate',
+            'startTime',
+            'endTime',
+            'imageUrl'           
+        )        
+        ->where('startDate', '=',  $currentTime->toDateString())
+        ->orderBy('userId', 'asc')
+        ->paginate(10); 
            
        $users = DB::table('users as u')
         ->select(
@@ -209,18 +212,13 @@ class UserController extends Controller
             's.shiftName', 
         )
         ->leftJoin('attendance as a', 'a.userId', '=', 'u.userId') 
-        //->leftJoin('shifttime as s', 's.shiftId', '=', 'a.shiftId') 
-        //->leftJoin('shifttimewithusers as su', 'su.shiftId', '=', 's.shiftId') 
         ->leftJoin('shifttimewithusers as su', 'su.userId', '=', 'u.userId') 
-        ->leftJoin('shifttime as s', 's.shiftId', '=', 'su.shiftId')            
-        //->where('a.startDate', '=',  $currentTime->toDateString())
+        ->leftJoin('shifttime as s', 's.shiftId', '=', 'su.shiftId') 
         ->groupBy('u.userId') 
         ->groupBy('a.userId') 
          ->orderBy('u.userId', 'asc')
         ->paginate(10); 
-
-       // dd(\DB::getQueryLog());
-        return view('admin.users', compact('users'));
+        return view('admin.users', compact('users', 'attendance'));
     }
 
     public function getFullNameAttribute($firstname, $lastname, $format='capital' )

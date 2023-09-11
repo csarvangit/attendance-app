@@ -6,6 +6,9 @@ use App\Models\Attendance;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use DB;
+use Carbon\Carbon;
+use Carbon\CarbonInterface;
+use Illuminate\Support\Facades\Redirect;
 
 class AttendanceExport implements FromCollection, WithHeadings
 {
@@ -13,8 +16,9 @@ class AttendanceExport implements FromCollection, WithHeadings
 
     protected $id;
 
-    function __construct($id) {
-            $this->id = $id;
+    function __construct($id, $date) {
+        $this->id = $id;
+        $this->date = $date;
     }
 
     /**
@@ -23,8 +27,20 @@ class AttendanceExport implements FromCollection, WithHeadings
     */
     public function collection()
     {
+        $month = '';
+        $currentTime = Carbon::now();
+        if($this->date != NULL || $this->date != ''){ 
+            $carbonCurrentDate = Carbon::parse($this->date);
+            $month = $carbonCurrentDate->format('m');
+            $opr = '=';
+        }else{
+            $month = $currentTime->format('m');
+            $opr = '<=';
+        }
+
         $attendancelogs =  DB::table('attendance as a1')
         ->where('a1.userId', '=', $this->id)	
+        ->whereMonth('a1.startDate', $opr, $month)
         ->select( 
             'u.userId',
             'u.firstName', 
@@ -48,7 +64,7 @@ class AttendanceExport implements FromCollection, WithHeadings
         if( $attendancelogs->count() > 0 ){	
             return $attendancelogs;
         } else{
-            return null;
+          return NULL;            
         }                
     }
 

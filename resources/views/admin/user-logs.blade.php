@@ -2,22 +2,39 @@
 
 @section('content') 
 
+@if ($errors->any())
+    <div class="alert alert-danger  alert-dismissible">
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
 @if( !$attendancelogs->isEmpty() )
     <h3>{{ $attendancelogs[0]->firstName }} {{ $attendancelogs[0]->lastName }} Attendance Logs</h3> 
 @endif   
 
 <div class="container d-flex text-right justify-content-end my-2">
     @if( !$attendancelogs->isEmpty() )
-        <div class="form-group col-lg-5">
+    <div class="col-lg-3">
+    <form action="{{ route('attendancelogs.export') }}" method="post">
+        @csrf
+        <div class="form-group">
             <div class='input-group text-right justify-content-end flex'>
-                
-                {{-- <input type='text' class="form-control date" id='userLogDatePicker' />
+            <input type='hidden' name="id" value="{{$attendancelogs[0]->userId}}" />
+                {{----}}
+                 <input type='text' name="date" class="form-control date  mx-2" id='userLogDatePicker' />
                 <span class="input-group-addon">
                     <span class="glyphicon glyphicon-calendar"></span>
-                </span> --}}
-                <a href="{{ route('attendancelogs.export', $attendancelogs[0]->userId) }}" class="btn btn-success">Download Report</a>
+                </span>                
+                <button class=" mt-8 text-center btn btn-success py-2">Download Report</button>
             </div>
-        </div>        
+        </div>         
+        </form>    
+        </div>    
     @endif
 </div>
 
@@ -50,7 +67,7 @@
                     @else
                         @php $img_src = URL::to('/public/uploads/thumb/user-thumb.png'); @endphp
                     @endif             
-                    <a href="{{ $img_src }}" data-toggle="lightbox" data-caption="{{ $attendancelog->firstName }} {{ $attendancelog->lastName }}" data-size="sm" data-constrain="true" class="col-sm-4">
+                    <a href="{{ $img_src }}" data-toggle="lightbox" data-caption="{{ $attendancelog->firstName }} {{ $attendancelog->lastName }}" data-size="sm" data-constrain="true" class="col-sm-4" data-gallery="User Thumb">
                         <img class="img-fluid" src="{{ $img_src }}" width="48" height="48" />
                     </a>
                 </td>    
