@@ -196,7 +196,7 @@ class UserController extends Controller
         )        
         ->where('startDate', '=',  $currentTime->toDateString())
         ->orderBy('userId', 'asc')
-        ->paginate(10); 
+        ->get(); 
            
        $users = DB::table('users as u')
         ->select(
