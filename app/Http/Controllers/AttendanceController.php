@@ -93,7 +93,7 @@ class AttendanceController extends Controller
             $diffInHours = $startTime->diffForHumans($currentTime, $options); 
             $isPast = $startTime->isPast();  
             if($isPast){
-                $success['lateBy'] = $diffInHours;
+                $success['lateBy'] = $diffInHours .' Late';;
             }        
             return $success;
         }  
@@ -116,7 +116,6 @@ class AttendanceController extends Controller
                     
                     $loginData['punchInTime'] = $hasAttendance[0]['startTime'];
                     $loginData['punchOutTime'] = $hasAttendance[0]['endTime'];
-
                     
                     $loginData['lateBy'] = $result['lateBy'];
 
