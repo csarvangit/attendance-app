@@ -94,7 +94,12 @@ $currentTime = Carbon::now();
                     @endif 
                 @endif
                 </td>
-                <td><a class="btn btn-info btn-sm" href="{{route('userlog', $user->userId)}}" target="_blank">View Log</a></td>
+                <td>
+                    <a class="btn btn-info btn-sm my-1" href="{{route('userlog', $user->userId)}}" target="_blank">View Log</a>
+                    @if( empty($user->shiftName) ) 
+                    <a class="btn btn-info btn-sm my-1" href="{{route('shift.create', $user->userId)}}" target="_blank">Add Shift</a>
+                    @endif
+                </td>
             </tr>
         @endforeach
     @else

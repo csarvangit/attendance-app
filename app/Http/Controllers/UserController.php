@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Roles;
 use App\Models\ShiftTimeWithUsers;
 use App\Models\ShiftTime;
 
@@ -15,6 +16,8 @@ use Illuminate\Database\QueryException;
 use App\Http\Controllers\ShiftTimeController;
 use Config;
 use DB;
+use Illuminate\Support\Facades\File;
+use Session;
 
 class UserController extends Controller
 {
@@ -95,7 +98,7 @@ class UserController extends Controller
             $input = $request->all(); 
             $input['password'] = bcrypt($input['password']); 
 
-            $input['status'] =  'A'; 
+            $input['status'] =  $input['status'] ? $input['status'] : 'A'; 
             $input['role'] =  $input['role'] ? $input['role'] : 2;
             $input['effectiveFrom'] =  Carbon::now();
             $input['effectiveTo'] =  '9999-12-31';
@@ -217,7 +220,7 @@ class UserController extends Controller
         ->groupBy('u.userId') 
         ->groupBy('a.userId') 
          ->orderBy('u.userId', 'asc')
-        ->paginate(10); 
+        ->paginate(20); 
         return view('admin.users', compact('users', 'attendance'));
     }
 
@@ -259,6 +262,111 @@ class UserController extends Controller
             return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
         } 
        
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {        
+        $roles = Roles::all();  
+        return view('admin.create-user', compact('roles'));
+    }
+
+    public function store(Request $request)
+    {   
+        try {
+            $validator = Validator::make($request->all(), [ 
+                'firstName' => 'required',
+                'lastName' => 'required', 
+                'email' => 'required|email', 
+                'password' => 'required', 
+                'mobile' => 'required', 
+                'gender' => 'required', 
+                'DOB' => 'required', 
+                'role' => 'required', 
+                //'c_password' => 'required|same:password', 
+            ]);
+            if ($validator->fails()) { 
+                return redirect()->back()->withErrors($validator->errors())->withInput($request->input());
+            }
+            $input = $request->all(); 
+            $input['password'] = bcrypt($input['password']); 
+
+            $input['status'] =  $input['status'] ? $input['status'] : 'A'; 
+            $input['role'] =  $input['role'] ? $input['role'] : 2;
+            $input['effectiveFrom'] =  Carbon::now();
+            $input['effectiveTo'] =  '9999-12-31';
+            $input['createdBy'] =  '0'; 
+            $input['createdOn'] =  Carbon::now();                     
+            
+            $user = User::create($input); 
+
+            $success['token'] =  $user->createToken('MyApp')->accessToken; 
+            $success['name'] =  $user->firstName.' '.$user->lastName; 
+            
+            return redirect()->back()->with('success', 'User '. $success['name'] .' created successfully'); 
+        }
+        catch (\Throwable $exception) {
+            return redirect()->back()->withErrors( json_encode($exception->getMessage(), true) )->withInput($request->input());
+        } catch (\Illuminate\Database\QueryException $exception) {
+            return redirect()->back()->withErrors( json_encode($exception->getMessage(), true) )->withInput($request->input());
+        } catch (\PDOException $exception) {
+            return redirect()->back()->withErrors( json_encode($exception->getMessage(), true) )->withInput($request->input());
+        } catch (\Exception $exception) {
+            return redirect()->back()->withErrors( json_encode($exception->getMessage(), true) )->withInput($request->input());
+        }      
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function createUserShift(string $userId)
+    {
+        $shifts = ShiftTime::all();
+        $user = User::where('userId', $userId)->get(['userId', 'firstName', 'lastName']);
+        return view('admin.create-user-shift', compact('shifts', 'user'));
+    }
+
+    public function storeUserShift(Request $request)
+    {   
+        try {
+            
+            $validator = Validator::make($request->all(), [ 
+                'userId' => 'required',
+                'shiftId' => 'required', 
+            ]);
+            if ($validator->fails()) {   
+                return redirect()->back()->withErrors($validator->errors())->withInput($request->input());       
+            }
+            $input = $request->all(); 
+            $input['status'] =  'A'; 
+            $input['effectiveFrom'] =  Carbon::now();
+            $input['effectiveTo'] =  '9999-12-31';
+            $input['createdBy'] =  '0'; 
+            $input['createdOn'] =  Carbon::now();  
+
+            $hasshifttimewithusers = ShiftTimeWithUsers::where('userId', $input['userId'])                
+                ->get();
+
+            if( $hasshifttimewithusers->count() > 0 ){	
+                return redirect()->back()->with('success', 'Shift Already Associated to this user'); 
+            }else{
+                $shifttimewithusers = ShiftTimeWithUsers::create($input);
+                return redirect()->back()->with('success', 'Shift Associated Successfully to this user');  
+            }              
+        }
+        catch (\Throwable $exception) {
+            return redirect()->back()->withErrors( json_encode($exception->getMessage(), true) )->withInput($request->input());
+        } catch (\Illuminate\Database\QueryException $exception) {
+            return redirect()->back()->withErrors( json_encode($exception->getMessage(), true) )->withInput($request->input());
+        } catch (\PDOException $exception) {
+            return redirect()->back()->withErrors( json_encode($exception->getMessage(), true) )->withInput($request->input());
+        } catch (\Exception $exception) {
+            return redirect()->back()->withErrors( json_encode($exception->getMessage(), true) )->withInput($request->input());
+        }      
     }
 
 }

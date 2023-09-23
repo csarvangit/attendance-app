@@ -406,7 +406,7 @@ class AttendanceController extends Controller
                 ->groupBy('a1.userId')	
                 ->groupBy('a1.attandanceId')
                 ->orderBy('a1.attandanceId', 'desc')
-                ->paginate(10);
+                ->paginate(20);
                
                 return view('admin.user-logs', compact('attendancelogs'));    
         }

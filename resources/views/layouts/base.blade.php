@@ -40,6 +40,9 @@
         <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="{{ url('/admin/users')}}">  Users</a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{{ url('/admin/users/create')}}">  Add User</a>
+        </li>
            
       </ul>      
   
