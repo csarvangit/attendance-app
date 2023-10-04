@@ -1,3 +1,6 @@
+@php
+use App\Http\Controllers\AttendanceController;
+@endphp
 @extends('layouts.base')
 
 @section('content') 
@@ -27,9 +30,9 @@
             <input type='hidden' name="id" value="{{$attendancelogs[0]->userId}}" />
                 {{----}}
                  <input type='text' name="date" class="form-control date  mx-2" id='userLogDatePicker' />
-                <span class="input-group-addon">
+               <!-- <span class="input-group-addon">
                     <span class="glyphicon glyphicon-calendar"></span>
-                </span>                
+                </span>  -->              
                 <button class=" mt-8 text-center btn btn-success py-2">Download Report</button>
             </div>
         </div>         
@@ -61,14 +64,18 @@
         @foreach($attendancelogs as $key => $attendancelog)
             <tr>
                 <td>{{ $attendancelogs->firstItem() + $key}}</td>
-                <td>
-                    @if( $attendancelog->imageUrl != '' && file_exists(public_path('/uploads/staffs/'.$attendancelog->imageUrl)) )
-                        @php $img_src = URL::to('/public/uploads/staffs/'.$attendancelog->imageUrl ); @endphp
+                <td>                    
+                   {{-- @if( $attendancelog->imageUrl != '' && file_exists(public_path('/uploads/staffs/'.$attendancelog->userId.'/'.$attendancelog->imageUrl)) )
+                        @php $img_src = URL::to('/public/uploads/staffs/'.$attendancelog->userId.'/'.$attendancelog->imageUrl ); @endphp
                     @else
-                        @php $img_src = URL::to('/public/uploads/thumb/user-thumb.png'); @endphp
-                    @endif             
-                    <a href="{{ $img_src }}" data-toggle="lightbox" data-caption="{{ $attendancelog->firstName }} {{ $attendancelog->lastName }}" data-size="sm" data-constrain="true" class="col-sm-4" data-gallery="User Thumb">
-                        <img class="img-fluid" src="{{ $img_src }}" width="48" height="48" />
+                        @php $img_src = URL::to('/public/uploads/thumb/user-thumb.png'); @endphp                        
+                    @endif --}}
+                    
+                    @php 
+                        $selfie = AttendanceController::getUserMedia($attendancelog->imageUrl) 
+                    @endphp
+                    <a href="{{ $selfie['img_src'] }}" data-toggle="lightbox" data-caption="{{ $attendancelog->firstName }} {{ $attendancelog->lastName }}" data-size="sm" data-constrain="true" class="col-sm-4" data-gallery="User Thumb">
+                        <img class="img-fluid" src="{{ $selfie['img_src'] }}" width="48" height="48" />
                     </a>
                 </td>    
                 <td>{{ $attendancelog->shiftName }}</td>            

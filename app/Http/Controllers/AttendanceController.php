@@ -18,6 +18,7 @@ use App\Http\Controllers\UserController;
 use App\Exports\AttendanceExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Redirect;
+use URL;
 
 class AttendanceController extends Controller
 {
@@ -216,14 +217,27 @@ class AttendanceController extends Controller
         }      
     }
 
-    public function createDirectory()
-    {
-        $path = public_path('uploads/staffs');
+    public function getSelfieDirectory($userId)
+    {        
+        $year  = Carbon::now()->format('Y');
+        $month = Carbon::now()->format('m');
+        $day   = Carbon::now()->format('d');
 
-        if(!File::isDirectory($path)){
-            File::makeDirectory($path, 0777, true, true);        
-        }   
+        return array(
+            'storagePath' => public_path('uploads/staffs/'.$userId.'/'.$year.'/'.$month.'/'.$day),
+            'storageDir'  => $userId.'/'.$year.'/'.$month.'/'.$day
+        );
+        
     }
+
+    public function createDirectory($userId)
+    {
+        $path = $this->getSelfieDirectory($userId );
+
+        if(!File::isDirectory($path['storagePath'])){
+            File::makeDirectory($path['storagePath'], 0777, true, true);
+        }   
+    }   
 
     public function in(Request $request)
     {
@@ -257,10 +271,11 @@ class AttendanceController extends Controller
                 $success['message'] = 'Already Punch In';
                 return response()->json(['success'=> true, 'data' => $success], $this->successStatus);
             }else{  
-                $this->createDirectory();
-                $fileName = time().'.'.$request->imageUrl->extension();      
-                $request->imageUrl->move(public_path('uploads/staffs'), $fileName);
-                $input['imageUrl'] = $fileName;
+                $this->createDirectory($userId);
+                $dir = $this->getSelfieDirectory($userId);
+                $fileName = $userId.'_'.time().'.'.$request->imageUrl->extension();      
+                $request->imageUrl->move($dir['storagePath'], $fileName);
+                $input['imageUrl'] = $dir['storageDir'].'/'.$fileName;
 
                 $input['startTime'] =  $currentTime;
                 $input['startDate'] =  $currentTime;
@@ -467,5 +482,24 @@ class AttendanceController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+     /**
+     * Get user selfie uploded image
+     *
+     * @return array boolean & image src
+     */
+    public static function getUserMedia($imageUrl)
+    { 
+        $is_exists = false;
+
+        if( $imageUrl != '' && file_exists(public_path('/uploads/staffs/'.$imageUrl)) ) {
+            $img_src = URL::to('/public/uploads/staffs/'.$imageUrl ); 
+            $is_exists = true;
+        }    
+        else {
+            $img_src = URL::to('/public/uploads/thumb/user-thumb.png'); 
+       }  
+       return array( 'is_exists' => $is_exists, 'img_src' => $img_src);
     }
 }

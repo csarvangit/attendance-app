@@ -9,5 +9,13 @@ $(document).ready(function() {
 
             $('#userLogDatePicker').data("DateTimePicker").date(moment().subtract(1, 'days'));
         }
+
+        /* if( $('#DOB').length ){     
+            $('#DOB').datetimepicker({ 
+                format : 'YYYY-MM-DD',
+                toolbarPlacement: "top"              
+            }); 
+            $('#DOB').data("DateTimePicker").date(moment().subtract(1, 'days'));           
+        } */
     });
 });

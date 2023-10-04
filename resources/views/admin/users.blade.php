@@ -1,7 +1,9 @@
 @php 
 use Carbon\Carbon; 
 $currentTime = Carbon::now();
+use App\Http\Controllers\AttendanceController;
 @endphp
+
 @extends('layouts.base')
 
 @section('content') 
@@ -48,8 +50,7 @@ $currentTime = Carbon::now();
                     @php $imageUrl = $attend->imageUrl ? $attend->imageUrl : ''; @endphp
                 @endif
              @endforeach
-        @endif
-        
+        @endif       
 
             <tr>
                 <td>{{ $user->userId }}</td>
@@ -73,6 +74,7 @@ $currentTime = Carbon::now();
                 </td>
                 <td>
                 {{-- @if(isset($user->imageUrl) && !empty($user->imageUrl)) 
+
                     @if( $user->imageUrl != '' && file_exists(public_path('/uploads/staffs/'.$user->imageUrl)) )
                         @php $img_src = URL::to('/public/uploads/staffs/'.$user->imageUrl ); @endphp
                     @else
@@ -84,15 +86,29 @@ $currentTime = Carbon::now();
                     </a>
                 @endif   --}}
                 
-                @if(isset($imageUrl) && !empty($imageUrl)) 
-                    @if( $imageUrl != '' && file_exists(public_path('/uploads/staffs/'.$imageUrl)) )
-                        @php $img_src = URL::to('/public/uploads/staffs/'.$imageUrl ); @endphp
+                {{-- @if(isset($imageUrl) && !empty($imageUrl))               
+                
+                    @if( $imageUrl != '' && file_exists(public_path('/uploads/staffs/'.$user->userId.'/'.$imageUrl)) )
+                        @php $img_src = URL::to('/public/uploads/staffs/'.$user->userId.'/'.$imageUrl ); @endphp
                       
                         <a href="{{ $img_src }}" data-toggle="lightbox" data-caption="{{ $user->firstName }} {{ $user->lastName }}" data-size="sm" data-constrain="true" class="col-sm-4" data-gallery="User Thumb">
                             <img class="img-fluid" src="{{ $img_src }}" width="48" height="48" />
                         </a>
                     @endif 
-                @endif
+                @endif --}}
+
+                @if(isset($imageUrl) && !empty($imageUrl))       
+                    @php 
+                        $selfie = AttendanceController::getUserMedia($imageUrl) 
+                    @endphp  
+
+                    @if( $selfie['is_exists'] )
+                        <a href="{{ $selfie['img_src'] }}" data-toggle="lightbox" data-caption="{{ $user->firstName }} {{ $user->lastName }}" data-size="sm" data-constrain="true" class="col-sm-4" data-gallery="User Thumb">
+                            <img class="img-fluid" src="{{ $selfie['img_src'] }}" width="48" height="48" />
+                        </a>
+                    @endif 
+                @endif  
+
                 </td>
                 <td>
                     <a class="btn btn-info btn-sm my-1" href="{{route('userlog', $user->userId)}}" target="_blank">View Log</a>

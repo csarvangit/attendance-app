@@ -18,6 +18,7 @@ use Config;
 use DB;
 use Illuminate\Support\Facades\File;
 use Session;
+use URL;
 
 class UserController extends Controller
 {
@@ -367,6 +368,6 @@ class UserController extends Controller
         } catch (\Exception $exception) {
             return redirect()->back()->withErrors( json_encode($exception->getMessage(), true) )->withInput($request->input());
         }      
-    }
+    }  
 
 }

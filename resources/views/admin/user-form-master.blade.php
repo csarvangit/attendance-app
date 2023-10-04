@@ -57,9 +57,9 @@
 
 		<div class="row mt-4">
 			<div class="col-sm-6">      
-				<label for="DOB" class="mb-1">DOB</label>
+				<label for="DOB" class="mb-1">DOB ( YYYY-MM-DD )</label>
 				<div class="form-group {{ $errors->has('DOB') ? 'has-error' : ''}}">
-					<input id="DOB" type="text" class="form-control @error('DOB') is-invalid @enderror" name="DOB" placeholder="DOB" value="{{ old('DOB') }}" required />				
+					<input id="DOB" type="text" class="form-control @error('DOB') is-invalid @enderror" name="DOB" placeholder="2000-05-10" value="{{ old('DOB') }}" required />				
 					{!! $errors->first('DOB', '<p class="help-block">:message</p>') !!}				  
 				</div>
 			</div>
