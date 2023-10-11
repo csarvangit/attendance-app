@@ -18,16 +18,19 @@
 }
 body {
   height: 100vh;
-  background: linear-gradient(135deg, #c3a3f1, #6414e9);
+  background: #ffffbc;
+  max-width: 400px;
+    margin: 0 auto;
 }
 .wrapper {
   width: 90%;
-  max-width: 34.37em;
+  max-width: 400px;
   max-height: 90vh;
-  background-color: #ffffff;
+  background-color: #e91414;
   position: absolute;
   transform: translate(-50%, -50%);
-  top: 50%;
+  /* top: 50%; */
+  top: 440px;
   left: 50%;
   padding: 3em;
   border-radius: 1em;
@@ -66,35 +69,59 @@ body {
   letter-spacing: 0.1em;
   font-weight: 600;
 }
-img {
+img.arrow {
   position: absolute;
   width: 4em;
   top: 45%;
   right: -8%;
 }
 #final-value {
-  font-size: 1.5em;
+  font-size: 12px;
   text-align: center;
   margin-top: 1.5em;
-  color: #202020;
+  color: #fff;
   font-weight: 500;
 }
 @media screen and (max-width: 768px) {
   .wrapper {
     font-size: 12px;
   }
-  img {
+  img.arrow {
     right: -5%;
   }
 }
+.strech {    height: 100%;
+    flex-direction: column;
+    box-sizing: border-box;
+    display: flex;
+    place-content: stretch flex-start;
+    align-items: stretch;
+    max-width: 100%;}
+    .logo {
+        width: 100%;
+        text-align: center;
+        margin-top: 30px;
+    }
+    .logo img{
+        max-width: 80%;
+        margin: 0 auto;
+    }
         </style>
   </head>
   <body>
+    <div class="strech">
+        <div class="logo">
+            <img src="logo-1.png" />
+        </div>
+        <div class="logo">
+            <img src="SPINTOWIN_RGB-01.png" height="80px" />
+        </div>
+    </div>
     <div class="wrapper">
       <div class="container">
         <canvas id="wheel"></canvas>
         <button id="spin-btn">Spin</button>
-        <img src="https://cutewallpaper.org/24/yellow-arrow-png/155564497.jpg" alt="spinner arrow" />
+        <img class="arrow" src="https://cutewallpaper.org/24/yellow-arrow-png/155564497.jpg" alt="spinner arrow" />
       </div>
       <div id="final-value">
         <p>Click On The Spin Button To Start</p>
@@ -172,7 +199,7 @@ const valueGenerator = (angleValue) => {
   for (let i of rotationValues) {
     //if the angleValue is between min and max then display it
     if (angleValue >= i.minDegree && angleValue <= i.maxDegree) {
-      finalValue.innerHTML = `<p>Value: ${i.value}</p>`;
+      finalValue.innerHTML = `<p>You have Recived ${i.value}% Discount</p>`;
       spinBtn.disabled = false;
       break;
     }
@@ -187,7 +214,8 @@ let resultValue = 101;
 spinBtn.addEventListener("click", () => {
   spinBtn.disabled = true;
   //Empty final value
-  finalValue.innerHTML = `<p>Good Luck!</p>`;
+  finalValue.innerHTML = `<p>Good Luck! </p>`;
+
   //Generate random degrees to stop at
   let randomDegree = Math.floor(Math.random() * (355 - 0 + 1) + 0);
   //Interval for rotation animation
