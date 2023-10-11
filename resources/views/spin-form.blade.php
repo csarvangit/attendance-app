@@ -1,6 +1,12 @@
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spin Wheel App</title>
 <style>
     @font-face { font-family: 'FontAwesome'; src: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/172203/fontawesome-webfontba72.eot?#iefix') format('embedded-opentype'), url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/172203/fontawesome-webfontba72.woff') format('woff'), url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/172203/fontawesome-webfontba72.ttf') format('truetype'), url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/172203/fontawesome-webfontba72.svg#FontAwesome') format('svg'); font-weight: normal; font-style: normal; }
     </style>
+    </head>
+    <body>
 <div class="smart-wrap">
   <div class="smart-forms smart-container wrap-2">
     <div class="form-header header-primary">
@@ -257,3 +263,7 @@
 
   </div><!-- end .smart-forms section -->
 </div><!-- end .smart-wrap section -->
+
+
+</body>
+</html>
