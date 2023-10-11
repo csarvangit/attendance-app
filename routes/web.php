@@ -44,7 +44,7 @@ Route::prefix('admin')->group(function () {
 Route::get('/spin', function () {
     return view('spin-win');
 });
-Route::get('/spin-form', function () {
+Route::get('/form', function () {
     return view('spin-form');
 });
 /* ================== Clear Cache Routes ================== */
