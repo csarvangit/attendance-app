@@ -45,7 +45,7 @@ Route::get('/spin', function () {
     return view('spin-win');
 });
 Route::get('/form', function () {
-    return view('spin-form');
+    return view('form');
 });
 /* ================== Clear Cache Routes ================== */
 Route::get('/clear-cache', function() {
