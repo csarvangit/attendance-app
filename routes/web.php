@@ -44,6 +44,9 @@ Route::prefix('admin')->group(function () {
 Route::get('/spin', function () {
     return view('spin-win');
 });
+Route::get('/spin-form', function () {
+    return view('spin-form');
+});
 /* ================== Clear Cache Routes ================== */
 Route::get('/clear-cache', function() {
     $exitCode = Artisan::call('cache:clear');

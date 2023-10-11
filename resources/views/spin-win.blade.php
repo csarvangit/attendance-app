@@ -111,10 +111,10 @@ img.arrow {
   <body>
     <div class="strech">
         <div class="logo">
-            <img src="logo-1.png" />
+            <img src="resources/images/logo-1.png" />
         </div>
         <div class="logo">
-            <img src="SPINTOWIN_RGB-01.png" height="80px" />
+            <img src="resources/images/SPINTOWIN_RGB-01.png" height="80px" />
         </div>
     </div>
     <div class="wrapper">
