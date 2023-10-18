@@ -43,7 +43,12 @@
         <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="{{ url('/admin/users/create')}}">  Add User</a>
         </li>
-           
+		<li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{{ url('/spin-form')}}">  Spin Form</a>
+        </li> 
+        <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{{ url('/admin/users/spins')}}">  Spins</a>
+        </li>   
       </ul>      
   
     </div>

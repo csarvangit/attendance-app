@@ -370,4 +370,107 @@ class UserController extends Controller
         }      
     }  
 
+
+
+    /**
+     * @return User Profile data
+     */
+    public function profile(string $userId)
+    {
+        try {
+            if($userId != NULL || $userId != ''){
+                
+                $userData = DB::table('users as u')
+                    ->select(
+                        'u.userId',
+                        'u.firstName',
+                        'u.lastName', 
+                        'u.email',
+                        //'password',
+                        'u.mobile',
+                        'u.gender',
+                        'u.DOB',
+                        'u.role as roleId',
+                        'r.name as roleName',
+                        'r.description as roleDescription') 
+                    ->leftJoin('roles as r', 'r.roleId', '=', 'u.role') 
+                    ->where('u.userId', $userId)->first();   
+                    
+                if($userData){
+                    return response()->json(['success'=> true, 'data' => $userData], $this->successStatus);
+                } else{
+                    return response()->json(['success'=> false, 'message' => 'No Records Found'], $this->successStatus);     
+                }                 
+            }else{
+                return response()->json(['success'=> false, 'message' => 'Invalid User Id'], $this->successStatus);     
+            } 
+        }   
+        catch (\Throwable $exception) {
+            return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        } catch (\Illuminate\Database\QueryException $exception) {
+            return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        } catch (\PDOException $exception) {
+            return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+            } catch (\Exception $exception) {
+            return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        }     
+    }
+
+    /**
+     * @return User Profile data
+     */
+    public function editProfile(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [ 
+                'userId'  => 'required', // hidden type
+                'firstName' => 'required',
+                'lastName' => 'required', 
+                'email' => 'required|email', 
+                'password' => 'required|confirmed|min:4', 
+                'password_confirmation' => 'required|min:4', 
+                'mobile' => 'required', 
+                'gender' => 'required', 
+                'DOB' => 'required'                            
+            ]);
+            if ($validator->fails()) { 
+                return response()->json(['error'=>$validator->errors()], 401);   
+            }
+            $input = $request->all(); 
+            $userId = $input['userId'];           
+
+            // reqired    
+            $updatedata['firstName'] = $input['firstName']; 
+            $updatedata['lastName'] = $input['lastName']; 
+            $updatedata['email'] = $input['email']; 
+            $updatedata['mobile'] = $input['mobile']; 
+            $updatedata['gender'] = $input['gender'];             
+            $updatedata['DOB'] = $input['DOB']; 
+            $updatedata['password'] = bcrypt($input['password']); 
+
+            // recommended
+            if( isset($input['role']) ){
+                $updatedata['role'] = $input['role']; 
+            }           
+                
+            $updateUser = User::where('userId', $userId)->update($updatedata);   
+                    
+            if($updateUser){
+                return response()->json(['success'=> true, 'message' => 'Profile Updated Successfully'], $this->successStatus);
+            } else{
+                return response()->json(['success'=> false, 'message' => 'Profile not Updated'], $this->successStatus);     
+            }                 
+            
+        }   
+        catch (\Throwable $exception) {
+            return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        } catch (\Illuminate\Database\QueryException $exception) {
+            return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        } catch (\PDOException $exception) {
+            return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+            } catch (\Exception $exception) {
+            return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        }     
+    }    
+
 }

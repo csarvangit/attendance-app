@@ -264,7 +264,7 @@ class AttendanceController extends Controller
             $result = $this->isPunchInLate($userId);
             $success['currentTime'] = $currentTime->format('Y-m-d h:i:s');
             $success['punchInTime'] = $currentTime->format('Y-m-d h:i:s');
-            $success['lateBy'] = $result['lateBy'];              
+            $success['lateBy'] = $result['lateBy'];  
 
             if( $islogin->success == true ){	    
                 $success['atStatus'] = 1; // Already Punch In            
@@ -273,8 +273,8 @@ class AttendanceController extends Controller
             }else{  
                 $this->createDirectory($userId);
                 $dir = $this->getSelfieDirectory($userId);
-                $fileName = $userId.'_'.time().'.'.$request->imageUrl->extension();      
-                $request->imageUrl->move($dir['storagePath'], $fileName);
+                $fileName = $userId.'_'.time().'.'.$request->imageUrl->extension(); 
+                $request->imageUrl->move($dir['storagePath'], $fileName);   
                 $input['imageUrl'] = $dir['storageDir'].'/'.$fileName;
 
                 $input['startTime'] =  $currentTime;

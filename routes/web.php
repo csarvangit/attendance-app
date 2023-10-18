@@ -2,7 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\AttendanceController; 
+use App\Http\Controllers\SpinController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -17,12 +18,6 @@ use App\Http\Controllers\AttendanceController;
 Route::get('/', function () {
     return view('welcome');
 });
-
-// Route::get('/user', function () {
-//     return view('user');
-// });
-// routes/web.php 
-
 
 Route::prefix('admin')->group(function () {
 
@@ -39,7 +34,19 @@ Route::prefix('admin')->group(function () {
     Route::get('/users/shift/create/{id}', [UserController::class, 'createUserShift'])->name('shift.create');
     Route::post('/users/shift/store', [UserController::class, 'storeUserShift'])->name('shift.store');
     
+    Route::get('/users/spins', [SpinController::class, 'index']);
+    Route::get('/users/spins/update/{id}', [SpinController::class, 'updateInvoiceForm'])->name('updateInvoiceForm');
 });
+
+/* User Discount Spin Wheel Routes */
+Route::get('/spin', function () {
+    return redirect()->route('showForm');
+});
+Route::get('/spin-form', [SpinController::class, 'showForm'])->name('showForm');
+Route::post('/spin-form', [SpinController::class, 'saveInvoiceForm'])->name('saveInvoiceForm');
+Route::get('/spin/{invoice_number}', [SpinController::class, 'showSpinWheel'])->name('showSpinWheel');
+Route::get('/spin/{invoice_number}/{discount}', [SpinController::class, 'saveSpinWheel'])->name('saveSpinWheel');
+Route::get('/spin-thankyou', [SpinController::class, 'thankYou'])->name('thankYou');
 
 /* ================== Clear Cache Routes ================== */
 Route::get('/clear-cache', function() {
