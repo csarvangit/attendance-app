@@ -81,7 +81,7 @@ class SpinController extends Controller
                 'mobile' => 'required|unique:spins|min:10',  
                 'branch' => 'required',  
                 'invoice_copy' => 'required|mimes:pdf,jpg,jpeg,png|max:8192', //4MB
-                'invoice_number' => 'required|unique:spins|min:3', 
+                'invoice_number' => 'required|min:3', 
                 'discount' => 'nullable', 
                 'expires_at' => 'nullable',
                 'is_redeemed'  => 'nullable'          
@@ -92,6 +92,14 @@ class SpinController extends Controller
             }
 
             $input = $request->all(); 
+
+            $hasSpin = Spin::where('invoice_number', $input['invoice_number'])                
+                ->where('branch', $input['branch'])
+                ->get();
+            if( $hasSpin->count() > 0 ){
+                $error['message'] = 'Your Invoice Number already registered!!';
+                return redirect()->back()->withErrors( $error )->withInput($request->input());  
+            }
 
             $spinFormData = new Spin();
             $spinFormData->name = $input['username'];            

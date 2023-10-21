@@ -46,7 +46,10 @@ Route::get('/spin-form', [SpinController::class, 'showForm'])->name('showForm');
 Route::post('/spin-form', [SpinController::class, 'saveInvoiceForm'])->name('saveInvoiceForm');
 Route::get('/spin/{invoice_number}', [SpinController::class, 'showSpinWheel'])->name('showSpinWheel');
 Route::get('/spin/{invoice_number}/{discount}', [SpinController::class, 'saveSpinWheel'])->name('saveSpinWheel');
-Route::get('/spin-thankyou', [SpinController::class, 'thankYou'])->name('thankYou');
+
+Route::group(['middleware' => 'prevent-back-button'],function(){	
+	Route::get('/spin-thankyou', [SpinController::class, 'thankYou'])->name('thankYou');
+});
 
 /* ================== Clear Cache Routes ================== */
 Route::get('/clear-cache', function() {
