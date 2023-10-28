@@ -33,9 +33,36 @@ class ShiftTimeController extends Controller
     }
 
     /**
+     * Display all.
+     */
+    public function showallShifts()
+    {
+        try {             
+            $shiftTimes = ShiftTime::select(['shiftId', 'shiftName', 'startTime', 'endTime', 'status', 'effectiveFrom', 'effectiveTo', 'createdOn'])                  
+                    ->orderBy('shiftId', 'asc') 
+                        ->paginate(20);
+            
+            if( $shiftTimes->total() > 0 ){
+                return response()->json(['success'=> true, 'message' => 'Has ShiftTime records', 'data' => $shiftTimes ], $this->successStatus);
+            }else{
+                return response()->json(['success'=> false, 'message' => 'No ShiftTimes records found', 'data' => NULL ], $this->successStatus);    
+            }              
+        }
+        catch (\Throwable $exception) {
+           return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        } catch (\Illuminate\Database\QueryException $exception) {
+           return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        } catch (\PDOException $exception) {
+           return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        } catch (\Exception $exception) {
+           return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        }  
+    }
+
+    /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function storeShift(Request $request)
     {
         try {
             $validator = Validator::make($request->all(), [ 
@@ -88,30 +115,33 @@ class ShiftTimeController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request)
+    public function updateShift(Request $request, $shiftId)
     {
         try {
-            $validator = Validator::make($request->all(), [ 
-               'shiftId' => 'required',
-               'shiftName' => 'required',
-               'startTime' => 'required',
-               'endTime' => 'required',              
-           ]);
-           if ($validator->fails()) { 
-               return response()->json(['error'=>$validator->errors()], 401);            
-           }            
+            if (!empty($shiftId)){ 
+                $validator = Validator::make($request->all(), [ 
+                    'shiftName' => 'required',
+                    'startTime' => 'required',
+                    'endTime' => 'required',              
+                ]);
+                if ($validator->fails()) { 
+                    return response()->json(['error'=>$validator->errors()], 401);            
+                }            
 
-            $input = $request->all(); 
-            $input['status'] =  'A'; 
-            $input['effectiveFrom'] =  Carbon::now();
-            $input['effectiveTo'] =  '9999-12-31';
-            $input['createdBy'] =  '0'; 
-            $input['createdOn'] =  Carbon::now();    
-           
-           $shifttime = ShiftTime::where('shiftId', $input['shiftId'])
-            ->update($input); 
+                $input = $request->all(); 
+                $input['status'] =  'A'; 
+                $input['effectiveFrom'] =  Carbon::now();
+                $input['effectiveTo'] =  '9999-12-31';
+                $input['createdBy'] =  '0'; 
+                $input['createdOn'] =  Carbon::now();    
+            
+                 $shifttime = ShiftTime::where('shiftId', $shiftId)
+                ->update($input); 
 
-           return response()->json(['success'=> true, 'message' => 'Shift Timing Updated'], $this->successStatus); 
+                return response()->json(['success'=> true, 'message' => 'Shift Timing Updated Succesfully'], $this->successStatus); 
+            } else {
+                return response()->json(['success'=> false, 'message' => 'Shift Id required'], $this->successStatus);     
+            }
        }
        catch (\Throwable $exception) {
            return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );

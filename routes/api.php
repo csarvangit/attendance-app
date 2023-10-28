@@ -26,14 +26,19 @@ Route::post('login', [App\Http\Controllers\UserController::class, 'login'])->nam
 /* ================== ADMIN API Routes ================== */
 Route::post('/admin/register', [App\Http\Controllers\UserController::class, 'register'])->name('register');
 
-Route::post('/admin/shifttime/add', [App\Http\Controllers\ShiftTimeController::class, 'store'])->name('store');
-Route::post('/admin/shifttime/edit', [App\Http\Controllers\ShiftTimeController::class, 'update'])->name('update');
+Route::get('/admin/shifttimes', [App\Http\Controllers\ShiftTimeController::class, 'showallShifts'])->name('showallShifts');
+Route::post('/admin/shifttime/add', [App\Http\Controllers\ShiftTimeController::class, 'storeShift'])->name('storeShift');
+Route::post('/admin/shifttime/edit/{id}', [App\Http\Controllers\ShiftTimeController::class, 'updateShift'])->name('updateShift');
 
-Route::post('/admin/role/add', [App\Http\Controllers\UserRoleController::class, 'store'])->name('store');
-Route::post('/admin/role/edit', [App\Http\Controllers\UserRoleController::class, 'update'])->name('update');
+Route::get('/admin/roles', [App\Http\Controllers\UserRoleController::class, 'showallRoles'])->name('showallRoles');
+Route::post('/admin/role/add', [App\Http\Controllers\UserRoleController::class, 'storeRole'])->name('storeRole');
+Route::post('/admin/role/edit/{id}', [App\Http\Controllers\UserRoleController::class, 'updateRole'])->name('updateRole');
+
 Route::post('/admin/shifttimewithusers', [App\Http\Controllers\UserController::class, 'addUserShift'])->name('addUserShift');
+
 Route::get('/admin/staff/profile/{id}', [App\Http\Controllers\UserController::class, 'profile'])->name('profile');
-Route::post('/admin/staff/profile/edit', [App\Http\Controllers\UserController::class, 'editProfile'])->name('editProfile');
+Route::post('/admin/staff/profile/edit/{id}', [App\Http\Controllers\UserController::class, 'editProfile'])->name('editProfile');
+
 
 
 /* ================== Authenticate API Routes ================== */
@@ -47,7 +52,7 @@ Route::post('/staff/islogin/{id}', [App\Http\Controllers\AttendanceController::c
 Route::post('/staff/getshift/{id}', [App\Http\Controllers\ShiftTimeController::class, 'getUserShiftTime'])->name('getUserShiftTime');
 
 Route::get('/staff/profile/{id}', [App\Http\Controllers\UserController::class, 'profile'])->name('myprofile');
-Route::post('/staff/profile/edit', [App\Http\Controllers\UserController::class, 'editProfile'])->name('editMyprofile');
+Route::post('/staff/profile/edit/{id}', [App\Http\Controllers\UserController::class, 'editProfile'])->name('editMyprofile');
 
 
 
