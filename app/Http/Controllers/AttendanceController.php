@@ -502,4 +502,79 @@ class AttendanceController extends Controller
        }  
        return array( 'is_exists' => $is_exists, 'img_src' => $img_src);
     }
+
+
+
+    /* ***************************************************************** 
+    public function permission(Request $request, $userId)
+    {
+        try {
+            
+            if (!empty($userId)){     
+                
+                $validator = Validator::make($request->all(), [  
+                    'reason' => 'required|min:5',                 
+                    'imageUrl' => 'required'
+                ]);
+                if ($validator->fails()) { 
+                    return response()->json(['error'=>$validator->errors()], 401);            
+                }              
+                $input = $request->all();                
+                $currentTime = Carbon::now();
+                            
+                $islogin = $this->islogin($userId);
+                $islogin = $islogin->getData();               
+
+                $result = $this->isPunchInLate($userId);
+                $success['currentTime'] = $currentTime->format('Y-m-d h:i:s');
+                $success['punchInTime'] = $currentTime->format('Y-m-d h:i:s');
+                $success['lateBy'] = $result['lateBy'];  
+
+
+                $hasPermission = Attendance::where('userId', $userId)
+                ->where('startDate', $currentTime->toDateString())
+                ->where('is_permission', 1)
+                ->get();
+           
+                if( $hasPermission->count() > 0 ){	
+                    $updatedata['permission_endTime'] =  $currentTime;                   
+                    
+                    $updateUser = Attendance::where('userId', $userId)->update($updatedata);   
+                
+                    $success['atStatus'] = 1; // Punch In
+                    $success['message'] = 'Permission Closed Success';  
+                } else{
+                    $this->createDirectory($userId);
+                    $dir = $this->getSelfieDirectory($userId);
+                    $fileName = $userId.'_'.time().'.'.$request->imageUrl->extension(); 
+                    $request->imageUrl->move($dir['storagePath'], $fileName);  
+
+                    $input['permission_imageUrl'] = $dir['storageDir'].'/'.$fileName;
+                    $input['is_permission']    =  1; 
+                    $input['permission_startTime'] =  $currentTime;
+                    $input['startDate'] =  $currentTime;
+                    $input['status']    =  'A'; 
+                    $input['createdBy'] =  '0'; 
+                    $input['createdOn'] =  $currentTime;                     
+                    
+                    $attendance = Attendance::create($input);                  
+                
+                    $success['atStatus'] = 1; // Punch In
+                    $success['message'] = 'Request Permission Success';                 
+
+                    return response()->json(['success'=> true, 'data' => $success], $this->successStatus);
+                    
+                }
+            }    
+        }
+        catch (\Throwable $exception) {
+           return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        } catch (\Illuminate\Database\QueryException $exception) {
+           return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        } catch (\PDOException $exception) {
+           return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+         } catch (\Exception $exception) {
+           return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        }   
+    } */
 }

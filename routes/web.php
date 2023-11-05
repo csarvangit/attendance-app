@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AttendanceController; 
 use App\Http\Controllers\SpinController;
+use App\Http\Controllers\FrameController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -50,6 +51,11 @@ Route::get('/spin/{invoice_number}/{discount}', [SpinController::class, 'saveSpi
 Route::group(['middleware' => 'prevent-back-button'],function(){	
 	Route::get('/spin-thankyou', [SpinController::class, 'thankYou'])->name('thankYou');
 });
+
+/* Happy Customer - Frame Routes */
+Route::get('/frame', [FrameController::class, 'frameIndex'])->name('frameIndex'); 
+Route::post('/frame/saveframe', [FrameController::class, 'saveFrame'])->name('saveFrame');
+Route::post('/frame/downloadframe', [FrameController::class, 'downloadFrame'])->name('downloadFrame');
 
 /* ================== Clear Cache Routes ================== */
 Route::get('/clear-cache', function() {
