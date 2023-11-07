@@ -54,8 +54,8 @@ Route::post('/staff/getshift/{id}', [App\Http\Controllers\ShiftTimeController::c
 Route::get('/staff/profile/{id}', [App\Http\Controllers\UserController::class, 'profile'])->name('myprofile');
 Route::post('/staff/profile/edit/{id}', [App\Http\Controllers\UserController::class, 'editProfile'])->name('editMyprofile');
 
-// In-Progress
-// Route::post('/staff/permission/{id}', [App\Http\Controllers\AttendanceController::class, 'permission'])->name('permission');
+Route::post('/staff/permission/{id}', [App\Http\Controllers\AttendanceController::class, 'applyPermission'])->name('applyPermission');
+Route::post('/staff/leave/{id}', [App\Http\Controllers\AttendanceController::class, 'applyLeave'])->name('applyLeave');
 
 /* ================== LOGOUT ================== */
 Route::post('logout', [App\Http\Controllers\UserController::class, 'logout'])->name('logout');

@@ -110,7 +110,7 @@ class AttendanceController extends Controller
                 ->where('startDate', $currentTime->toDateString())
                 ->get();
                 
-                $loginData['currentTime'] = $currentTime->format('Y-m-d h:i:s');
+                $loginData['currentTime'] = $currentTime->format('Y-m-d H:i:s');
                 $result = $this->isPunchInLate($userId);
 
                 if( $hasAttendance->count() > 0 ){	
@@ -180,7 +180,7 @@ class AttendanceController extends Controller
                 ->where('startDate', $currentTime->toDateString())
                 ->get();
                 
-                $loginData['currentTime'] = $currentTime->format('Y-m-d h:i:s');
+                $loginData['currentTime'] = $currentTime->format('Y-m-d H:i:s');
                 
                 if( $hasAttendance->count() > 0 ){	
                     
@@ -262,8 +262,8 @@ class AttendanceController extends Controller
             $islogin = $islogin->getData();               
 
             $result = $this->isPunchInLate($userId);
-            $success['currentTime'] = $currentTime->format('Y-m-d h:i:s');
-            $success['punchInTime'] = $currentTime->format('Y-m-d h:i:s');
+            $success['currentTime'] = $currentTime->format('Y-m-d H:i:s');
+            $success['punchInTime'] = $currentTime->format('Y-m-d H:i:s');
             $success['lateBy'] = $result['lateBy'];  
 
             if( $islogin->success == true ){	    
@@ -502,68 +502,66 @@ class AttendanceController extends Controller
        }  
        return array( 'is_exists' => $is_exists, 'img_src' => $img_src);
     }
-
-
-
-    /* ***************************************************************** 
-    public function permission(Request $request, $userId)
+    
+    /* ***************************************************************** */
+    public function applyPermission(Request $request, $userId)
     {
-        try {
-            
-            if (!empty($userId)){     
-                
-                $validator = Validator::make($request->all(), [  
-                    'reason' => 'required|min:5',                 
-                    'imageUrl' => 'required'
-                ]);
-                if ($validator->fails()) { 
-                    return response()->json(['error'=>$validator->errors()], 401);            
-                }              
-                $input = $request->all();                
+        try {            
+            if (!empty($userId)){                  
+                                
                 $currentTime = Carbon::now();
                             
                 $islogin = $this->islogin($userId);
-                $islogin = $islogin->getData();               
+                $islogin = $islogin->getData(); 
 
-                $result = $this->isPunchInLate($userId);
-                $success['currentTime'] = $currentTime->format('Y-m-d h:i:s');
-                $success['punchInTime'] = $currentTime->format('Y-m-d h:i:s');
-                $success['lateBy'] = $result['lateBy'];  
+                if( $islogin->success == true ){	    
+                    $hasPermission = Attendance::where('userId', $userId)
+                    ->where('startDate', $currentTime->toDateString())
+                    ->where('is_permission', 1)
+                    ->get();
 
+                    $success['currentTime'] = $currentTime->format('Y-m-d H:i:s');
 
-                $hasPermission = Attendance::where('userId', $userId)
-                ->where('startDate', $currentTime->toDateString())
-                ->where('is_permission', 1)
-                ->get();
-           
-                if( $hasPermission->count() > 0 ){	
-                    $updatedata['permission_endTime'] =  $currentTime;                   
-                    
-                    $updateUser = Attendance::where('userId', $userId)->update($updatedata);   
-                
-                    $success['atStatus'] = 1; // Punch In
-                    $success['message'] = 'Permission Closed Success';  
-                } else{
-                    $this->createDirectory($userId);
-                    $dir = $this->getSelfieDirectory($userId);
-                    $fileName = $userId.'_'.time().'.'.$request->imageUrl->extension(); 
-                    $request->imageUrl->move($dir['storagePath'], $fileName);  
+                    if( $hasPermission->count() > 0 ){	
+                        $updatedata['permission_endTime'] =  $currentTime;                   
+                        
+                        $updateUser = Attendance::where('userId', $userId)
+                        ->where('startDate', $currentTime->toDateString())
+                        ->update($updatedata);                    
+                        
+                        $success['permissionStartTime'] = $hasPermission[0]['permission_startTime'];
+                        $success['permissionEndTime'] = $currentTime->format('Y-m-d H:i:s');
+                        $success['message'] = 'Permission Closed Success';  
+                    } else{
+                        $validator = Validator::make($request->all(), [  
+                            'reason' => 'required|min:5',                 
+                            'imageUrl' => 'required'
+                        ]);
+                        if ($validator->fails()) { 
+                            return response()->json(['error'=>$validator->errors()], 401);            
+                        }              
+                        $input = $request->all();
 
-                    $input['permission_imageUrl'] = $dir['storageDir'].'/'.$fileName;
-                    $input['is_permission']    =  1; 
-                    $input['permission_startTime'] =  $currentTime;
-                    $input['startDate'] =  $currentTime;
-                    $input['status']    =  'A'; 
-                    $input['createdBy'] =  '0'; 
-                    $input['createdOn'] =  $currentTime;                     
-                    
-                    $attendance = Attendance::create($input);                  
-                
-                    $success['atStatus'] = 1; // Punch In
-                    $success['message'] = 'Request Permission Success';                 
+                        $this->createDirectory($userId);
+                        $dir = $this->getSelfieDirectory($userId);
+                        $fileName = $userId.'_'.time().'.'.$request->imageUrl->extension(); 
+                        $request->imageUrl->move($dir['storagePath'], $fileName);  
+                        
+                        $updatedata['permission_startTime'] =  $currentTime;    
+                        $updatedata['permission_imageUrl'] = $dir['storageDir'].'/'.$fileName;
+                        $updatedata['is_permission'] =  1; 
+                        $updatedata['reason'] =  $input['reason'];                        
 
+                        $updateUser = Attendance::where('userId', $userId)
+                        ->where('startDate', $currentTime->toDateString())
+                        ->update($updatedata); 
+                       
+                        $success['permissionStartTime'] = $currentTime->format('Y-m-d H:i:s');
+                        $success['message'] = 'Permission Request Success';   
+                    }
                     return response()->json(['success'=> true, 'data' => $success], $this->successStatus);
-                    
+                }else{
+                    return response()->json(['success'=> false, 'message' => 'You must Punch In'], $this->successStatus);     
                 }
             }    
         }
@@ -576,5 +574,56 @@ class AttendanceController extends Controller
          } catch (\Exception $exception) {
            return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
         }   
-    } */
+    } 
+
+    public function applyLeave(Request $request, $userId)
+    {
+        try {            
+            if (!empty($userId)){ 
+                
+                $validator = Validator::make($request->all(), [  
+                    'reason' => 'required|min:5'
+                ]);
+                if ($validator->fails()) { 
+                    return response()->json(['error'=>$validator->errors()], 401);            
+                }              
+                $input = $request->all();
+                                
+                $currentTime = Carbon::now();
+                $success['currentTime'] = $currentTime->format('Y-m-d H:i:s');
+
+                $ShiftTime = (new ShiftTimeController)->getUserShiftTime($userId); 
+                $ShiftTime = $ShiftTime->getData();
+                if( $ShiftTime->success == true ){ 
+                    $shiftId = $ShiftTime->data->shiftId;
+                    $associatedId = $ShiftTime->data->associatedId;
+
+                    $input['userId'] =  $userId; 
+                    $input['shiftId'] =  $shiftId; 
+                    $input['associatedId'] =  $associatedId;
+                    $input['startTime'] =  $currentTime;
+                    $input['startDate'] =  $currentTime;
+                    $input['status']    =  'A'; 
+                    $input['createdBy'] =  '0'; 
+                    $input['createdOn'] =  $currentTime; 
+                    $input['is_leave'] =  1;                                   
+                    
+                    $attendance = Attendance::create($input);                      
+                    
+                    $success['message'] = 'Apply Leave Request Success';   
+                    
+                    return response()->json(['success'=> true, 'data' => $success], $this->successStatus);
+                }   
+            }    
+        }
+        catch (\Throwable $exception) {
+           return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        } catch (\Illuminate\Database\QueryException $exception) {
+           return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        } catch (\PDOException $exception) {
+           return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+         } catch (\Exception $exception) {
+           return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        }   
+    }
 }

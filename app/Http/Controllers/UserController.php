@@ -48,7 +48,7 @@ class UserController extends Controller
                     $success['shiftname']       = $ShiftTime->data->shiftName;
                     $success['startTime']       = $ShiftTime->data->startTime;
                     $success['endTime']         = $ShiftTime->data->endTime; 
-                    $success['currentTime']     = $currentTime->format('Y-m-d h:i:s');
+                    $success['currentTime']     = $currentTime->format('Y-m-d H:i:s');
                     $success['punchInBtnTime']  = $ShiftTime->data->punchInBtnTime; 
                     $success['punchOutBtnTime'] = $ShiftTime->data->punchOutBtnTime; 
 

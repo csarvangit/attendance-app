@@ -162,11 +162,11 @@ class ShiftTimeController extends Controller
     public function getUserShiftTime(string $userId) 
     { 
         try {
-            $shifttimewithusers = ShiftTimeWithUsers::select(['userId', 'shiftId'])
+            $shifttimewithusers = ShiftTimeWithUsers::select(['userId', 'shiftId', 'associatedId'])
             ->where('userId', $userId)->first();                 
            
             if( !is_null($shifttimewithusers) ){
-                $shiftId = $shifttimewithusers->shiftId;
+                $shiftId = $shifttimewithusers->shiftId; 
                 $ShiftTime = ShiftTime::select(['shiftId', 'shiftName', 'startTime', 'endTime', 'effectiveFrom', 'effectiveTo'])
                 ->where('shiftId', $shiftId)->first(); 
                 if( !is_null($ShiftTime) ){
@@ -179,9 +179,10 @@ class ShiftTimeController extends Controller
 
                     $carbonEndTime = Carbon::parse($ShiftTime->endTime);                    
                     $carbonEndTime = $carbonEndTime->subMinutes($punch_out_button_enable_time)->format('H:i:s');
-                    $ShiftTime['currentTime'] = $currentTime->format('Y-m-d h:i:s');
+                    $ShiftTime['currentTime'] = $currentTime->format('Y-m-d H:i:s');
                     $ShiftTime['punchInBtnTime'] = $carbonStartTime; 
                     $ShiftTime['punchOutBtnTime'] = $carbonEndTime; 
+                    $ShiftTime['associatedId'] = $shifttimewithusers->associatedId;
 
                     return response()->json(['success'=> true, 'data' => $ShiftTime], $this->successStatus); 
                 }else{
