@@ -102,12 +102,12 @@ button {
 
 }
 .photo {
-    width: 151px !important;
-    height: 190px !important;
+  width: 178px !important;
+    height: 245px !important;
     overflow: hidden;
     position: absolute;
-    left: 74px;
-    top: 95px;
+    left: 61px;
+    top: 73px;
     border-radius: 0 !important;
 }
 .photo img {
