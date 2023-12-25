@@ -386,16 +386,17 @@ class UserController extends Controller
                         'u.firstName',
                         'u.lastName', 
                         'u.email',
-                        //'password',
+                        //'u.password',
                         'u.mobile',
                         'u.gender',
                         'u.DOB',
+                        'u.address',
                         'u.role as roleId',
                         'r.name as roleName',
                         'r.description as roleDescription'
                     ) 
                     ->leftJoin('roles as r', 'r.roleId', '=', 'u.role') 
-                    ->where('u.userId', $userId)->first();   
+                    ->where('u.userId', $userId)->first();                        
                     
                 if($userData){
                     return response()->json(['success'=> true, 'data' => $userData], $this->successStatus);
@@ -433,7 +434,8 @@ class UserController extends Controller
                     'password_confirmation' => 'required|min:4', 
                     'mobile' => 'required', 
                     'gender' => 'required', 
-                    'DOB' => 'required'                            
+                    'DOB' => 'required',
+                    'address' => 'required'                            
                 ]);
                 if ($validator->fails()) { 
                     return response()->json(['error'=>$validator->errors()], 401);   
@@ -448,6 +450,7 @@ class UserController extends Controller
                 $updatedata['mobile'] = $input['mobile']; 
                 $updatedata['gender'] = $input['gender'];             
                 $updatedata['DOB'] = $input['DOB']; 
+                $updatedata['address'] = $input['address']; 
                 $updatedata['password'] = bcrypt($input['password']); 
 
                 // recommended

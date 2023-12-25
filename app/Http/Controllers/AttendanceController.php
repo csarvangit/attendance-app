@@ -504,6 +504,43 @@ class AttendanceController extends Controller
     }
     
     /* ***************************************************************** */
+    public function permissionStatus(Request $request, $userId)
+    {
+        try {            
+            if (!empty($userId)){                  
+                                
+                $currentTime = Carbon::now(); 
+                    
+                $hasPermission = Attendance::where('userId', $userId)
+                ->where('startDate', $currentTime->toDateString())
+                ->where('is_permission', 1)
+                ->get();               
+               
+                if( $hasPermission->count() > 0 ){	
+                    if( $hasPermission[0]['permission_startTime'] ){
+                        $permissionData['atStatus'] = 'Started'; // Permission Started
+                    }
+                    if( $hasPermission[0]['permission_endTime'] ){
+                        $permissionData['atStatus'] = 'End'; // Permission End
+                    }   
+                } else{
+                    $permissionData['atStatus'] = 'Not Started'; // Permission Not Started
+                }
+                return response()->json(['success'=> true, 'data' => $permissionData], $this->successStatus);                
+            }    
+        }
+        catch (\Throwable $exception) {
+           return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        } catch (\Illuminate\Database\QueryException $exception) {
+           return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        } catch (\PDOException $exception) {
+           return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+         } catch (\Exception $exception) {
+           return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        }   
+    } 
+
+
     public function applyPermission(Request $request, $userId)
     {
         try {            
@@ -521,7 +558,8 @@ class AttendanceController extends Controller
                     ->get();
 
                     $success['currentTime'] = $currentTime->format('Y-m-d H:i:s');
-
+                    
+                    // Close Permission
                     if( $hasPermission->count() > 0 ){	
                         $updatedata['permission_endTime'] =  $currentTime;                   
                         
@@ -533,6 +571,7 @@ class AttendanceController extends Controller
                         $success['permissionEndTime'] = $currentTime->format('Y-m-d H:i:s');
                         $success['message'] = 'Permission Closed Success';  
                     } else{
+                        // Start Permission
                         $validator = Validator::make($request->all(), [  
                             'reason' => 'required|min:5',                 
                             'imageUrl' => 'required'

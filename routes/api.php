@@ -55,6 +55,7 @@ Route::get('/staff/profile/{id}', [App\Http\Controllers\UserController::class, '
 Route::post('/staff/profile/edit/{id}', [App\Http\Controllers\UserController::class, 'editProfile'])->name('editMyprofile');
 
 Route::post('/staff/permission/{id}', [App\Http\Controllers\AttendanceController::class, 'applyPermission'])->name('applyPermission');
+Route::get('/staff/permissionStatus/{id}', [App\Http\Controllers\AttendanceController::class, 'permissionStatus'])->name('permissionStatus');
 Route::post('/staff/leave/{id}', [App\Http\Controllers\AttendanceController::class, 'applyLeave'])->name('applyLeave');
 
 Route::get('/staff/attendance/monthlyLog/{id}/{year}/{month}', [App\Http\Controllers\AttendanceController::class, 'monthlyLog'])->name('monthlyLog');
