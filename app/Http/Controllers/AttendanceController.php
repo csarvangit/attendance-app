@@ -626,4 +626,60 @@ class AttendanceController extends Controller
            return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
         }   
     }
+
+
+    /**
+     * get user logs by month.
+     */
+    public function monthlyLog(Request $request, string $id, string $year, string $month)
+    {
+        try {
+            if (!empty($id)){  
+                $selectedMonth = $year.'-'.$month;
+                $presentLogs = Attendance::where('userId', $id)
+                ->where('is_permission', '=', 0) 
+                ->where('is_leave', '=', 0) 
+                ->whereYear('startDate', '=', Carbon::parse($selectedMonth)->year)
+                ->whereMonth('startDate', '=', Carbon::parse($selectedMonth)->month)
+                ->select( 'startDate', 'is_permission', 'is_leave', DB::raw("DATE_FORMAT(startDate, '%d') as presents"))               
+                ->pluck('presents');
+
+                $permissionLogs = Attendance::where('userId', $id)
+                ->where('is_permission', '=', 1) 
+                ->whereYear('startDate', '=', Carbon::parse($selectedMonth)->year)
+                ->whereMonth('startDate', '=', Carbon::parse($selectedMonth)->month)                
+                ->select( 'startDate', 'is_permission', DB::raw("DATE_FORMAT(startDate, '%d') as permissions") )
+                ->pluck('permissions');
+
+                $leaveLogs = Attendance::where('userId', $id)
+                ->where('is_leave', '=', 1) 
+                ->whereYear('startDate', '=', Carbon::parse($selectedMonth)->year)
+                ->whereMonth('startDate', '=', Carbon::parse($selectedMonth)->month)                
+                ->select( 'startDate', 'is_leave', DB::raw("DATE_FORMAT(startDate, '%d') as leaves") )
+                ->pluck('leaves'); 
+                
+                $data = array( 
+                    'userId' => $id,
+                    'date' => $selectedMonth,
+                    'presents' => $presentLogs, 
+                    'permissions' => $permissionLogs,
+                    'leaves' => $leaveLogs
+                );
+
+                return response()->json(['success'=> true, 'data' => $data ], $this->successStatus);                         
+
+            } else {
+                return response()->json(['success'=> false, 'message' => 'User Id required'], $this->successStatus);     
+            }    
+        }
+        catch (\Throwable $exception) {
+           return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        } catch (\Illuminate\Database\QueryException $exception) {
+           return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        } catch (\PDOException $exception) {
+           return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+         } catch (\Exception $exception) {
+           return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        }  
+    }
 }
