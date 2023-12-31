@@ -320,7 +320,7 @@ class AttendanceController extends Controller
           
             $currentTime = Carbon::now();
             $islogin = $this->islogin($input['userId']);
-            $islogin = $islogin->getData();
+            $islogin = $islogin->getData();            
 
             if( $islogin->success == true ){  
 
@@ -516,12 +516,17 @@ class AttendanceController extends Controller
                 ->where('is_permission', 1)
                 ->get();               
                
+                $permissionData['permissionStartTime'] = '';
+                $permissionData['permissionEndTime'] = '';
+
                 if( $hasPermission->count() > 0 ){	
                     if( $hasPermission[0]['permission_startTime'] ){
                         $permissionData['atStatus'] = 'Started'; // Permission Started
+                        $permissionData['permissionStartTime'] = $hasPermission[0]['permission_startTime'];
                     }
                     if( $hasPermission[0]['permission_endTime'] ){
                         $permissionData['atStatus'] = 'End'; // Permission End
+                        $permissionData['permissionEndTime'] = $hasPermission[0]['permission_endTime'];
                     }   
                 } else{
                     $permissionData['atStatus'] = 'Not Started'; // Permission Not Started
@@ -721,4 +726,48 @@ class AttendanceController extends Controller
            return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
         }  
     }
+
+    /**
+     * get user leave & permission logs for current month.
+     */
+    public function leaveLog(Request $request, string $id)
+    {
+        try {
+            if (!empty($id)){ 
+                $currentTime = Carbon::now();         
+                
+                $year = Carbon::parse($currentTime)->year;
+                $month = Carbon::parse($currentTime)->month;
+                $selectedMonth = $year.'-'.$month;
+
+                $leaveLogs = Attendance::where('userId', $id)
+                ->where('is_leave', '=', 1) 
+                ->whereYear('startDate', '=', Carbon::parse($currentTime)->year)
+                ->whereMonth('startDate', '=', Carbon::parse($currentTime)->month)                
+                ->select( 'startDate', 'is_leave', DB::raw("DATE_FORMAT(startDate, '%d') as leaves") )
+                ->get(); 
+                
+                $data = array( 
+                    'userId' => $id,
+                    'date' => $selectedMonth,                    
+                    'leaves' => $leaveLogs
+                );
+
+                return response()->json(['success'=> true, 'data' => $data ], $this->successStatus);                         
+
+            } else {
+                return response()->json(['success'=> false, 'message' => 'User Id required'], $this->successStatus);     
+            }    
+        }
+        catch (\Throwable $exception) {
+           return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        } catch (\Illuminate\Database\QueryException $exception) {
+           return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        } catch (\PDOException $exception) {
+           return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+         } catch (\Exception $exception) {
+           return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        }  
+    }
+
 }

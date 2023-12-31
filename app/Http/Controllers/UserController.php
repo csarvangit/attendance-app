@@ -14,6 +14,7 @@ use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 
 use App\Http\Controllers\ShiftTimeController;
+use App\Http\Controllers\UserRoleController;
 use Config;
 use DB;
 use Illuminate\Support\Facades\File;
@@ -34,9 +35,18 @@ class UserController extends Controller
                 $user = Auth::user(); 
                 $userId = $user->userId; 
                 $name = $user->firstName . ' ' .$user->lastName;
+                $roleId = $user->role; 
 
                 $success['userId'] = $userId;
                 $success['username'] = $name;
+
+                $userRole = (new UserRoleController)->getUserRole($roleId); 
+                $userRole = $userRole->getData();
+
+                if( $userRole->success == true ){ 
+                    $success['designationId']   = $userRole->data->roleId;
+                    $success['designation']   = $userRole->data->name;
+                }
 
                 $punch_in_button_enable_time = Config::get('app.punch_in_button_enable_time'); 
                 $punch_out_button_enable_time = Config::get('app.punch_out_button_enable_time');                 

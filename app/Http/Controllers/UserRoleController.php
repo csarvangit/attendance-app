@@ -57,6 +57,32 @@ class UserRoleController extends Controller
     }
 
     /**
+     * Get User role by ID.
+     */
+    public function getUserRole(string $id)
+    {
+        try {             
+            $userRole = Roles::select(['roleId', 'name', 'description', 'createdOn'])                  
+            ->where('roleId', $id)->first();
+            
+            if( $userRole ){
+                return response()->json(['success'=> true, 'data' => $userRole], $this->successStatus);
+            }else{
+                return response()->json(['success'=> false, 'message' => 'No roles records found', 'data' => NULL ], $this->successStatus);    
+            }              
+        }
+        catch (\Throwable $exception) {
+           return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        } catch (\Illuminate\Database\QueryException $exception) {
+           return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        } catch (\PDOException $exception) {
+           return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        } catch (\Exception $exception) {
+           return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        }  
+    }
+
+    /**
      * Store a newly created resource in storage.
      */
     public function storeRole(Request $request)
