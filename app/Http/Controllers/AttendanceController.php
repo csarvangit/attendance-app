@@ -531,6 +531,14 @@ class AttendanceController extends Controller
                 } else{
                     $permissionData['atStatus'] = 'Not Started'; // Permission Not Started
                 }
+
+                $leaveStatus = $this->leaveStatus($userId);
+                $leaveStatus = $leaveStatus->getData(); 
+
+                if( $leaveStatus->success == true ) {  
+                    $permissionData['leaveStatus'] = $leaveStatus->data->atStatus;
+                }
+
                 return response()->json(['success'=> true, 'data' => $permissionData], $this->successStatus);                
             }    
         }
@@ -556,13 +564,23 @@ class AttendanceController extends Controller
                 $islogin = $this->islogin($userId);
                 $islogin = $islogin->getData(); 
 
-                if( $islogin->success == true ){	    
+                if( $islogin->success == true ){	
+                    
+                    $success['currentTime'] = $currentTime->format('Y-m-d H:i:s');
+
+                    // Prevent permission request if leave applied already
+                    $leaveStatus = $this->leaveStatus($userId);
+                    $leaveStatus = $leaveStatus->getData(); 
+
+                    if( $leaveStatus->success == true &&  $leaveStatus->data->atStatus == 1) {  
+                        $success['message'] = 'Already Leave Request Applied for Today';                    
+                        return response()->json(['success'=> false, 'data' => $success], $this->successStatus);
+                    }
+
                     $hasPermission = Attendance::where('userId', $userId)
                     ->where('startDate', $currentTime->toDateString())
                     ->where('is_permission', 1)
-                    ->get();
-
-                    $success['currentTime'] = $currentTime->format('Y-m-d H:i:s');
+                    ->get();                    
                     
                     // Close Permission
                     if( $hasPermission->count() > 0 ){	
@@ -620,6 +638,35 @@ class AttendanceController extends Controller
         }   
     } 
 
+    public function leaveStatus(string $userId){
+        try {
+            if($userId != NULL || $userId != ''){
+                $currentTime = Carbon::now();  
+
+                $hasLeave = Attendance::where('userId', $userId)
+                ->where('startDate', $currentTime->toDateString())
+                ->where('is_leave', '=', 1) 
+                ->get();  
+
+                $leaveData['atStatus'] = 0;
+
+                if( $hasLeave->count() > 0 ){	
+                    $leaveData['atStatus'] = 1;                    
+                }
+                return response()->json(['success'=> true, 'data' => $leaveData], $this->successStatus);
+            } 
+        }
+        catch (\Throwable $exception) {
+            return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        } catch (\Illuminate\Database\QueryException $exception) {
+            return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        } catch (\PDOException $exception) {
+            return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+            } catch (\Exception $exception) {
+            return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        }               
+    }
+
     public function applyLeave(Request $request, $userId)
     {
         try {            
@@ -635,6 +682,14 @@ class AttendanceController extends Controller
                                 
                 $currentTime = Carbon::now();
                 $success['currentTime'] = $currentTime->format('Y-m-d H:i:s');
+                
+                $leaveStatus = $this->leaveStatus($userId);
+                $leaveStatus = $leaveStatus->getData(); 
+
+                if( $leaveStatus->success == true &&  $leaveStatus->data->atStatus == 1) {  
+                    $success['message'] = 'Already Leave Request Applied for Today';                    
+                    return response()->json(['success'=> false, 'data' => $success], $this->successStatus);
+                }
 
                 $ShiftTime = (new ShiftTimeController)->getUserShiftTime($userId); 
                 $ShiftTime = $ShiftTime->getData();
@@ -654,7 +709,7 @@ class AttendanceController extends Controller
                     
                     $attendance = Attendance::create($input);                      
                     
-                    $success['message'] = 'Apply Leave Request Success';   
+                    $success['message'] = 'Apply Leave Request Success';
                     
                     return response()->json(['success'=> true, 'data' => $success], $this->successStatus);
                 }   
