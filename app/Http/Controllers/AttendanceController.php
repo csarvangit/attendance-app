@@ -104,14 +104,22 @@ class AttendanceController extends Controller
     {
         try {
             if($userId != NULL || $userId != ''){
-                $currentTime = Carbon::now();                  
+                $currentTime = Carbon::now(); 
+                
+                $leaveStatus = $this->leaveStatus($userId);
+                $leaveStatus = $leaveStatus->getData();               
+                // if leave applied
+                if( $leaveStatus->success == true && $leaveStatus->data->atStatus == 1 ) {  
+                    $loginData['message'] = 'Leave applied already';
+                    return response()->json(['success'=> true, 'data' => $loginData], $this->successStatus);
+                }
 
                 $hasAttendance = Attendance::where('userId', $userId)
                 ->where('startDate', $currentTime->toDateString())
                 ->get();
                 
                 $loginData['currentTime'] = $currentTime->format('Y-m-d H:i:s');
-                $result = $this->isPunchInLate($userId);
+                $result = $this->isPunchInLate($userId);                
 
                 if( $hasAttendance->count() > 0 ){	
                     
@@ -129,7 +137,6 @@ class AttendanceController extends Controller
 
                     return response()->json(['success'=> true, 'data' => $loginData], $this->successStatus);
                 }else{ 
-
                           
                     /* To find Time Difference */                
                     $ShiftTime = (new ShiftTimeController)->getUserShiftTime($userId); 
@@ -534,10 +541,22 @@ class AttendanceController extends Controller
 
                 $leaveStatus = $this->leaveStatus($userId);
                 $leaveStatus = $leaveStatus->getData(); 
-
-                if( $leaveStatus->success == true ) {  
+               /* if( $leaveStatus->success == true ) {  
                     $permissionData['leaveStatus'] = $leaveStatus->data->atStatus;
+                } */
+                // if leave applied
+                if( $leaveStatus->success == true && $leaveStatus->data->atStatus == 1 ) {  
+                    $permissionData['message'] = 'Leave applied already';
+                    unset($permissionData['atStatus']);
                 }
+
+                $islogin = $this->islogin($userId);
+                $islogin = $islogin->getData();		
+                // if punched out		
+			    if( $islogin->success == true && $islogin->data->atStatus == 3 ){ 
+                    $permissionData['message'] = 'Punched out applied already';
+                    unset($permissionData['atStatus']);
+                }                
 
                 return response()->json(['success'=> true, 'data' => $permissionData], $this->successStatus);                
             }    
@@ -573,7 +592,7 @@ class AttendanceController extends Controller
                     $leaveStatus = $leaveStatus->getData(); 
 
                     if( $leaveStatus->success == true &&  $leaveStatus->data->atStatus == 1) {  
-                        $success['message'] = 'Already Leave Request Applied for Today';                    
+                        $success['message'] = 'Leave applied already';                    
                         return response()->json(['success'=> false, 'data' => $success], $this->successStatus);
                     }
 
@@ -687,7 +706,7 @@ class AttendanceController extends Controller
                 $leaveStatus = $leaveStatus->getData(); 
 
                 if( $leaveStatus->success == true &&  $leaveStatus->data->atStatus == 1) {  
-                    $success['message'] = 'Already Leave Request Applied for Today';                    
+                    $success['message'] = 'Leave applied already';                    
                     return response()->json(['success'=> false, 'data' => $success], $this->successStatus);
                 }
 
