@@ -60,7 +60,9 @@ Route::post('/staff/leave/{id}', [App\Http\Controllers\AttendanceController::cla
 Route::get('/staff/leaveStatus/{id}', [App\Http\Controllers\AttendanceController::class, 'leaveStatus'])->name('leaveStatus');
 
 Route::get('/staff/attendance/monthlyLog/{id}/{year}/{month}', [App\Http\Controllers\AttendanceController::class, 'monthlyLog'])->name('monthlyLog');
+Route::post('/staff/attendance/dayLog', [App\Http\Controllers\AttendanceController::class, 'dayLog'])->name('dayLog');
 Route::get('/staff/leaveLog/{id}', [App\Http\Controllers\AttendanceController::class, 'leaveLog'])->name('leaveLog');
+
 
 /* ================== LOGOUT ================== */
 Route::post('logout', [App\Http\Controllers\UserController::class, 'logout'])->name('logout');

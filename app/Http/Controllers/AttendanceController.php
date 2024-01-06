@@ -802,6 +802,49 @@ class AttendanceController extends Controller
     }
 
     /**
+     * get user logs by day - date.
+     */
+    public function dayLog(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'userId' => 'required',
+                'date' => 'required', 
+            ]);
+            if ($validator->fails()) { 
+                return response()->json(['error'=>$validator->errors()], 401);            
+            }
+            $input = $request->all();             
+                
+            $attendancelog = DB::table('attendance as a1')
+            ->where('a1.userId', '=', $input['userId'])	
+            ->where('a1.startDate', '=', Carbon::parse($input['date']))	
+            ->select( 's.startTime as checkInTime', 's.endTime as checkOutTime', DB::raw("DATE_FORMAT(a1.startTime, '%H:%i:%s') as actualCheckInTime"), DB::raw("DATE_FORMAT(a1.endTime, '%H:%i:%s') as actualCheckOutTime"), DB::raw("TIMESTAMPDIFF(MINUTE, a1.permission_startTime, a1.permission_endTime) as permissionInHours") )
+            ->leftJoin('users as u', 'u.userId', '=', 'a1.userId')		
+            ->leftJoin('shifttime as s', 's.shiftId', '=', 'a1.shiftId') 									
+            ->groupBy('a1.userId')	
+            ->groupBy('a1.attandanceId')
+            ->first(); 
+            if($attendancelog){
+                $minutes = $attendancelog->permissionInHours;
+                $attendancelog->permissionInHours = floor($minutes / 60).':'.($minutes -   floor($minutes / 60) * 60);
+            }
+            
+            return response()->json(['success'=> true, 'data' => $attendancelog ], $this->successStatus);  
+            
+        }
+        catch (\Throwable $exception) {
+           return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        } catch (\Illuminate\Database\QueryException $exception) {
+           return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        } catch (\PDOException $exception) {
+           return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+         } catch (\Exception $exception) {
+           return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        }  
+    }
+
+    /**
      * get user leave & permission logs for current month.
      */
     public function leaveLog(Request $request, string $id)

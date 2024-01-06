@@ -24,6 +24,30 @@ use URL;
 class UserController extends Controller
 {
     public $successStatus = 200;
+    public $profileDir = 'uploads/staffs/profile/';
+
+    /* Create user profile avatar image directory */
+    public function getUserProfileDirectory($userId)
+    {        
+        $year  = Carbon::now()->format('Y');
+        $month = Carbon::now()->format('m');
+        $day   = Carbon::now()->format('d');
+
+        return array(
+            'storagePath' => public_path( $this->profileDir.$userId.'/'.$year.'/'.$month.'/'.$day),
+            'storageDir'  => $userId.'/'.$year.'/'.$month.'/'.$day
+        );        
+    }
+
+    public function createUserProfileDirectory($userId)
+    {
+        $path = $this->getUserProfileDirectory($userId);
+
+        if(!File::isDirectory($path['storagePath'])){
+            File::makeDirectory($path['storagePath'], 0777, true, true);
+        }   
+    } 
+
     /** 
      * login api 
      * 
@@ -380,8 +404,6 @@ class UserController extends Controller
         }      
     }  
 
-
-
     /**
      * @return User Profile data
      */
@@ -400,6 +422,7 @@ class UserController extends Controller
                         'u.mobile',
                         'u.gender',
                         'u.DOB',
+                        'u.userImageUrl',
                         'u.address',
                         'u.role as roleId',
                         'r.name as roleName',
@@ -409,6 +432,7 @@ class UserController extends Controller
                     ->where('u.userId', $userId)->first();                        
                     
                 if($userData){
+                    $userData->userImageUrl = URL::to('public/'.$this->profileDir.$userData->userImageUrl);
                     return response()->json(['success'=> true, 'data' => $userData], $this->successStatus);
                 } else{
                     return response()->json(['success'=> false, 'message' => 'No Records Found'], $this->successStatus);     
@@ -445,7 +469,8 @@ class UserController extends Controller
                     'mobile' => 'required', 
                     'gender' => 'required', 
                     'DOB' => 'required',
-                    'address' => 'required'                            
+                    'address' => 'required',
+                    //'userImageUrl' => 'required',                            
                 ]);
                 if ($validator->fails()) { 
                     return response()->json(['error'=>$validator->errors()], 401);   
@@ -462,6 +487,14 @@ class UserController extends Controller
                 $updatedata['DOB'] = $input['DOB']; 
                 $updatedata['address'] = $input['address']; 
                 $updatedata['password'] = bcrypt($input['password']); 
+
+                if( isset($input['userImageUrl']) ){
+                    $this->createUserProfileDirectory($userId);
+                    $dir = $this->getUserProfileDirectory($userId);
+                    $fileName = $userId.'_'.time().'.'.$request->userImageUrl->extension(); 
+                    $request->userImageUrl->move($dir['storagePath'], $fileName);   
+                    $updatedata['userImageUrl'] = $dir['storageDir'].'/'.$fileName;
+                }
 
                 // recommended
                 if( isset($input['role']) ){
