@@ -1,3 +1,6 @@
+@php
+use Carbon\Carbon;
+@endphp
 @if($errors->any())
     <div class="alert alert-danger alert-dismissible" role="alert">
 		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -106,6 +109,25 @@
                     @endif
 					
 					{!! $errors->first('role', '<p class="help-block">:message</p>') !!}				  
+				</div>
+			</div>
+		</div>	
+		
+		<div class="row mt-4">
+			<div class="col-sm-6">
+				<label for="lastName" class="mb-1">Select Shift</label>
+				<div class="form-group {{ $errors->has('shiftId') ? 'has-error' : ''}}">
+					@if(!empty($shifts))
+						 <select name="shiftId" id="shiftId" class="form-control @error('shiftId') is-invalid @enderror" required >
+							<option value="">Select Shift</option>
+							@foreach($shifts as $i => $value)
+								<option value="{{$value->shiftId}}" {{ ( old("shiftId") == $value->shiftId ) ? "selected":"" }} >
+								{{$value->shiftName}} - {{ Carbon::parse($value->startTime)->format('h:iA') }}-{{ Carbon::parse($value->endTime)->format('h:iA') }}</option>
+							@endforeach 
+						</select>	
+                    @endif
+
+					{!! $errors->first('shiftId', '<p class="help-block">:message</p>') !!}
 				</div>
 			</div>
 		</div>	

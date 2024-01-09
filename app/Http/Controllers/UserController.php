@@ -247,7 +247,9 @@ class UserController extends Controller
             'a.imageUrl',
             's.shiftId as shid',
             'su.shiftId as suid',
-            's.shiftName', 
+            's.shiftName',
+            's.startTime as shiftstartTime',
+            's.endTime as shiftendTime' 
         )
         ->leftJoin('attendance as a', 'a.userId', '=', 'u.userId') 
         ->leftJoin('shifttimewithusers as su', 'su.userId', '=', 'u.userId') 
@@ -307,7 +309,8 @@ class UserController extends Controller
     public function create()
     {        
         $roles = Roles::all();  
-        return view('admin.create-user', compact('roles'));
+        $shifts = ShiftTime::all();
+        return view('admin.create-user', compact('roles', 'shifts'));
     }
 
     public function store(Request $request)
@@ -338,6 +341,17 @@ class UserController extends Controller
             $input['createdOn'] =  Carbon::now();                     
             
             $user = User::create($input); 
+
+            if( isset($input['shiftId']) ) {
+                $sh_input['userId'] =  $user->id; 
+                $sh_input['shiftId'] =  $input['shiftId']; 
+                $sh_input['status'] =  'A'; 
+                $sh_input['effectiveFrom'] =  Carbon::now();
+                $sh_input['effectiveTo'] =  '9999-12-31';
+                $sh_input['createdBy'] =  '0'; 
+                $sh_input['createdOn'] =  Carbon::now();  
+                $shifttimewithusers = ShiftTimeWithUsers::create($sh_input);
+            }            
 
             $success['token'] =  $user->createToken('MyApp')->accessToken; 
             $success['name'] =  $user->firstName.' '.$user->lastName; 

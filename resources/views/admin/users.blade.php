@@ -57,7 +57,8 @@ use App\Http\Controllers\AttendanceController;
                 <td>{{ $user->firstName }} {{ $user->lastName }}</td>               
                 <td>{{ $user->email }}</td>
                 <td>{{ $user->mobile }}</td>
-                <td>{{ $user->shiftName }} </td>              
+                <td>{{ Carbon::parse($user->shiftstartTime)->format('h:iA') }}-{{ Carbon::parse($user->shiftendTime)->format('h:iA') }}
+				</td>              
                 <td>
                    {{--  @if(isset($user->startTime) && !empty($user->startTime)) 
                     {{ $user->startTime ? $user->startTime : '-' }}

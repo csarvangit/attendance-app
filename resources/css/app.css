@@ -30,3 +30,19 @@ input.form-control:focus{
 .bootstrap-datetimepicker-widget{
     font-size: 85%;
 }
+
+.pl-wrapper {
+	position: relative;
+}
+
+.pl-wrapper .reason-hvr{
+	display: none;
+}
+
+.pl-wrapper:hover .reason-hvr{
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	display: block;
+}
