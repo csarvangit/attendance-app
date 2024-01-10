@@ -423,7 +423,7 @@ class AttendanceController extends Controller
                                
                 $attendancelogs =  DB::table('attendance as a1')
                 ->where('a1.userId', '=', $id)	
-                ->select( 'u.*', 'a1.userId as auId', 'a1.attandanceId', 'a1.startTime', 'a1.endTime', 'a1.startDate', 'a1.endDate', 'a1.imageUrl', 'a1.is_permission', 'a1.permission_startTime', 'a1.permission_endTime', 'a1.is_leave', 'a1.reason', 's.shiftId as shid', 's.shiftName', 's.startTime as shiftstartTime', 's.endTime as shiftendTime', DB::raw("TIME(a1.endTime) as eTime") , DB::raw("TIME(a1.startTime) as sTime") , DB::raw("TIME_FORMAT(SEC_TO_TIME((TIME_TO_SEC(CASE WHEN SUBTIME(IFNULL(TIME(a1.endTime),0),IFNULL(TIME(a1.startTime),0)) > '00:00:00' THEN SUBTIME(IFNULL(TIME(a1.endTime),0),IFNULL(TIME(a1.startTime),0)) ELSE '00:00:00' END))), '%H:%i:%s' )as total_hours"), DB::raw("TIMESTAMPDIFF(SECOND, a1.permission_startTime, a1.permission_endTime) as permissionInHours") )
+                ->select( 'u.*', 'a1.userId as auId', 'a1.attandanceId', 'a1.startTime', 'a1.endTime', 'a1.startDate', 'a1.endDate', 'a1.imageUrl', 'a1.is_permission', 'a1.permission_startTime', 'a1.permission_endTime', 'a1.is_leave', 'a1.reason', 's.shiftId as shid', 's.shiftName', 's.startTime as shiftstartTime', 's.endTime as shiftendTime', DB::raw("TIME(a1.endTime) as eTime") , DB::raw("TIME(a1.startTime) as sTime") , DB::raw("TIME_FORMAT(SEC_TO_TIME((TIME_TO_SEC(CASE WHEN SUBTIME(IFNULL(TIME(a1.endTime),0),IFNULL(TIME(a1.startTime),0)) > '00:00:00' THEN SUBTIME(IFNULL(TIME(a1.endTime),0),IFNULL(TIME(a1.startTime),0)) ELSE '00:00:00' END))), '%H:%i:%s' )as total_hours"), DB::raw("IFNULL(TIME_FORMAT(SEC_TO_TIME(TIMESTAMPDIFF(SECOND, a1.permission_startTime, a1.permission_endTime)), '%H:%i:%S'), '00:00:00') as permissionInHours") )
                 ->leftJoin('users as u', 'u.userId', '=', 'a1.userId')		
                 ->leftJoin('shifttime as s', 's.shiftId', '=', 'a1.shiftId') 									
                 ->groupBy('a1.userId')	
@@ -831,18 +831,12 @@ class AttendanceController extends Controller
             $attendancelog = DB::table('attendance as a1')
             ->where('a1.userId', '=', $input['userId'])	
             ->where('a1.startDate', '=', Carbon::parse($input['date']))	
-            ->select( 's.startTime as checkInTime', 's.endTime as checkOutTime', DB::raw("DATE_FORMAT(a1.startTime, '%H:%i:%s') as actualCheckInTime"), DB::raw("DATE_FORMAT(a1.endTime, '%H:%i:%s') as actualCheckOutTime"), DB::raw("TIMESTAMPDIFF(SECOND, a1.permission_startTime, a1.permission_endTime) as permissionInHours") )
+            ->select( 's.startTime as checkInTime', 's.endTime as checkOutTime', DB::raw("DATE_FORMAT(a1.startTime, '%H:%i:%s') as actualCheckInTime"), DB::raw("DATE_FORMAT(a1.endTime, '%H:%i:%s') as actualCheckOutTime"), DB::raw("IFNULL(TIME_FORMAT(SEC_TO_TIME(TIMESTAMPDIFF(SECOND, a1.permission_startTime, a1.permission_endTime)), '%H:%i:%S'), '00:00:00') as permissionInHours") )
             ->leftJoin('users as u', 'u.userId', '=', 'a1.userId')		
             ->leftJoin('shifttime as s', 's.shiftId', '=', 'a1.shiftId') 									
             ->groupBy('a1.userId')	
             ->groupBy('a1.attandanceId')
-            ->first(); 
-            if($attendancelog){
-                // available vars - SECOND, MINUTE, HOUR
-                $minutes = $attendancelog->permissionInHours;
-               // $attendancelog->permissionInHours = floor($minutes / 60).':'.($minutes -   floor($minutes / 60) * 60);
-                $attendancelog->permissionInHours = gmdate("H:i:s", $minutes);
-            }
+            ->first();             
             
             return response()->json(['success'=> true, 'data' => $attendancelog ], $this->successStatus);  
             

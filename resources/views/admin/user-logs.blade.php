@@ -50,10 +50,8 @@ use App\Http\Controllers\AttendanceController;
         <th>User</th>        
         <th>Shift Time</th>
         <th>Punch In Time</th>
-        <th>Punch Out Time</th> 
-        <th>Punch In Date</th>
-        <th>Punch Out Date</th>
-        <th>Total Hours</th>        
+        <th>Punch Out Time</th>         
+		<th>Total Hours</th>        
         <th>Permission</th>
         <th>Leave</th>
         <th>Late</th>
@@ -81,16 +79,10 @@ use App\Http\Controllers\AttendanceController;
                 </td>    
                 <td>{{ Carbon::parse($attendancelog->shiftstartTime)->format('h:iA') }}-{{ Carbon::parse($attendancelog->shiftendTime)->format('h:iA') }}</td>            
                 <td>{{ $attendancelog->startTime ? $attendancelog->startTime : '-' }}</td>
-                <td>{{ $attendancelog->endTime ? $attendancelog->endTime : '-' }}</td>
-                <td>{{ $attendancelog->startDate }}</td>
-                <td>{{ $attendancelog->endDate }}</td>
+                <td>{{ $attendancelog->endTime ? $attendancelog->endTime : '-' }}</td>           
                 <td>{{ $attendancelog->total_hours }}</td>
-                <td> 
-				  @php
-				    $minutes = $attendancelog->permissionInHours;
-                    $permissionInHours = gmdate("H:i:s", $minutes);
-				  @endphp
-				{!! $attendancelog->is_permission == 1 ? "<span class='btn bg-warning pl-wrapper'>P </span><br>$permissionInHours <br><span class='reason-hvr'>$attendancelog->reason</span>" : '-' !!} 
+                <td> 				 
+				{!! $attendancelog->is_permission == 1 ? "<span class='btn bg-warning pl-wrapper'>P </span><br>$attendancelog->permissionInHours <br><span class='reason-hvr'>$attendancelog->reason</span>" : '-' !!} 
 				</td>
                 <td> {!! $attendancelog->is_leave == 1 ? "<span class='btn bg-danger pl-wrapper'>L</span> <br><span class='reason-hvr'>$attendancelog->reason</span>" : '-' !!} </td>
                 <td> - </td>
