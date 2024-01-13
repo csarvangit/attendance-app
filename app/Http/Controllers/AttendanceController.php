@@ -669,9 +669,11 @@ class AttendanceController extends Controller
                 ->get();  
 
                 $leaveData['atStatus'] = 0;
+                $leaveData['message'] = 'Leave not applied'; 
 
                 if( $hasLeave->count() > 0 ){	
-                    $leaveData['atStatus'] = 1;                    
+                    $leaveData['atStatus'] = 1;   
+                    $leaveData['message'] = 'Leave applied already';                
                 }
                 return response()->json(['success'=> true, 'data' => $leaveData], $this->successStatus);
             } 
@@ -702,12 +704,14 @@ class AttendanceController extends Controller
                                 
                 $currentTime = Carbon::now();
                 $success['currentTime'] = $currentTime->format('Y-m-d H:i:s');
-                $success['message'] = 'Apply Leave Request Success'; 
+                $success['atStatus'] = 2; 
+                $success['message'] = 'Leave apply request success';                
                 
                 $leaveStatus = $this->leaveStatus($userId);
                 $leaveStatus = $leaveStatus->getData(); 
 
                 if( $leaveStatus->success == true &&  (isset($leaveStatus->data->atStatus) && $leaveStatus->data->atStatus == 1)) {  
+                    $success['atStatus'] = 1;
                     $success['message'] = 'Leave applied already';                    
                     return response()->json(['success'=> false, 'data' => $success], $this->successStatus);
                 }
@@ -715,12 +719,15 @@ class AttendanceController extends Controller
                 $islogin = $this->islogin($userId);
                 $islogin = $islogin->getData(); 
                 if( $islogin->success == true ){
-                    $updatedata['is_leave'] =  1; 
+                    /* $updatedata['is_leave'] =  1; 
                     $updatedata['reason'] =  $input['reason'];
-
-                    $updateUser = Attendance::where('userId', $userId)
+                   $updateUser = Attendance::where('userId', $userId)
                     ->where('startDate', $currentTime->toDateString())
-                    ->update($updatedata); 
+                    ->update($updatedata); */
+
+                    $success['atStatus'] = 0;
+                    $success['message'] = 'Punch in already. Leave not allowed'; 
+
                     return response()->json(['success'=> true, 'data' => $success], $this->successStatus);
                 }
 
@@ -741,7 +748,7 @@ class AttendanceController extends Controller
                     $input['is_leave'] =  1;                                   
                     
                     $attendance = Attendance::create($input);                      
-                                       
+                              
                     return response()->json(['success'=> true, 'data' => $success], $this->successStatus);
                 }   
             }    
