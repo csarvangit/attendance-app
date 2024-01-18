@@ -3,6 +3,7 @@
 @section('content') 
 
 @php 
+use App\Http\Controllers\ChitFund\ChitFundController;
 use Carbon\Carbon; 
 @endphp
 
@@ -20,7 +21,7 @@ use Carbon\Carbon;
 								$end_date = Carbon::parse($users[0]->end_date);
 							@endphp
 						
-						<h4 class="mb-0">{{ $users[0]->plan_name }} ({{ $start_date->diffInMonths($end_date); }} Months Scheme) </h4>
+						<h4 class="mb-0">{{ $users[0]->plan_name }} ({{ (int)round($start_date->floatDiffInMonths($end_date)); }} Months Scheme) </h4>
 						<h5>{{ Carbon::parse($users[0]->start_date)->format('M Y') }} To {{ Carbon::parse($users[0]->end_date)->format('M Y') }}</h5>
 						@endif
 					</div>
@@ -36,12 +37,11 @@ use Carbon\Carbon;
 									<th>User Name</th>
 									<th>Phone Number</th>
 									<th>Address</th>
-									<th>Due</th>
+									<th>This Month Due</th>
 									<th>Action</th>
 								</tr>
 							</thead>
 							<tbody>
-							
 								@if( !$users->isEmpty() )
 									@if( isset($users[0]->user_id) && $users[0]->user_id != 'null' )
 										@foreach($users as $user)
@@ -50,13 +50,22 @@ use Carbon\Carbon;
 												<td>{{ $user->user_name }}</td>
 												<td>{{ $user->mobile_no }}</td>
 												<td>{{ $user->address }}</td>
-												<td><a href="javascript:;" class="btn btn-sm btn-light-success btn-block radius-30">Paid</a></td>
 												<td>
-													<a href="user-details.html"><i class="lni lni-eye" style="font-size: 18px; font-weight: 800;"></i></a>
+												
+												@php 
+													$status = ChitFundController::getUserDueStatus($user->user_id);
+													$status = $status['success'] == true ? 1 : 0;
+												@endphp
+													<a href="javascript:;" class="btn btn-sm btn-light-{{ $status ? 'success' : 'warning' }} btn-block radius-30">
+														{{ ChitFundController::getDueStatus($status, $key='string') }} 
+													</a> 	
+												</td>
+												<td>
+													<a href="{{route('chitfund.userDetails', [$user->user_id])}}"><i class="lni lni-eye" style="font-size: 18px; font-weight: 800;"></i></a>
 													&nbsp;
-													<a href="user-details.html"><i class="lni lni-pencil-alt" style="font-size: 18px; font-weight: 800;"></i></a>
+													<a href="#"><i class="lni lni-pencil-alt" style="font-size: 18px; font-weight: 800;"></i></a>
 													&nbsp;
-													<a href="user-details.html"><i class="lni lni-checkmark" style="font-size: 18px; font-weight: 800;"></i></a>
+													<a href="{{route('chitfund.addDue', [$user->plan_id, $user->user_id])}}"><i class="lni lni-checkmark" style="font-size: 18px; font-weight: 800;"></i></a>
 												</td>
 											</tr>
 											
@@ -97,9 +106,16 @@ use Carbon\Carbon;
 							</div>
 							<div class="modal-body">
 								<form class="formm" action="{{route('chitfund.createUser')}}" method="POST">
-									@csrf		
-
-									<input type="hidden" name="plan_id" value="{{ $users[0]->plan_id }}">	
+									@csrf	
+									@php 
+										$plan_id = null;
+									@endphp									
+									@if( !$users->isEmpty() )										
+										@php 
+											$plan_id = $users[0]->plan_id;
+										@endphp
+									@endif		
+									<input type="hidden" name="plan_id" value="{{ $plan_id }}">	
 										
 									<label for="user_name" class="labell">Name</label>
 									<div class="form-group {{ $errors->has('user_name') ? 'has-error' : ''}}">

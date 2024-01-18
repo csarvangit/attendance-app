@@ -52,7 +52,7 @@ use Carbon\Carbon;
 												$start_date = Carbon::parse($scheme->start_date);
 												$end_date = Carbon::parse($scheme->end_date);
 											@endphp  
-											<p class="mb-0 text-white">{{ $start_date->diffInMonths($end_date); }} Months Scheme</p>
+											<p class="mb-0 text-white">{{ (int)round($start_date->floatDiffInMonths($end_date)); }} Months Scheme</p>
 											<br>
 											<a href="{{route('chitfund.showPlan', $scheme->plan_id)}}" class="card-link text-white">View More <i class="lni lni-arrow-right"></i></a>
 										</div>

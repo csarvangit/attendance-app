@@ -86,7 +86,8 @@
 	<script>
 		$('.datepicker').pickadate({
 			selectMonths: true,
-	        selectYears: true
+	        selectYears: true,
+			formatSubmit: 'yyyy-mm-dd'
 		}),
 		$('.timepicker').pickatime();
 	</script>
