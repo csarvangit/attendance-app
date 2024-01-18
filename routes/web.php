@@ -5,6 +5,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\AttendanceController; 
 use App\Http\Controllers\SpinController;
 use App\Http\Controllers\FrameController;
+use App\Http\Controllers\ChitFund\ChitFundController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -37,6 +39,12 @@ Route::prefix('admin')->group(function () {
     
     Route::get('/users/spins', [SpinController::class, 'index']);
     Route::get('/users/spins/update/{id}', [SpinController::class, 'updateInvoiceForm'])->name('updateInvoiceForm');
+
+    /* Chit Fund */
+    Route::get('/chitfund', [ChitFundController::class, 'chitfundIndex'])->name('chitfundIndex');
+    Route::post('/chitfund/createplan', [ChitFundController::class, 'chitfundCreatePlan'])->name('chitfund.createPlan');
+    Route::get('/chitfund/plan/{id}', [ChitFundController::class, 'chitfundShowPlan'])->name('chitfund.showPlan');
+    Route::post('/chitfund/createuser', [ChitFundController::class, 'chitfundCreateUser'])->name('chitfund.createUser');
 });
 
 /* User Discount Spin Wheel Routes */
