@@ -46,26 +46,27 @@ use Carbon\Carbon;
 									@if( isset($users[0]->user_id) && $users[0]->user_id != 'null' )
 										@foreach($users as $user)
 											<tr>
-												<td>{{ $user->user_id }}</td>
+												<td>#{{ $user->user_id }}</td>
 												<td>{{ $user->user_name }}</td>
 												<td>{{ $user->mobile_no }}</td>
 												<td>{{ $user->address }}</td>
 												<td>
 												
 												@php 
-													$status = ChitFundController::getUserDueStatus($user->user_id);
-													$status = $status['success'] == true ? 1 : 0;
+													$status = ChitFundController::getUserDueStatus($user->user_id);              
+													$status = $status['success'] == true ? $status['data'][0]->due_status : 0;
+													$color = ChitFundController::getColorCode($status);
 												@endphp
-													<a href="javascript:;" class="btn btn-sm btn-light-{{ $status ? 'success' : 'warning' }} btn-block radius-30">
+													<a href="javascript:;" class="btn btn-sm btn-light-{{ $color }} btn-block radius-30">
 														{{ ChitFundController::getDueStatus($status, $key='string') }} 
 													</a> 	
 												</td>
 												<td>
-													<a href="{{route('chitfund.userDetails', [$user->user_id])}}"><i class="lni lni-eye" style="font-size: 18px; font-weight: 800;"></i></a>
+													<a href="{{route('chitfund.userDetails', [$user->user_id])}}" title="View Bills"><i class="lni lni-eye" style="font-size: 18px; font-weight: 800;"></i></a>
 													&nbsp;
-													<a href="#"><i class="lni lni-pencil-alt" style="font-size: 18px; font-weight: 800;"></i></a>
-													&nbsp;
-													<a href="{{route('chitfund.addDue', [$user->plan_id, $user->user_id])}}"><i class="lni lni-checkmark" style="font-size: 18px; font-weight: 800;"></i></a>
+													<!--<a href="#"><i class="lni lni-pencil-alt" style="font-size: 18px; font-weight: 800;"></i></a>
+													&nbsp;-->
+													<a href="{{route('chitfund.addDue', [$user->plan_id, $user->user_id])}}" title="Generate Bill"><i class="lni lni-checkmark" style="font-size: 18px; font-weight: 800;"></i></a>
 												</td>
 											</tr>
 											
@@ -96,6 +97,7 @@ use Carbon\Carbon;
 			</div>
 			<!--end card-->
 			
+			<!-- Add User Popup Model -->
 			<div class="col">
 				<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 					<div class="modal-dialog">
@@ -142,8 +144,6 @@ use Carbon\Carbon;
 									</div>
 								</form>
 								<style>
-									
-							
 									.formm {
 										
 										padding: 20px;
@@ -165,9 +165,6 @@ use Carbon\Carbon;
 										border: 2px solid #673ab7;
 										border-radius: 4px;
 									}
-							
-							
-									
 								</style>
 							</div>
 							
@@ -175,7 +172,77 @@ use Carbon\Carbon;
 					</div>
 				</div>
 			</div>
-			
+			<!-- End Add User Popup Model -->
+
+			<!-- Edit Due Status Popup Model -->
+			<div class="col">
+				<div class="modal fade" id="editDueStatus" tabindex="-1" aria-labelledby="editDueStatusLabel" aria-hidden="true">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header" style="background-color:#673ab7;">
+								<h5 class="modal-title" id="exampleModalLabel" style="color: aliceblue;">Edit Status</h5>
+								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+							</div>
+							<div class="modal-body">
+								<form class="formm" action="#" method="POST">
+									@csrf	
+									@php 
+										$plan_id = null;
+									@endphp									
+									@if( !$users->isEmpty() )										
+										@php 
+											$plan_id = $users[0]->plan_id;
+										@endphp
+									@endif		
+									<input type="hidden" name="plan_id" value="{{ $plan_id }}">	
+							
+									<label for="due_status" class="labell">Status</label>
+									<div class="form-group">
+										<select id="due_status" class="form-group single-select select2-hidden-accessible" data-select2-id="1" tabindex="-1" aria-hidden="true">
+											<option value="0" data-select2-id="0">Un Paid</option>
+											<option value="1" data-select2-id="1">Paid</option>
+											<option value="2" data-select2-id="2">Closed</option>
+											<option value="3" data-select2-id="3">Winner 1</option>
+											<option value="4" data-select2-id="4">Winner 2</option>
+											<option value="5" data-select2-id="5">Winner 3</option>
+										</select>
+									</div>	
+									
+									<div class="modal-footer mt-4">
+										<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+										<button type="submit" class="btn btn-primary">Change Status</button>
+									</div>
+								</form>
+								<style>	
+									.formm {
+										
+										padding: 20px;
+										border-radius: 10px;
+										width: 450px;
+									}
+							
+									.labell {
+										display: block;
+										margin-bottom: 8px;
+										font-weight: bold;
+									}
+							
+									.inputt {
+										width: 100%;
+										padding: 8px;
+										margin-bottom: 15px;
+										box-sizing: border-box;
+										border: 2px solid #673ab7;
+										border-radius: 4px;
+									}
+								</style>
+							</div>
+							
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Edit Due Status Popup Model -->	
 			
 			<!-- Return Response Popup Model -->
 			<div class="modal fade" id="ResponseMsgModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -194,8 +261,7 @@ use Carbon\Carbon;
 								<div class="alert alert-success alert-dismissible" role="alert">
 									{{ session()->get('success') }}
 								</div>
-							@endif					
-																	
+							@endif									
 						</div>	
 						<div class="modal-footer">
 							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

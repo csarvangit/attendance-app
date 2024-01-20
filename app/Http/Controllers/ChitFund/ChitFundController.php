@@ -134,8 +134,8 @@ class ChitFundController extends Controller
                 $currentTime = Carbon::now();
 
                 $dues = ChitFund_Dues::where('user_id', $id)
-                ->whereMonth('due_date_paid', '=', $currentTime->month)
-                ->whereYear('due_date_paid', '=', $currentTime->year)
+                ->whereMonth('createdOn', '=', $currentTime->month)
+                ->whereYear('createdOn', '=', $currentTime->year)
                 ->get();
 
                 if( $dues->count() > 0 ){
@@ -170,18 +170,18 @@ class ChitFundController extends Controller
             $isDuePaid = $isDuePaid->getData(); 
 
             if( $isDuePaid->success == true ){	           
-                return redirect()->back()->with('success', 'User #'.$id.' already paid due for this month '.$currentTime->format('M-Y')); 
+                return redirect()->back()->with('success', 'Bill already generated for User #'.$id); 
             }
             
             $input['user_id'] =  $id;  
             $input['plan_id'] =  $planid;  
-            $input['due_status'] = 1;
-            $input['due_date_paid'] =  $currentTime;
+            $input['due_status'] = 0;
+           // $input['due_date_paid'] =  $currentTime;
             $input['createdOn'] =  $currentTime;
             
             $dues = ChitFund_Dues::create($input); 
             
-            return redirect()->back()->with('success', 'User #'.$id.' due paid success'); 
+            return redirect()->back()->with('success', 'New bill genearted for User #'.$id); 
         }
         catch (\Throwable $exception) {
             return redirect()->back()->withErrors( json_encode($exception->getMessage(), true) )->withInput($request->input());
@@ -198,18 +198,18 @@ class ChitFundController extends Controller
     { 
         $user = DB::table('chitfund_dues as d')
             ->where('d.user_id', '=', $id)	
-            ->select( 'u.user_name', 'd.user_id', 'd.plan_id', 'd.due_status', 'd.due_date_paid' )          	
+            ->select( 'u.user_name', 'd.due_id', 'd.user_id', 'd.plan_id', 'd.due_status', 'd.due_date_paid' )          	
             ->Join('chitfund_users as u', 'u.user_id', '=', 'd.user_id')  
             ->orderBy('d.due_id', 'DESC')	         
             ->get();
 
            // dd($users);
         return view('admin.chitfund.user-details', compact('user'));    
-    }
+    }  
    
     public static function getDueStatus($id, $key)
     { 
-        $status = array( 0 => 'Un-Paid', 1 => 'Paid', 2 => 'Closed' );
+        $status = array( 0 => 'Un-Paid', 1 => 'Paid', 2 => 'Closed', 3 => 'Winner 1', 4 => 'Winner 2', 5 => 'Winner 3' );
 
         if( $key == 'array' ) { 
             $due_status = $status;
@@ -231,16 +231,75 @@ class ChitFundController extends Controller
             $currentTime = Carbon::now();
 
             $dues = ChitFund_Dues::where('user_id', $id)
-            ->whereMonth('due_date_paid', '=', $currentTime->month)
-            ->whereYear('due_date_paid', '=', $currentTime->year)
+            ->whereMonth('createdOn', '=', $currentTime->month)
+            ->whereYear('createdOn', '=', $currentTime->year)
             ->get();
 
             if( $dues->count() > 0 ){
-                $result = array('success'=> true);
+                $result = array('success'=> true, 'data' => $dues);
             } 
         }  
         return $result;
     } 
+
+    
+    public function updateDueStatus(Request $request)
+    {
+        try {
+           
+            $validator = Validator::make($request->all(), [ 
+                'due_id' => 'required',
+                'due_status' => 'required'              
+            ]);
+            if ($validator->fails()) { 
+                return redirect()->back()->withErrors($validator->errors())->withInput($request->input());
+            }
+            $input = $request->all(); 
+                       
+            $currentTime = Carbon::now(); 
+            
+            $updateBill['due_status'] =  $input['due_status'];
+            if( $input['due_status'] == 1 ) {
+                $updateBill['due_date_paid'] =  $currentTime;                    
+            } 
+            if( $input['due_status'] == 0 ) {
+                $updateBill['due_date_paid'] =  null;                    
+            }     
+            $updateBill['modifiedOn'] =  $currentTime;             
+
+           $updateResult = ChitFund_Dues::where('due_id', $input['due_id']) 
+            ->update($updateBill); 
+            
+            return redirect()->back()->with('success', '#'.$input['due_id'].' bill status updated'); 
+        }
+        catch (\Throwable $exception) {
+            return redirect()->back()->withErrors( json_encode($exception->getMessage(), true) )->withInput($request->input());
+        } catch (\Illuminate\Database\QueryException $exception) {
+            return redirect()->back()->withErrors( json_encode($exception->getMessage(), true) )->withInput($request->input());
+        } catch (\PDOException $exception) {
+            return redirect()->back()->withErrors( json_encode($exception->getMessage(), true) )->withInput($request->input());
+        } catch (\Exception $exception) {
+            return redirect()->back()->withErrors( json_encode($exception->getMessage(), true) )->withInput($request->input());
+        }   
+    }
+
+    public static function getColorCode(string $status)
+    {
+        switch($status) {
+            case('0'):
+                $msg = 'warning';
+                break;
+ 
+            case('2'):  
+                $msg = 'info';
+                break;
+ 
+            default:
+                $msg = 'success';
+        }
+ 
+        return $msg;
+    }
 
     /**
      * Show the form for creating a new resource.

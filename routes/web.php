@@ -47,6 +47,8 @@ Route::prefix('admin')->group(function () {
     Route::post('/chitfund/createuser', [ChitFundController::class, 'chitfundCreateUser'])->name('chitfund.createUser');
     Route::get('/chitfund/adddue/{planid}/{id}', [ChitFundController::class, 'chitfundAddDue'])->name('chitfund.addDue');
     Route::get('/chitfund/user-details/{id}', [ChitFundController::class, 'chitfundUserDetails'])->name('chitfund.userDetails');
+    Route::post('/chitfund/update/duestatus', [ChitFundController::class, 'updateDueStatus'])->name('chitfund.updateDueStatus');
+    
 });
 
 /* User Discount Spin Wheel Routes */

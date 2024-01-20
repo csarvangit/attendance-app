@@ -18,7 +18,7 @@ use Carbon\Carbon;
 								@if( !$user->isEmpty() )
 									<a href="{{route('chitfund.showPlan', $user[0]->plan_id)}}"><i class="lni lni-arrow-left-circle" style="font-size: 30px; float: right;"></i></a>								
 								
-									<h4 class="mb-0">{{ $user[0]->user_id }} -  {{ $user[0]->user_name }} </h4>
+									<h4 class="mb-0">#{{ $user[0]->user_id }} -  {{ $user[0]->user_name }} </h4>
 								@endif 	
 							</div>
 							<hr/>
@@ -27,9 +27,10 @@ use Carbon\Carbon;
 									<thead>
 										<tr>
 											<th>SL.No</th>
+											<th>Bill.No</th>
 											<th>Month</th>
-											<th>Plan</th>
 											<th>Status</th>
+											<th>Update Status</th>
 											<th>Print</th>
 										</tr>
 									</thead>
@@ -44,18 +45,30 @@ use Carbon\Carbon;
 												@endphp 
 												<tr>
 													<td>{{ $i }}</td>
+													<td>#{{$u->due_id}}</td>
 													<td>{{ Carbon::parse($u->due_date_paid)->format('M Y') }}</td>
 													<td>
-														<a href="javascript:;" class="btn btn-sm btn-light-{{ $u->due_status == 1 ? 'success' : 'warning' }} btn-block radius-30">
+														@php 
+															$color = ChitFundController::getColorCode($u->due_status);
+														@endphp
+														<a href="javascript:;" class="btn btn-sm btn-light-{{ $color }} btn-block radius-30">
 														{{ ChitFundController::getDueStatus($u->due_status, $key='string') }}
 													</a>
 													</td>
 													<td>
-														<select class="single-select select2-hidden-accessible" data-select2-id="1" tabindex="-1" aria-hidden="true">
-															<option value="0" data-select2-id="3">Un Paid</option>
-															<option value="1" data-select2-id="35">Paid</option>
-															<option value="2" data-select2-id="35">Closed</option>
-														</select>
+														<form class="formm" action="{{route('chitfund.updateDueStatus')}}" method="POST">
+															@csrf
+															<input type="hidden" name="due_id" value="{{ $u->due_id }}">															
+															<select name="due_status" class="single-select select2-hidden-accessible" data-select2-id="1" tabindex="-1" aria-hidden="true">
+																<option value="0" data-select2-id="0" {{ $u->due_status == 0 ? 'selected' : '' }}>Un Paid</option>
+																<option value="1" data-select2-id="1" {{ $u->due_status == 1 ? 'selected' : '' }}>Paid</option>
+																<option value="2" data-select2-id="2" {{ $u->due_status == 2 ? 'selected' : '' }}>Closed</option>
+																<option value="3" data-select2-id="3" {{ $u->due_status == 3 ? 'selected' : '' }}>Winner 1</option>
+																<option value="4" data-select2-id="4" {{ $u->due_status == 4 ? 'selected' : '' }}>Winner 2</option>
+																<option value="5" data-select2-id="5" {{ $u->due_status == 5 ? 'selected' : '' }}>Winner 3</option>
+															</select>
+															<button type="submit" class="btn btn-primary btn-sm">Update</button>
+														</form>
 													</td>
 													<td>
 														<a href=""> <i class="lni lni-printer" style="font-size: 18px;"></i> </a>
@@ -67,7 +80,7 @@ use Carbon\Carbon;
 											@endforeach
 										@else
 										<tr>
-											<td colspan="5" class="text-center">No Dues Paid</td>
+											<td colspan="6" class="text-center">No Dues Paid</td>
 										<tr>
 									@endif	
 								
@@ -75,9 +88,10 @@ use Carbon\Carbon;
 									<tfoot>
 										<tr>
 											<th>SL.No</th>
+											<th>Bill.No</th>
 											<th>Month</th>
-											<th>Plan</th>
 											<th>Status</th>
+											<th>Update Status</th>
 											<th>Print</th>
 										</tr>
 									</tfoot>
