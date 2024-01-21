@@ -112,7 +112,16 @@ class ChitFundController extends Controller
             $input = $request->all();             
             $input['createdOn'] =  Carbon::now();                     
             
-            $scheme = ChitFund_Users::create($input); 
+            $user = ChitFund_Users::create($input); 
+            if($user){
+                $plan = ChitFund_Scheme::where('plan_id', $user->plan_id)->get();               
+
+                $data['user_id']    = $user->id;  
+                $data['plan_id']    = $user->plan_id;  
+                $data['start_date'] = $plan[0]->start_date;  
+                $data['end_date']   = $plan[0]->end_date;  
+                $this->createDueEntriesForUser($data);
+            }
             
             return redirect()->back()->with('success', 'User '.$input['user_name'].' added successfully'); 
         }
@@ -125,6 +134,39 @@ class ChitFundController extends Controller
         } catch (\Exception $exception) {
             return redirect()->back()->withErrors( json_encode($exception->getMessage(), true) )->withInput($request->input());
         }    
+    }
+
+    public static function findTotalMonths($start_date, $end_date){ 
+        $start_date = Carbon::parse($start_date);
+        $end_date   = Carbon::parse($end_date);
+        return (int)round($start_date->floatDiffInMonths($end_date));
+    }
+
+    public function createDueEntriesForUser($data){
+
+        if( $data ) {
+            $currentTime = Carbon::now();
+
+            $total_months = $this->findTotalMonths($data['start_date'], $data['end_date']);
+
+            $records = [];
+            $input = [];
+            for ($x = 0; $x <= (int)$total_months-1; $x++) {
+                $input['user_id']    =  $data['user_id'];  
+                $input['plan_id']    =  $data['plan_id']; 
+                $input['due_status'] =  0;                  
+                $input['due_date']   = Carbon::parse($data['start_date'])->addMonths($x);
+                $input['createdOn']  =  $currentTime;
+                $input['created_at']  =  $currentTime;
+                $records[] = $input;                 
+            }
+
+            $dues = ChitFund_Dues::insert($records);
+            if($dues){
+                return array('success' => true);
+            }             
+        } 
+        return array('success' => false);
     }
 
     public function isDuePaid(string $id)
@@ -198,12 +240,10 @@ class ChitFundController extends Controller
     { 
         $user = DB::table('chitfund_dues as d')
             ->where('d.user_id', '=', $id)	
-            ->select( 'u.user_name', 'd.due_id', 'd.user_id', 'd.plan_id', 'd.due_status', 'd.due_date_paid' )          	
-            ->Join('chitfund_users as u', 'u.user_id', '=', 'd.user_id')  
-            ->orderBy('d.due_id', 'DESC')	         
-            ->get();
-
-           // dd($users);
+            ->select( 'u.plan_id as uplan_id', 'u.user_name', 'd.due_id', 'd.user_id', 'd.plan_id', 'd.due_status', 'd.due_date', 'd.due_date_paid' )          	
+            ->leftJoin('chitfund_users as u', 'u.user_id', '=', 'd.user_id')  
+            ->orderBy('d.due_id', 'ASC')	         
+            ->get();         
         return view('admin.chitfund.user-details', compact('user'));    
     }  
    

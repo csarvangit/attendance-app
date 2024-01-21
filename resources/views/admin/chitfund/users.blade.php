@@ -65,8 +65,8 @@ use Carbon\Carbon;
 													<a href="{{route('chitfund.userDetails', [$user->user_id])}}" title="View Bills"><i class="lni lni-eye" style="font-size: 18px; font-weight: 800;"></i></a>
 													&nbsp;
 													<!--<a href="#"><i class="lni lni-pencil-alt" style="font-size: 18px; font-weight: 800;"></i></a>
-													&nbsp;-->
-													<a href="{{route('chitfund.addDue', [$user->plan_id, $user->user_id])}}" title="Generate Bill"><i class="lni lni-checkmark" style="font-size: 18px; font-weight: 800;"></i></a>
+													&nbsp;
+													<a href="{{route('chitfund.addDue', [$user->plan_id, $user->user_id])}}" title="Generate Bill"><i class="lni lni-checkmark" style="font-size: 18px; font-weight: 800;"></i></a>-->
 												</td>
 											</tr>
 											

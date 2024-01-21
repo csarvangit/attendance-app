@@ -38,15 +38,16 @@ use Carbon\Carbon;
 										@if( !$user->isEmpty() )
 											@php
 												$i = 0;
+												$is_disabled = false;
 										    @endphp 
 											@foreach($user as $u)
 												@php
-													$i = $i+1;
+													$i = $i+1;													
 												@endphp 
-												<tr>
+												<tr class="{{ $is_disabled ? 'table-light' : ''}}">
 													<td>{{ $i }}</td>
 													<td>#{{$u->due_id}}</td>
-													<td>{{ Carbon::parse($u->due_date_paid)->format('M Y') }}</td>
+													<td>{{ Carbon::parse($u->due_date)->format('M Y') }}</td>
 													<td>
 														@php 
 															$color = ChitFundController::getColorCode($u->due_status);
@@ -75,7 +76,11 @@ use Carbon\Carbon;
 														&nbsp;
 														<a href=""><i class="lni lni-whatsapp" style="font-size: 18px;"></i></a>
 													</td>
-													
+													@php 													
+														if ( $u->due_status >= 2 ) {
+															$is_disabled = true;
+														}	
+													@endphp
 												</tr>
 											@endforeach
 										@else
