@@ -72,9 +72,22 @@ use Carbon\Carbon;
 														</form>
 													</td>
 													<td>
-														<a href=""> <i class="lni lni-printer" style="font-size: 18px;"></i> </a>
+														<a href="{{route('chitfund.printInvoice', [$u->user_id, $u->due_id])}}" target="_blank"> <i class="lni lni-printer" style="font-size: 18px;"></i> </a>
 														&nbsp;
-														<a href=""><i class="lni lni-whatsapp" style="font-size: 18px;"></i></a>
+														
+														@php 
+															$whatsapp_message = '';
+															$whatsapp_url = '#';
+															$target = "_self";
+															if( $u->due_status == 1 ){		
+																$date = Carbon::parse($u->due_date_paid )->format('d-m-Y');
+																$whatsapp_message = urlencode("Dear $u->user_name, you have paid Rs:$u->plan_amount for the date $date of vasantham chit fund $u->plan_name. Thank you. - Vasantham Home Appliances - Siru Semippu Thittam.");
+																$whatsapp_url = "https://wa.me/$u->mobile_no?text=$whatsapp_message";
+																$target = "_blank";
+															}
+														@endphp
+														
+														<a href="{{$whatsapp_url}}" target="{{$target}}"><i class="lni lni-whatsapp" style="font-size: 18px;"></i></a>
 													</td>
 													@php 													
 														if ( $u->due_status >= 2 ) {
@@ -135,7 +148,7 @@ use Carbon\Carbon;
 					</div>					
 				</div>
 			</div>	
-			<!-- End of Return Response Popup Model -->			
+			<!-- End of Return Response Popup Model -->		
 			
 		</div>
 	</div>

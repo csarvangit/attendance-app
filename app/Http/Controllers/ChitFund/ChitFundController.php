@@ -240,8 +240,9 @@ class ChitFundController extends Controller
     { 
         $user = DB::table('chitfund_dues as d')
             ->where('d.user_id', '=', $id)	
-            ->select( 'u.plan_id as uplan_id', 'u.user_name', 'd.due_id', 'd.user_id', 'd.plan_id', 'd.due_status', 'd.due_date', 'd.due_date_paid' )          	
+            ->select( 'u.plan_id as uplan_id', 'u.user_name', 'u.mobile_no', 'd.due_id', 'd.user_id', 'd.plan_id', 'd.due_status', 'd.due_date', 'd.due_date_paid', 's.plan_name', 's.plan_amount' )          	
             ->leftJoin('chitfund_users as u', 'u.user_id', '=', 'd.user_id')  
+            ->leftJoin('chitfund_scheme as s', 's.plan_id', '=', 'd.plan_id')
             ->orderBy('d.due_id', 'ASC')	         
             ->get();         
         return view('admin.chitfund.user-details', compact('user'));    
@@ -339,6 +340,34 @@ class ChitFundController extends Controller
         }
  
         return $msg;
+    }
+
+    
+    public function printInvoice(Request $request, string $user_id, string $due_id ) 
+    {
+        try {
+            if($user_id != NULL || $user_id != '' && $due_id != NULL || $due_id != ''){
+
+                $user = DB::table('chitfund_dues as d')
+                    ->where('d.due_id', '=', $due_id)
+                    ->select( 'u.user_name', 'u.mobile_no', 'd.due_id', 'd.user_id', 'd.plan_id', 'd.due_status', 'd.due_date', 'd.due_date_paid', 's.plan_name', 's.plan_amount' )          	
+                    ->leftJoin('chitfund_users as u', 'u.user_id', '=', 'd.user_id') 
+                    ->leftJoin('chitfund_scheme as s', 's.plan_id', '=', 'd.plan_id') 
+                    ->get();       
+                  
+                return view('admin.chitfund.print-invoice', compact('user'));  
+                
+            }  
+        }
+        catch (\Throwable $exception) {
+            return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        } catch (\Illuminate\Database\QueryException $exception) {
+            return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        } catch (\PDOException $exception) {
+            return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        } catch (\Exception $exception) {
+            return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
+        }
     }
 
     /**
