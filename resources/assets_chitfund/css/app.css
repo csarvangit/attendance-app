@@ -4764,6 +4764,12 @@ ul.icons li span {
     width: 300px;
 }
 
+/* Chitfund User Bill Table */
+.table-light {
+	opacity: 0.5;
+	pointer-events: none;
+}
+
 /*Responsive*/
 
 
