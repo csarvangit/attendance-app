@@ -141,11 +141,13 @@ use Carbon\Carbon;
 
 <script src="{{asset('/resources/assets_chitfund/js/jquery.min.js')}}"></script>
 <script type="text/javascript">
-	$(function() {
-		window.print();
-		window.close();
-		return false;
-	});
+	(function($) {
+		setTimeout(function(){ 
+			window.print(); 
+			//document.execCommand('print');
+			window.close();
+		}, 500);
+	})(jQuery);
 </script>
 </body>
 </html>
