@@ -261,7 +261,7 @@ use Carbon\Carbon;
 								<div class="alert alert-success alert-dismissible" role="alert">
 									{{ session()->get('success') }}
 								</div>
-							@endif									
+							@endif	
 						</div>	
 						<div class="modal-footer">
 							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -273,5 +273,18 @@ use Carbon\Carbon;
 			
 		</div>
 	</div>
-	<!--end page-content-wrapper-->
+	<!--end page-content-wrapper-->	
+	
+	<!-- Redirect to whatsapp -->		
+	@if (session()->has('url'))
+		<a id="userRegNotifi" href="{{session()->get('url')}}" target="_blank" style="visibility:hidden; opacity:0; height:0; font-size:0;"></a>
+		<script src="{{asset('/resources/assets_chitfund/js/jquery.min.js')}}"></script>
+		<script type="text/javascript">
+			$(document).ready(function(){
+				document.getElementById('userRegNotifi').click();
+			});
+		</script>
+	@endif
+	<!--end Redirect to whatsapp -->	
+	
 @endsection
