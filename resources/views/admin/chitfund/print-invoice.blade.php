@@ -98,7 +98,7 @@ use Carbon\Carbon;
 	<table class="  mt-2 " style="width:100%">
 		<thead>
 			<tr>
-				<th>Invoice No: <span class="invoice-no"> #{{$billId}}</span></th>
+				<th>Invoice No: <span class="invoice-no"> {{$billId}}</span></th>
 				<th style="text-align: right;">Date: <span class="invoice-date">{{ Carbon::now()->format('Y-m-d H:i:s') }}</span></th>
 			</tr>
 		</thead>
