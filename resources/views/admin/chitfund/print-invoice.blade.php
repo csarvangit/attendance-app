@@ -150,7 +150,7 @@ use Carbon\Carbon;
 			window.print(); 
 			//document.execCommand('print');
 			window.close();
-		}, 500);
+		}, 0);
 	})(jQuery);
 </script>
 </body>
