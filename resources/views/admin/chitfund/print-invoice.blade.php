@@ -138,7 +138,7 @@ use Carbon\Carbon;
 		</thead>
 		
 	</table>
-	<p class="centered mt-3">Thank You! </p>
+	<p class="centered mt-3 mb-0">Thank You! </p>
 	<p class="centered fw-bold mt-1 ">Vasantham Group Of Companies</p>
 </div>
 <!-- end print -->	
