@@ -83,10 +83,10 @@ use Carbon\Carbon;
 <!-- print block -->			
 <div id="printInvoice" class="printInvoice">
 	<div class="print-header-wrapper centered">
-		<img src="{{asset('/resources/assets_chitfund/images/logo-icon-1.png')}}" style="height: 100px;"  alt="">
-		<p class="centered fw-bold mt-3">Iyer Bungalow | Alanganallur | Palamedu | Valasai</p> 
+		<img src="{{asset('/resources/assets_chitfund/images/logo-icon-1.png')}}" style="height: 150px;"  alt="">
+		<p class="centered fw-bold mt-3 mb-0">Iyer Bungalow | Alanganallur | Palamedu | Valasai</p> 
 		<p class="centered fw-bold mt-0">Contact: 99943 33605</p> 
-		<p class="centered fw-bold mt-2">VASANTHAM SIRU SEMIPPU THITTAM</p>
+		<p class="centered fw-bold mt-2 mb-0">VASANTHAM SIRU SEMIPPU THITTAM</p>
 		<p class="centered fw-bold mt-2">Token Number</p>
 		<p class="centered fw-bold mt-2 token">#{{ $user[0]->user_id }}</p>
 			
