@@ -87,20 +87,21 @@ use Carbon\Carbon;
 		<p class="centered fw-normal my-0">Madurai</p>
 		<p class="centered fw-normal my-0">Contact: 99943 33605</p> 
 		<p class="centered fw-bold mt-2">VASANTHAM SIRU SEMIPPU THITTAM</p>
-			<p class="centered fw-bold my-0 token">#{{ $user[0]->user_id }}</p>
-			<p class="centered fw-bold my-0">Token Number</p>
+		<p class="centered fw-bold mt-2">Token Number</p>
+		<p class="centered fw-bold my-0 token">#{{ $user[0]->user_id }}</p>
+			
 		<p class="centered  my-0">Invoice No: <span class="invoice-no"> #{{$billId}}</span></p>
 		<p class="centered  my-0">Date: <span class="invoice-date">{{ Carbon::now()->format('Y-m-d H:i:s') }}</span></p>
 	</div>	
 	
 	
 	<table class="  mt-2 " style="width:100%">
-		<thead>
+		<!-- <thead>
 			<tr>
 				<th>Name</th>
 				<th>Description</th>
 			</tr>
-		</thead>
+		</thead> -->
 		<tbody>
 			<tr>
 				<td>User Name</td>
