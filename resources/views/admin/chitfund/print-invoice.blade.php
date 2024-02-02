@@ -88,7 +88,7 @@ use Carbon\Carbon;
 		<p class="centered fw-bold mt-0">Contact: 99943 33605</p> 
 		<p class="centered fw-bold mt-2 mb-0">VASANTHAM SIRU SEMIPPU THITTAM</p>
 		<p class="centered fw-bold mt-2">Token Number</p>
-		<p class="centered fw-bold mt-2 mb-3 token">#{{ $user[0]->user_id }}</p>
+		<p class="centered fw-bold mt-2 mb-3 token">{{ $user[0]->user_id }}</p>
 			
 		<!-- <p class="centered  mt-2">Invoice No: <span class="invoice-no"> #{{$billId}}</span></p>
 		<p class="centered  mt-2">Date: <span class="invoice-date">{{ Carbon::now()->format('Y-m-d H:i:s') }}</span></p> -->
@@ -98,7 +98,7 @@ use Carbon\Carbon;
 	<table class="  mt-2 " style="width:100%">
 		<thead>
 			<tr>
-				<th>Invoice No: <span class="invoice-no"> {{$billId}}</span></th>
+				<th>Invoice No: <span class="invoice-no"> #{{$billId}}</span></th>
 				<th style="text-align: right;">Date: <span class="invoice-date">{{ Carbon::now()->format('Y-m-d H:i:s') }}</span></th>
 			</tr>
 		</thead>
