@@ -71,7 +71,9 @@ use Carbon\Carbon;
 	border-top: 1px solid black;
 	border-collapse: collapse;
 }
-
+.token {
+	font-size: 38px;
+}
 .pace-activity {
 	display: none;	
 }
@@ -79,13 +81,17 @@ use Carbon\Carbon;
 <!-- print block -->			
 <div id="printInvoice" class="printInvoice">
 	<div class="print-header-wrapper centered">
-		<img src="{{asset('/resources/assets_chitfund/images/logo-icon.png')}}" style="width: 100px;"  alt="">
-		<p class="centered fw-bold mt-3 mb-0">VASANTHAM HOME APPLIANCES AND FURNITURES - MADURAI</p>
+		<img src="{{asset('/resources/assets_chitfund/images/logo-icon-1.png')}}" style="height: 100px;"  alt="">
+		<p class="centered fw-bold mt-3 mb-0">VASANTHAM HOME APPLIANCES AND FURNITURES</p>
 		<p class="centered fw-normal my-0">One Stop Shop for all your Home Needs</p>
-		<p class="centered fw-normal my-0">Madurai | Iyer Bungalow | Alanganallur | Palamedu | Valasai</p> 
-		<p class="centered fw-normal my-0">Ph No: 099943 33605</p> 
+		<p class="centered fw-normal my-0">Iyer Bungalow | Alanganallur | Palamedu | Valasai</p> 
+		<p class="centered fw-normal my-0">Madurai</p>
+		<p class="centered fw-normal my-0">Contact: 99943 33605</p> 
 		<p class="centered fw-bold mt-2">VASANTHAM SIRU SEMIPPU THITTAM</p>
-		
+		<div>
+			<p class="centered fw-bold mt-2 token">08</p>
+			<p class="centered fw-bold mt-2">Token Number</p>
+		</div>
 		<p class="centered  my-0">Invoice No: <span class="invoice-no"> #{{$billId}}</span></p>
 		<p class="centered  my-0">Date: <span class="invoice-date">{{ Carbon::now()->format('Y-m-d H:i:s') }}</span></p>
 	</div>	
