@@ -84,7 +84,6 @@ use Carbon\Carbon;
 		<img src="{{asset('/resources/assets_chitfund/images/logo-icon-1.png')}}" style="height: 100px;"  alt="">
 		<p class="centered fw-normal mt-2">One Stop Shop for all your Home Needs</p>
 		<p class="centered fw-normal my-0">Iyer Bungalow | Alanganallur | Palamedu | Valasai</p> 
-		<p class="centered fw-normal my-0">Madurai</p>
 		<p class="centered fw-normal my-0">Contact: 99943 33605</p> 
 		<p class="centered fw-bold mt-2">VASANTHAM SIRU SEMIPPU THITTAM</p>
 		<p class="centered fw-bold mt-2">Token Number</p>
