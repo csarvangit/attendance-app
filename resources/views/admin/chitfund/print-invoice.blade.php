@@ -144,9 +144,8 @@ use Carbon\Carbon;
 	</table>
 	<p class="centered mt-3 mb-0">Thank You! </p>
 	<div class="centered">
-		<img src="{{asset('/resources/assets_chitfund/images/logo-icon-1.png')}}" style="height: 90px;"  alt="">
+		<img src="{{asset('/resources/assets_chitfund/images/footer.png')}}" style="height: 90px;"  alt="">
 	</div>
-	<img src="{{asset('/resources/assets_chitfund/images/logo-icon-1.png')}}" style="height: 150px;"  alt="">
 	<!-- <p class="centered fw-bold mt-1 ">Vasantham Group Of Companies</p> -->
 </div>
 <!-- end print -->	
