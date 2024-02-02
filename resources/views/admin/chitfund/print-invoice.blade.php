@@ -73,7 +73,7 @@ use Carbon\Carbon;
 	border-collapse: collapse;
 }
 .token {
-	font-size: 38px;
+	font-size: 68px;
 	line-height: 46px;
 }
 .pace-activity {
@@ -90,18 +90,18 @@ use Carbon\Carbon;
 		<p class="centered fw-bold mt-2">Token Number</p>
 		<p class="centered fw-bold mt-2 token">#{{ $user[0]->user_id }}</p>
 			
-		<p class="centered  mt-2">Invoice No: <span class="invoice-no"> #{{$billId}}</span></p>
-		<p class="centered  mt-2">Date: <span class="invoice-date">{{ Carbon::now()->format('Y-m-d H:i:s') }}</span></p>
+		<!-- <p class="centered  mt-2">Invoice No: <span class="invoice-no"> #{{$billId}}</span></p>
+		<p class="centered  mt-2">Date: <span class="invoice-date">{{ Carbon::now()->format('Y-m-d H:i:s') }}</span></p> -->
 	</div>	
 	
 	
 	<table class="  mt-2 " style="width:100%">
-		<!-- <thead>
+		<thead>
 			<tr>
-				<th>Name</th>
-				<th>Description</th>
+				<th>Invoice No: <span class="invoice-no"> #{{$billId}}</span></th>
+				<th>Date: <span class="invoice-date">{{ Carbon::now()->format('Y-m-d H:i:s') }}</span></th>
 			</tr>
-		</thead> -->
+		</thead>
 		<tbody>
 			<tr>
 				<td>User Name</td>
