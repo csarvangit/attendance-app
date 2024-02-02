@@ -74,7 +74,7 @@ use Carbon\Carbon;
 }
 .token {
 	font-size: 68px;
-	line-height: 46px;
+	line-height: 74px;
 }
 .pace-activity {
 	display: none;	
@@ -99,33 +99,33 @@ use Carbon\Carbon;
 		<thead>
 			<tr>
 				<th>Invoice No: <span class="invoice-no"> #{{$billId}}</span></th>
-				<th style="    text-align: right;">Date: <span class="invoice-date">{{ Carbon::now()->format('Y-m-d H:i:s') }}</span></th>
+				<th style="text-align: right;">Date: <span class="invoice-date">{{ Carbon::now()->format('Y-m-d H:i:s') }}</span></th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr>
 				<td>User Name</td>
-				<td>{{ $user_name }}</td>							
+				<td  style="text-align: right;">{{ $user_name }}</td>							
 			</tr>
 			<tr>
 				<td>Plan Name</td>
-				<td>{{ $plan_name }}</td>							
+				<td  style="text-align: right;">{{ $plan_name }}</td>							
 			</tr>
 			<tr>
 				<td>Plan Amount</td>
-				<td>{{ $plan_amount }}</td>							
+				<td  style="text-align: right;">{{ $plan_amount }}</td>							
 			</tr>
 			<tr>
 				<td>Status</td>
-				<td>{{ $status }}</td>							
+				<td  style="text-align: right;">{{ $status }}</td>							
 			</tr>
 			<tr>
 				<td>Amount Paid</td>
-				<td>Rs {{ $amount_paid }}</td>						
+				<td  style="text-align: right;">Rs {{ $amount_paid }}</td>						
 			</tr>
 			<tr>
 				<td>Amount Paid Date</td>
-				<td>{{ $due_date_paid }}</td>						
+				<td  style="text-align: right;">{{ $due_date_paid }}</td>						
 			</tr>
 		</tbody>
 	</table>
@@ -133,13 +133,13 @@ use Carbon\Carbon;
 		<thead>
 			<tr>
 				<th class="">Total Amount Paid</th>
-				<th class="price">Rs: {{ $amount_paid }}</th>
+				<th  style="text-align: right;" class="price">Rs: {{ $amount_paid }}</th>
 			</tr>
 		</thead>
 		
 	</table>
-	<p class="centered mt-3">Thank You!
-	<br>Vasantham Group Of Companies</p>
+	<p class="centered mt-3">Thank You! </p>
+	<p class="centered fw-bold mt-1 ">Vasantham Group Of Companies</p>
 </div>
 <!-- end print -->	
 
