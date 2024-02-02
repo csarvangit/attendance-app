@@ -91,7 +91,7 @@ use Carbon\Carbon;
 		<p class="centered fw-bold mt-3 mb-0">Iyer Bungalow | Alanganallur | Palamedu | Valasai</p> 
 		<p class="centered fw-bold mt-0">Contact: 99943 33605</p> 
 		<p class="centered fw-bold mt-2 mb-0">VASANTHAM SIRU SEMIPPU THITTAM</p>
-		<p class="centered fw-bold mt-2 mb-0">Token Number</p>
+		<p class="centered fw-bold mt-2 mb-1">Token Number</p>
 		<p class="centered fw-bold mt-0 mb-3 token">{{ $user[0]->user_id }}</p>
 			
 		<!-- <p class="centered  mt-2">Invoice No: <span class="invoice-no"> #{{$billId}}</span></p>
@@ -154,7 +154,7 @@ use Carbon\Carbon;
 			window.print(); 
 			//document.execCommand('print');
 			window.close();
-		}, 0);
+		}, 500);
 	})(jQuery);
 </script>
 </body>
