@@ -62,6 +62,7 @@ use Carbon\Carbon;
 .printInvoice {
 	width: 375px;
 	max-width: 375px;
+	margin: 0 auto;
 }
 
 .printInvoice td,
