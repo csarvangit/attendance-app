@@ -84,8 +84,8 @@ use Carbon\Carbon;
 <div id="printInvoice" class="printInvoice">
 	<div class="print-header-wrapper centered">
 		<img src="{{asset('/resources/assets_chitfund/images/logo-icon-1.png')}}" style="height: 100px;"  alt="">
-		<p class="centered fw-normal mt-3">Iyer Bungalow | Alanganallur | Palamedu | Valasai</p> 
-		<p class="centered fw-normal mt-2">Contact: 99943 33605</p> 
+		<p class="centered fw-bold mt-3">Iyer Bungalow | Alanganallur | Palamedu | Valasai</p> 
+		<p class="centered fw-bold mt-0">Contact: 99943 33605</p> 
 		<p class="centered fw-bold mt-2">VASANTHAM SIRU SEMIPPU THITTAM</p>
 		<p class="centered fw-bold mt-2">Token Number</p>
 		<p class="centered fw-bold mt-2 token">#{{ $user[0]->user_id }}</p>
