@@ -783,6 +783,7 @@ class AttendanceController extends Controller
 
                 $permissionLogs = Attendance::where('userId', $id)
                 ->where('is_permission', '=', 1) 
+				->where('is_leave', '=', 0)
                 ->whereYear('startDate', '=', Carbon::parse($selectedMonth)->year)
                 ->whereMonth('startDate', '=', Carbon::parse($selectedMonth)->month)                
                 ->select( 'startDate', 'is_permission', DB::raw("DATE_FORMAT(startDate, '%d') as permissions") )

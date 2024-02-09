@@ -1,26 +1,18 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html>
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-     <!-- CSRF Token -->
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-
-    <title>{{ config('app.name', 'Vasantham Siru Semippu Thittam') }}</title>
-
     <!--favicon-->
 	<link rel="icon" href="{{asset('/resources/assets_chitfund/images/favicon-32x32.png')}}" type="image/png" />
     <!-- Custom Fonts -->
-    <link rel="stylesheet" href="{{asset('/resources/assets_chitfund/css/app.css')}}">    
+    <link rel="stylesheet" href="{{asset('/resources/assets_chitfund/css/app.css')}}">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 	<!--Data Tables -->
 	<link href="{{asset('/resources/assets_chitfund/plugins/datatable/css/dataTables.bootstrap4.min.css')}}" rel="stylesheet" type="text/css">
-	<link href="{{asset('/resources/assets_chitfund/plugins/datatable/css/buttons.bootstrap4.min.css')}}" rel="stylesheet" type="text/css">	
-	
+	<link href="{{asset('/resources/assets_chitfund/plugins/datatable/css/buttons.bootstrap4.min.css')}}" rel="stylesheet" type="text/css">
+
 	<!-- Bootstrap CSS -->
 	<link rel="stylesheet" href="{{asset('/resources/assets_chitfund/css/bootstrap.min.css')}}" />
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&family=Roboto&display=swap" />
@@ -32,9 +24,9 @@
 	<link rel="stylesheet" href="{{asset('/resources/assets_chitfund/css/dark-theme.css')}}" />
 </head>
 <body>
-@php 
+@php
 use App\Http\Controllers\ChitFund\ChitFundController;
-use Carbon\Carbon; 
+use Carbon\Carbon;
 @endphp
 
 @if( !$user->isEmpty() )
@@ -81,24 +73,29 @@ use Carbon\Carbon;
     padding: 0px 24px;
 }
 .pace-activity {
-	display: none;	
+	display: none;
+}
+@media print {
+    a[href]:after {
+        content: none !important;
+    }
+}
+@media print { 
+	@page { margin: 0; } 
+	body { margin: 1cm; } 
 }
 </style>
-<!-- print block -->			
+<!-- print block -->
 <div id="printInvoice" class="printInvoice">
 	<div class="print-header-wrapper centered">
-		<img src="{{asset('/resources/assets_chitfund/images/logo-icon-1.png')}}" style="height: 150px;"  alt="">
-		<p class="centered fw-bold mt-3 mb-0">Iyer Bungalow | Alanganallur | Palamedu | Valasai</p> 
-		<p class="centered fw-bold mt-0">Contact: 99943 33605</p> 
+		<img src="{{asset('/resources/assets_chitfund/images/logo-icon-1.png')}}" style="height: 150px;" alt="VASANTHAM SIRU SEMIPPU THITTAM">
+		<p class="centered fw-bold mt-3 mb-0">Iyer Bungalow | Alanganallur | Palamedu | Valasai</p>
+		<p class="centered fw-bold mt-0">Contact: 99943 33605</p>
 		<p class="centered fw-bold mt-2 mb-0">VASANTHAM SIRU SEMIPPU THITTAM</p>
 		<p class="centered fw-bold mt-2 mb-1">Token Number</p>
 		<p class="centered fw-bold mt-0 mb-3 token">{{ $user[0]->user_id }}</p>
-			
-		<!-- <p class="centered  mt-2">Invoice No: <span class="invoice-no"> #{{$billId}}</span></p>
-		<p class="centered  mt-2">Date: <span class="invoice-date">{{ Carbon::now()->format('Y-m-d H:i:s') }}</span></p> -->
-	</div>	
-	
-	
+	</div>
+
 	<table class="  mt-2 " style="width:100%">
 		<thead>
 			<tr>
@@ -109,27 +106,31 @@ use Carbon\Carbon;
 		<tbody>
 			<tr>
 				<td>User Name</td>
-				<td  style="text-align: right;">{{ $user_name }}</td>							
+				<td  style="text-align: right;">{{ $user_name }}</td>
+			</tr>
+			<tr>
+				<td>Mobile No</td>
+				<td  style="text-align: right;">{{ $mobile_no }}</td>
 			</tr>
 			<tr>
 				<td>Plan Name</td>
-				<td  style="text-align: right;">{{ $plan_name }}</td>							
+				<td  style="text-align: right;">{{ $plan_name }}</td>
 			</tr>
 			<tr>
 				<td>Plan Amount</td>
-				<td  style="text-align: right;">{{ $plan_amount }}</td>							
+				<td  style="text-align: right;">{{ $plan_amount }}</td>
 			</tr>
 			<tr>
 				<td>Status</td>
-				<td  style="text-align: right;">{{ $status }}</td>							
+				<td  style="text-align: right;">{{ $status }}</td>
 			</tr>
 			<tr>
 				<td>Amount Paid</td>
-				<td  style="text-align: right;">Rs {{ $amount_paid }}</td>						
+				<td  style="text-align: right;">Rs {{ $amount_paid }}</td>
 			</tr>
 			<tr>
 				<td>Amount Paid Date</td>
-				<td  style="text-align: right;">{{ $due_date_paid }}</td>						
+				<td  style="text-align: right;">{{ $due_date_paid }}</td>
 			</tr>
 		</tbody>
 	</table>
@@ -140,26 +141,23 @@ use Carbon\Carbon;
 				<th  style="text-align: right;" class="price">Rs: {{ $amount_paid }}</th>
 			</tr>
 		</thead>
-		
+
 	</table>
 	<p class="centered mt-3 mb-0">Thank You! </p>
 	<div class="centered">
-		<img src="{{asset('/resources/assets_chitfund/images/footer.png')}}" style="height: 70px;"  alt="">
+		<img src="{{asset('/resources/assets_chitfund/images/footer.png')}}" style="height: 70px;" alt="VASANTHAM SIRU SEMIPPU THITTAM">
 	</div>
-	<!-- <p class="centered fw-bold mt-1 ">Vasantham Group Of Companies</p> -->
 </div>
-<!-- end print -->	
+<!-- end print -->
 
 <script src="{{asset('/resources/assets_chitfund/js/jquery.min.js')}}"></script>
 <script type="text/javascript">
 	(function($) {
-		setTimeout(function(){ 
-			window.print(); 
-			//document.execCommand('print');
+		setTimeout(function(){
+			window.print();
 			window.close();
 		}, 500);
 	})(jQuery);
 </script>
 </body>
 </html>
-
