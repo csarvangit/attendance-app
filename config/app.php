@@ -147,6 +147,10 @@ return [
 
     'punch_in_button_enable_time'  => env('PUNCH_IN_BUTTON_ENABLE_TIME', 15),
     'punch_out_button_enable_time' => env('PUNCH_OUT_BUTTON_ENABLE_TIME', 15),
+	
+	
+	// CHIT FUND CONFIG OPTIONS
+	'chit_send_useradd_watsapp_notifi' => env('CHIT_SEND_USERADD_WATSAPP_NOTIFI', false),
 
 
     /*

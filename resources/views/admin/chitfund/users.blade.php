@@ -275,8 +275,11 @@ use Carbon\Carbon;
 	</div>
 	<!--end page-content-wrapper-->	
 	
-	<!-- Redirect to whatsapp -->		
-	@if (session()->has('url'))
+	<!-- Redirect to whatsapp -->	
+	@php
+		$sendNotifi = Config::get('app.chit_send_useradd_watsapp_notifi');
+	@endphp	
+	@if ( $sendNotifi && session()->has('url') )
 		<a id="userRegNotifi" href="{{session()->get('url')}}" target="_blank" style="visibility:hidden; opacity:0; height:0; font-size:0;"></a>
 		<script src="{{asset('/resources/assets_chitfund/js/jquery.min.js')}}"></script>
 		<script type="text/javascript">

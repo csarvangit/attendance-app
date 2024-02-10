@@ -103,30 +103,30 @@ class ChitFundController extends Controller
             if ($validator->fails()) { 
                 return redirect()->back()->withErrors($validator->errors())->withInput($request->input());
             }
-            $input = $request->all();             
+            $input = $request->all();           
             $input['createdOn'] =  Carbon::now();
             $currentTime = Carbon::now(); 
             $whatsapp_url = '#';                    
             
             $user = ChitFund_Users::create($input); 
-            if($user){
+            if($user){               
                 $plan = ChitFund_Scheme::where('plan_id', $user->plan_id)->get();               
 
                 $data['user_id']    = $user->id;  
                 $data['plan_id']    = $user->plan_id;  
                 $data['start_date'] = $plan[0]->start_date;  
                 $data['end_date']   = $plan[0]->end_date;  
+               
                 $duesCreated = $this->createDueEntriesForUser($data);  
                 if( $duesCreated ) {
                     $date = $currentTime->format('d-m-Y');
                     $total_months = $this->findTotalMonths($data['start_date'], $data['end_date']);
 
-                    $whatsapp_message = urlencode("Dear ".$input['user_name'].", Token Number ".$input['user_id']." You have successfully registered on Vasantham Siru Semippu Thittam ".$plan[0]->plan_name."(".$total_months." months) scheme with monthly due of Rs. ".$plan[0]->plan_amount.". Thank you. - Vasantham Home Appliances - Siru Semippu Thittam.");
+                    $whatsapp_message = urlencode("Dear ".$input['user_name'].", Token Number ".$data['user_id']." You have successfully registered on Vasantham Siru Semippu Thittam ".$plan[0]->plan_name."(".$total_months." months) scheme with monthly due of Rs. ".$plan[0]->plan_amount.". Thank you. - Vasantham Home Appliances - Siru Semippu Thittam.");
                     $whatsapp_url = "https://wa.me/".$input['mobile_no']."?text=".$whatsapp_message;                    
                 }                
             }
-            //return redirect()->back()->with('success', 'User '.$input['user_name'].' added successfully'); 
-            return redirect()->back()->with(['success'=> 'User '.$input['user_name'].' added successfully', 'url' => $whatsapp_url ]); 
+           return redirect()->back()->with(['success'=> 'User '.$input['user_name'].' added successfully', 'url' => $whatsapp_url ]); 
         }
         catch (\Throwable $exception) {
             return redirect()->back()->withErrors( json_encode($exception->getMessage(), true) )->withInput($request->input());
