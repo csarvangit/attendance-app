@@ -156,7 +156,7 @@ use Carbon\Carbon;
 		setTimeout(function(){
 			window.print();
 			window.close();
-		}, 500);
+		}, 1000);
 	})(jQuery);
 </script>
 </body>
