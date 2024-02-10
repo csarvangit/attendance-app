@@ -121,7 +121,7 @@ class ChitFundController extends Controller
                     $date = $currentTime->format('d-m-Y');
                     $total_months = $this->findTotalMonths($data['start_date'], $data['end_date']);
 
-                    $whatsapp_message = urlencode("Dear ".$input['user_name'].", You have successfully registered on Vasantham Siru Semippu Thittam ".$plan[0]->plan_name."(".$total_months." months) scheme with monthly due of Rs. ".$plan[0]->plan_amount.". Thank you. - Vasantham Home Appliances - Siru Semippu Thittam.");
+                    $whatsapp_message = urlencode("Dear ".$input['user_name'].", Token Number ".$input['user_id']." You have successfully registered on Vasantham Siru Semippu Thittam ".$plan[0]->plan_name."(".$total_months." months) scheme with monthly due of Rs. ".$plan[0]->plan_amount.". Thank you. - Vasantham Home Appliances - Siru Semippu Thittam.");
                     $whatsapp_url = "https://wa.me/".$input['mobile_no']."?text=".$whatsapp_message;                    
                 }                
             }
