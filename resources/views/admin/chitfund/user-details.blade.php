@@ -81,7 +81,7 @@ use Carbon\Carbon;
 															$target = "_self";
 															if( $u->due_status == 1 ){		
 																$date = Carbon::parse($u->due_date_paid )->format('d-m-Y');
-																$whatsapp_message = urlencode("Dear $u->user_name, Token Number $u->user_id you have paid Rs:$u->plan_amount for the date $date of vasantham chit fund $u->plan_name. Thank you. - Vasantham Home Appliances - Siru Semippu Thittam.");
+																$whatsapp_message = urlencode("Dear $u->user_name, Token Number *$u->user_id* you have paid Rs:$u->plan_amount for the date $date of vasantham chit fund $u->plan_name. Thank you. - Vasantham Group Of Campanies");
 																$whatsapp_url = "https://wa.me/$u->mobile_no?text=$whatsapp_message";
 																$target = "_blank";
 															}
