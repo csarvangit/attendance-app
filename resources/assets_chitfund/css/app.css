@@ -3281,6 +3281,10 @@ input::placeholder {
 
 }
 
+.modal-dialog .modal-header {
+	white-space: break-spaces;
+}
+
 /*Chat box*/
 
 .chat-wrapper {

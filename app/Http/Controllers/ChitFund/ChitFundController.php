@@ -139,6 +139,42 @@ class ChitFundController extends Controller
         }    
     }
 
+    public function chitfundEditUser(Request $request)
+    {     
+        try {
+            $validator = Validator::make($request->all(), [ 
+                'user_id' => 'required',
+                'user_name' => 'required',
+                'mobile_no' => 'required', 
+                'address' => 'required', 
+                'plan_id' => 'required',                 
+            ]);
+            if ($validator->fails()) { 
+                return redirect()->back()->withErrors($validator->errors())->withInput($request->input());
+            }
+            $input = $request->all();   
+            
+            $data['user_name']   = $input['user_name'];
+            $data['mobile_no']   = $input['mobile_no'];
+            $data['address']     = $input['address'];             
+                       
+            $user = ChitFund_Users::where('user_id', $input['user_id'])
+                    ->where('plan_id', $input['plan_id'])
+                    ->update($data);             
+           
+           return redirect()->back()->with(['success'=> 'User #'.$input['user_id'].'-'.$input['user_name'].' updated successfully.' ]); 
+        }
+        catch (\Throwable $exception) {
+            return redirect()->back()->withErrors( json_encode($exception->getMessage(), true) )->withInput($request->input());
+        } catch (\Illuminate\Database\QueryException $exception) {
+            return redirect()->back()->withErrors( json_encode($exception->getMessage(), true) )->withInput($request->input());
+        } catch (\PDOException $exception) {
+            return redirect()->back()->withErrors( json_encode($exception->getMessage(), true) )->withInput($request->input());
+        } catch (\Exception $exception) {
+            return redirect()->back()->withErrors( json_encode($exception->getMessage(), true) )->withInput($request->input());
+        }    
+    }
+
     public static function findTotalMonths($start_date, $end_date){ 
         $start_date = Carbon::parse($start_date);
         $end_date   = Carbon::parse($end_date);
@@ -241,13 +277,35 @@ class ChitFundController extends Controller
     
     public function chitfundUserDetails(Request $request, string $id)
     { 
-        $user = DB::table('chitfund_dues as d')
-            ->where('d.user_id', '=', $id)	
-            ->select( 'u.plan_id as uplan_id', 'u.user_name', 'u.mobile_no', 'd.due_id', 'd.user_id', 'd.plan_id', 'd.due_status', 'd.due_date', 'd.due_date_paid', 's.plan_name', 's.plan_amount' )          	
-            ->leftJoin('chitfund_users as u', 'u.user_id', '=', 'd.user_id')  
-            ->leftJoin('chitfund_scheme as s', 's.plan_id', '=', 'd.plan_id')
-            ->orderBy('d.due_id', 'ASC')	         
-            ->get();         
+        $user = [];
+        $chitUser = ChitFund_Users::where('user_id', $id)
+        ->get();
+
+        if( $chitUser->count() > 0 ){ 
+
+            $dues = ChitFund_Dues::where('user_id', $id)
+            ->where('plan_id', '=', $chitUser[0]->plan_id)
+            ->get();
+
+            if( $dues->count() < 1 ){               
+                $plan = ChitFund_Scheme::where('plan_id', $chitUser[0]->plan_id)->get();               
+
+                $data['user_id']    = $id;  
+                $data['plan_id']    = $chitUser[0]->plan_id;  
+                $data['start_date'] = $plan[0]->start_date;  
+                $data['end_date']   = $plan[0]->end_date;  
+               
+                $duesCreated = $this->createDueEntriesForUser($data); 
+            }  
+
+            $user = DB::table('chitfund_dues as d')
+                ->where('d.user_id', '=', $id)	
+                ->select( 'u.plan_id as uplan_id', 'u.user_name', 'u.mobile_no', 'd.due_id', 'd.user_id', 'd.plan_id', 'd.due_status', 'd.due_date', 'd.due_date_paid', 's.plan_name', 's.plan_amount' )          	
+                ->leftJoin('chitfund_users as u', 'u.user_id', '=', 'd.user_id')  
+                ->leftJoin('chitfund_scheme as s', 's.plan_id', '=', 'd.plan_id')
+                ->orderBy('d.due_id', 'ASC')	         
+                ->get();     
+        }        
         return view('admin.chitfund.user-details', compact('user'));    
     }  
    

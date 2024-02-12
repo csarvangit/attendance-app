@@ -64,9 +64,49 @@ use Carbon\Carbon;
 												<td>
 													<a href="{{route('chitfund.userDetails', [$user->user_id])}}" title="View Bills"><i class="lni lni-eye" style="font-size: 18px; font-weight: 800;"></i></a>
 													&nbsp;
-													<!--<a href="#"><i class="lni lni-pencil-alt" style="font-size: 18px; font-weight: 800;"></i></a>
+													<a href="#" data-bs-toggle="modal" data-bs-target="#edituser_{{ $user->user_id }}"><i class="lni lni-pencil-alt" style="font-size: 18px; font-weight: 800;"></i></a>
 													&nbsp;
-													<a href="{{route('chitfund.addDue', [$user->plan_id, $user->user_id])}}" title="Generate Bill"><i class="lni lni-checkmark" style="font-size: 18px; font-weight: 800;"></i></a>-->
+													<!--<a href="{{route('chitfund.addDue', [$user->plan_id, $user->user_id])}}" title="Generate Bill"><i class="lni lni-checkmark" style="font-size: 18px; font-weight: 800;"></i></a>-->
+													
+													<!-- Add User Popup Model -->
+														<div class="col">
+															<div class="modal fade" id="edituser_{{ $user->user_id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+																<div class="modal-dialog">
+																	<div class="modal-content">
+																		<div class="modal-header" style="background-color:#673ab7;">
+																			<h5 class="modal-title" id="exampleModalLabel" style="color: aliceblue;">Edit User - #{{ $user->user_id }} {{ $user->user_name }} </h5>
+																			<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+																		</div>
+																		<div class="modal-body">
+																			<form class="formm" action="{{route('chitfund.editUser')}}" method="POST">  	@csrf		
+																				<input type="hidden" name="user_id" value="{{ $user->user_id }}">
+																				<input type="hidden" name="plan_id" value="{{ $user->plan_id }}">
+																					
+																				<label for="user_name" class="labell">Name</label>
+																				<div class="form-group">
+																					<input id="user_name" type="text" class="form-control inputt @error('user_name') is-invalid @enderror" name="user_name" placeholder="Enter Name" value="{{ $user->user_name }}" required />
+																				</div>
+																		
+																				<label for="mobile_no" class="labell">Phone Number</label>
+																				<div class="form-group">
+																					<input id="mobile_no" type="tel" class="form-control inputt @error('mobile_no') is-invalid @enderror" name="mobile_no" placeholder="Enter Phone Number" value="{{ $user->mobile_no }}" pattern="[0-9]{10}" required />
+																				</div>	
+																				<label for="address" class="labell">Address</label>
+																				<div class="form-group">
+																					<textarea id="address" type="tel" class="form-control inputt @error('address') is-invalid @enderror" name="address" placeholder="Enter Address" value="{{ $user->address }}"  required>{{ $user->address }}</textarea>
+																				</div>
+																				
+																				<div class="modal-footer">
+																					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+																					<button type="submit" class="btn btn-primary">Update User</button>
+																				</div>
+																			</form>
+																		</div>																		
+																	</div>
+																</div>
+															</div>
+														</div>
+														<!-- End Add User Popup Model -->
 												</td>
 											</tr>
 											

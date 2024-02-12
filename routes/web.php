@@ -5,7 +5,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\AttendanceController; 
 use App\Http\Controllers\SpinController;
 use App\Http\Controllers\FrameController;
-use App\Http\Controllers\ChitFund\ChitFundController;
+use App\Http\Controllers\ChitFund\ChitFundController; 
+use App\Http\Controllers\ChitFund\ChitFundUserImportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,11 +46,15 @@ Route::prefix('admin')->group(function () {
     Route::post('/chitfund/createplan', [ChitFundController::class, 'chitfundCreatePlan'])->name('chitfund.createPlan');
     Route::get('/chitfund/plan/{id}', [ChitFundController::class, 'chitfundShowPlan'])->name('chitfund.showPlan');
     Route::post('/chitfund/createuser', [ChitFundController::class, 'chitfundCreateUser'])->name('chitfund.createUser');
+    Route::post('/chitfund/edituser', [ChitFundController::class, 'chitfundEditUser'])->name('chitfund.editUser');
     Route::get('/chitfund/adddue/{planid}/{id}', [ChitFundController::class, 'chitfundAddDue'])->name('chitfund.addDue');
     Route::get('/chitfund/user-details/{id}', [ChitFundController::class, 'chitfundUserDetails'])->name('chitfund.userDetails');
     Route::post('/chitfund/update/duestatus', [ChitFundController::class, 'updateDueStatus'])->name('chitfund.updateDueStatus');
     Route::get('/chitfund/print-invoice/{id}/{date}', [ChitFundController::class, 'printInvoice'])->name('chitfund.printInvoice');
     
+    /* Chit Fund Users - Import from Excel*/
+    //Route::get('/chitfund/import-user', [ChitFundUserImportController::class, 'chitfundImportIndex'])->name('chitfund.showimport'); 
+    //Route::post('/chitfund/save-import-user', [ChitFundUserImportController::class, 'chitfundImportExcel'])->name('chitfund.importExcel');
 });
 
 /* User Discount Spin Wheel Routes */
