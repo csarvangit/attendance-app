@@ -9,7 +9,7 @@ use Carbon\Carbon;
 @endphp
 
 <!--page-content-wrapper-->
-	<div class="page-content-wrapper mt-5">
+	<div class="page-content-wrapper mt-4">
 		<div class="page-content">					
 			
 			<div class="card">

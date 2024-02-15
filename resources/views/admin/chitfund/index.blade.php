@@ -7,7 +7,7 @@ use Carbon\Carbon;
 @endphp
 
 <!--page-content-wrapper-->
-	<div class="page-content-wrapper d-flex justify-content-center align-items-center py-5">
+	<div class="page-content-wrapper d-flex justify-content-center align-items-center py-3">
 		<div class="page-content">					
 			<style>	
 				h1 {

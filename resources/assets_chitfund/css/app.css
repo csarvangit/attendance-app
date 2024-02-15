@@ -4774,9 +4774,38 @@ ul.icons li span {
 	pointer-events: none;
 }
 
+
+.chitfund-nav {  
+  background-color: #673ab7 !important;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.chitfund-nav .logo-container img {
+	background-color: #fff;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.chitfund-nav  .dropdown-item:focus, 
+.chitfund-nav  .dropdown-item:hover {  
+  background-color: transparent;
+}
+
+.chitfund-nav .logout-menu {
+	max-width: 80px;
+	min-width: auto;
+	width: auto;
+	border-radius: 5px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+.login-form-wrapper .alert > ul {
+	margin-bottom: 0;
+}
+
 /*Responsive*/
-
-
 @media screen and (max-width: 1280px) {
 
 	.page-wrapper {
@@ -5177,6 +5206,10 @@ ul.icons li span {
 
 @media screen and (max-width: 991px) {
 
+	.chitfund-nav .nav-item.dropdown {
+		margin-bottom: 10px;
+	}
+	
 	.section-authentication-login {
 
 		height: 100%;
@@ -5246,6 +5279,9 @@ ul.icons li span {
 }
 
 @media screen and (max-width: 767px) {
+	.chitfund-nav .logo-txt {
+		display: none;
+	}
 
 	.user-info {
 

@@ -66,5 +66,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'validateHosts' => \App\Http\Middleware\validateHostsMiddleware::class,
         'prevent-back-button' => \App\Http\Middleware\PreventBackButtonMiddleware::class,
+        'admin' => \App\Http\Middleware\Admin::class,
     ];
 }
