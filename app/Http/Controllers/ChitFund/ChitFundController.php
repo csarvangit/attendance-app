@@ -333,8 +333,8 @@ class ChitFundController extends Controller
             $currentTime = Carbon::now();
 
             $dues = ChitFund_Dues::where('user_id', $id)
-            ->whereMonth('createdOn', '=', $currentTime->month)
-            ->whereYear('createdOn', '=', $currentTime->year)
+            ->whereMonth('due_date_paid', '=', $currentTime->month)
+            ->whereYear('due_date_paid', '=', $currentTime->year)
             ->get();
 
             if( $dues->count() > 0 ){
@@ -411,9 +411,10 @@ class ChitFundController extends Controller
 
                 $user = DB::table('chitfund_dues as d')
                     ->where('d.due_id', '=', $due_id)
-                    ->select( 'u.user_name', 'u.mobile_no', 'd.due_id', 'd.user_id', 'd.plan_id', 'd.due_status', 'd.due_date', 'd.due_date_paid', 's.plan_name', 's.plan_amount' )          	
+                    ->select( 'u.user_name', 'u.mobile_no', 'd.due_id', 'd.user_id', 'd.plan_id', 'd.due_status', 'd.due_date', 'd.due_date_paid', 's.plan_name', 's.plan_amount', DB::raw("SUM(d1.due_status) as total_dues_paid") )          	
                     ->leftJoin('chitfund_users as u', 'u.user_id', '=', 'd.user_id') 
-                    ->leftJoin('chitfund_scheme as s', 's.plan_id', '=', 'd.plan_id') 
+                    ->leftJoin('chitfund_scheme as s', 's.plan_id', '=', 'd.plan_id')
+                    ->leftJoin('chitfund_dues as d1', 'd1.user_id', '=', 'd.user_id') 
                     ->get();       
                   
                 return view('admin.chitfund.print-invoice', compact('user'));  

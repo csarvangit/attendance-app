@@ -41,6 +41,8 @@ use Carbon\Carbon;
 		$status_code = $user[0]->due_status;
 		$status = ChitFundController::getDueStatus($status_code, $key='string');
 		$amount_paid = $status_code == 1 ? $plan_amount : 0;
+		$total_dues_paid = $user[0]->total_dues_paid;
+		$total_amount_paid = ($total_dues_paid * $amount_paid);
 	@endphp
 @endif
 
@@ -137,8 +139,12 @@ use Carbon\Carbon;
 	<table class="  mt-2 " style="width:100%">
 		<thead>
 			<tr>
+				<th class="">No of Dues Paid</th>
+				<th  style="text-align: right;" class="price"> {{ $total_dues_paid }}</th>
+			</tr>
+			<tr>
 				<th class="">Total Amount Paid</th>
-				<th  style="text-align: right;" class="price">Rs: {{ $amount_paid }}</th>
+				<th  style="text-align: right;" class="price">Rs: {{ $total_amount_paid }}</th>
 			</tr>
 		</thead>
 
