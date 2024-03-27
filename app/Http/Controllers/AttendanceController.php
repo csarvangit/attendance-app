@@ -774,7 +774,6 @@ class AttendanceController extends Controller
             if (!empty($id)){  
                 $selectedMonth = $year.'-'.$month;
                 $presentLogs = Attendance::where('userId', $id)
-                ->where('is_permission', '=', 1) 
                 ->where('is_leave', '=', 0) 
                 ->whereYear('startDate', '=', Carbon::parse($selectedMonth)->year)
                 ->whereMonth('startDate', '=', Carbon::parse($selectedMonth)->month)
