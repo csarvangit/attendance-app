@@ -8,6 +8,23 @@ use App\Http\Controllers\AttendanceController;
 
 @section('content') 
 
+@if($errors->any())
+    <div class="alert alert-danger alert-dismissible" role="alert">
+		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+
+        @foreach($errors->all() as $error)
+            {{ $error }} <br/>
+        @endforeach
+    </div>
+@endif
+
+@if(session()->has('success'))
+    <div class="alert alert-success alert-dismissible" role="alert">
+		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        {{ session()->get('success') }}
+    </div>
+@endif
+
 
 <div class="container d-flex  justify-content-between my-2"> 
     
@@ -113,6 +130,13 @@ use App\Http\Controllers\AttendanceController;
                 </td>
                 <td>
                     <a class="btn btn-info btn-sm my-1" href="{{route('userlog', $user->userId)}}" target="_blank">View Log</a>
+					<a class="btn btn-info btn-sm my-1" href="{{route('users.edit', $user->userId)}}" target="_blank">Edit User</a>
+					<form method="POST" action="{{route('users.delete', $user->userId)}}">
+						@csrf
+						<input name="userId" type="hidden" value="{{$user->userId}}">
+						<button type="submit" class="btn btn-sm btn-danger btn-flat show_confirm_delete" data-toggle="tooltip" data-method="trash" title='Delete'>Delete User</button>
+					</form>					
+					
                     @if( empty($user->shiftName) ) 
                     <a class="btn btn-info btn-sm my-1" href="{{route('shift.create', $user->userId)}}" target="_blank">Add Shift</a>
                     @endif

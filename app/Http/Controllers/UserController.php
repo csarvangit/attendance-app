@@ -254,9 +254,10 @@ class UserController extends Controller
         ->leftJoin('attendance as a', 'a.userId', '=', 'u.userId') 
         ->leftJoin('shifttimewithusers as su', 'su.userId', '=', 'u.userId') 
         ->leftJoin('shifttime as s', 's.shiftId', '=', 'su.shiftId') 
+        ->whereNull('u.deleted_at')//without trashed
         ->groupBy('u.userId') 
         ->groupBy('a.userId') 
-         ->orderBy('u.userId', 'asc')
+        ->orderBy('u.userId', 'asc')
         ->paginate(20); 
         return view('admin.users', compact('users', 'attendance'));
     }
@@ -368,6 +369,186 @@ class UserController extends Controller
             return redirect()->back()->withErrors( json_encode($exception->getMessage(), true) )->withInput($request->input());
         }      
     }
+
+    public function edit(Request $request, $id)
+    {        
+        //$user = User::where('userId', $id)->first();
+        $user = DB::table('users as u')
+            ->select(
+                'u.userId',
+                'u.firstName',
+                'u.lastName', 
+                'u.email',
+                //'u.password',
+                'u.mobile',
+                'u.gender',
+                'u.DOB',
+                'u.userImageUrl',
+                'u.address',
+                'u.role as roleId',
+                'r.name as roleName',
+                'r.description as roleDescription',
+                's.shiftId as shid',
+                'su.shiftId as suid',
+                's.shiftName',
+                's.startTime as shiftstartTime',
+                's.endTime as shiftendTime' 
+            ) 
+            ->leftJoin('roles as r', 'r.roleId', '=', 'u.role')
+            ->leftJoin('shifttimewithusers as su', 'su.userId', '=', 'u.userId') 
+            ->leftJoin('shifttime as s', 's.shiftId', '=', 'su.shiftId')  
+            ->where('u.userId', $id)->first(); 
+
+        $roles = Roles::all();  
+        $shifts = ShiftTime::all();
+        return view('admin.edit-user', compact('user', 'roles', 'shifts'));
+    }
+
+    public function update(Request $request)
+    {
+        try {                        
+            $validator = Validator::make($request->all(), [ 
+                'userId'  => 'required', // hidden type
+                'firstName' => 'required',
+                'lastName' => 'required', 
+                'email' => 'required|email',                 
+                'password' => 'required|min:4', 
+                //'password' => 'required|confirmed|min:4',
+                //'password_confirmation' => 'required|min:4', 
+                'mobile' => 'required', 
+                'gender' => 'required', 
+                'DOB' => 'required',
+                'address' => 'required',
+                'role' => 'required',
+                'shiftId' => 'required'                  
+            ]);
+            if ($validator->fails()) { 
+                return redirect()->back()->withErrors($validator->errors())->withInput($request->input());
+            }
+            $input = $request->all(); 
+            $userId = $input['userId'];           
+
+            // reqired    
+            $updatedata['firstName'] = $input['firstName']; 
+            $updatedata['lastName'] = $input['lastName']; 
+            $updatedata['email'] = $input['email']; 
+            $updatedata['mobile'] = $input['mobile']; 
+            $updatedata['gender'] = $input['gender'];             
+            $updatedata['DOB'] = $input['DOB']; 
+            $updatedata['address'] = $input['address']; 
+            $updatedata['password'] = bcrypt($input['password']);
+            $updatedata['role'] = $input['role']; 
+                
+            $updateUser = User::where('userId', $userId)->update($updatedata);
+
+            $updateShiftdata['shiftId'] = $input['shiftId'];
+            $hasshifttimewithusers = ShiftTimeWithUsers::where('userId', $userId)->update($updateShiftdata);
+
+            $success['name'] =  $updatedata['firstName'].' '.$updatedata['lastName'];        
+            return redirect()->back()->with('success', 'User '. $success['name'] .' updated successfully'); 
+                
+        }
+        catch (\Throwable $exception) {
+            return redirect()->back()->withErrors( json_encode($exception->getMessage(), true) )->withInput($request->input());
+        } catch (\Illuminate\Database\QueryException $exception) {
+            return redirect()->back()->withErrors( json_encode($exception->getMessage(), true) )->withInput($request->input());
+        } catch (\PDOException $exception) {
+            return redirect()->back()->withErrors( json_encode($exception->getMessage(), true) )->withInput($request->input());
+        } catch (\Exception $exception) {
+            return redirect()->back()->withErrors( json_encode($exception->getMessage(), true) )->withInput($request->input());
+        }      
+    }
+
+    /**
+     * Trashed specified user.
+     */
+    public function destroy(Request $request, string $userId)
+    {
+        try {
+            if($userId != NULL || $userId != ''){           
+                $user = User::where('userId', $userId)->first();  
+                $userId = $user->userId;
+                $userName = $user->firstName.' '.$user->lastName;
+                if( $user ){
+                    $user->delete();
+                    return redirect()->back()->with('success', 'User #'.$userId.'-'.$userName.' trashed successfully');
+                }else {
+                    return redirect()->back()->withErrors(['error' => 'User not exists or invalid User ID']);
+                }
+            }                 
+        }
+        catch (\Throwable $exception) {
+            return redirect()->back()->withErrors( json_encode($exception->getMessage(), true) )->withInput($request->input());
+        } catch (\Illuminate\Database\QueryException $exception) {
+            return redirect()->back()->withErrors( json_encode($exception->getMessage(), true) )->withInput($request->input());
+        } catch (\PDOException $exception) {
+            return redirect()->back()->withErrors( json_encode($exception->getMessage(), true) )->withInput($request->input());
+        } catch (\Exception $exception) {
+            return redirect()->back()->withErrors( json_encode($exception->getMessage(), true) )->withInput($request->input());
+        }     
+    }
+
+    /**
+     * Trashed specified user.
+     */
+    public function trashedUsers(Request $request)
+    {
+        $users = User::onlyTrashed()->paginate(20);
+        return view('admin.users-trashed', compact('users'));
+    } 
+    
+    public function deleteforever(Request $request, string $userId)
+    { 
+        try {
+            if($userId != NULL || $userId != ''){            
+                $user = User::withTrashed()->find($userId); 
+                $userId = $user->userId;
+                $userName = $user->firstName.' '.$user->lastName;
+                if( $user ){
+                    $user->forceDelete();
+                    return redirect()->back()->with('success', 'User #'.$userId.'-'.$userName.' successfully deleted permanently');
+                }else {
+                    return redirect()->back()->withErrors(['error' => 'User not exists or invalid User ID']);
+                }
+            }                 
+        }
+        catch (\Throwable $exception) {
+            return redirect()->back()->withErrors( json_encode($exception->getMessage(), true) )->withInput($request->input());
+        } catch (\Illuminate\Database\QueryException $exception) {
+            return redirect()->back()->withErrors( json_encode($exception->getMessage(), true) )->withInput($request->input());
+        } catch (\PDOException $exception) {
+            return redirect()->back()->withErrors( json_encode($exception->getMessage(), true) )->withInput($request->input());
+        } catch (\Exception $exception) {
+            return redirect()->back()->withErrors( json_encode($exception->getMessage(), true) )->withInput($request->input());
+        }  
+    } 
+
+    public function restore(Request $request, string $userId)
+    {
+        try {
+            if($userId != NULL || $userId != ''){            
+                $user = User::withTrashed()->find($userId); 
+                $userId = $user->userId;
+                $userName = $user->firstName.' '.$user->lastName;
+                if( $user ){
+                    $user->restore();
+                    return redirect()->back()->with('success', 'User #'.$userId.'-'.$userName.' restored successfully');
+                }else {
+                    return redirect()->back()->withErrors(['error' => 'User not exists or invalid User ID']);
+                }
+            }                 
+        }
+        catch (\Throwable $exception) {
+            return redirect()->back()->withErrors( json_encode($exception->getMessage(), true) )->withInput($request->input());
+        } catch (\Illuminate\Database\QueryException $exception) {
+            return redirect()->back()->withErrors( json_encode($exception->getMessage(), true) )->withInput($request->input());
+        } catch (\PDOException $exception) {
+            return redirect()->back()->withErrors( json_encode($exception->getMessage(), true) )->withInput($request->input());
+        } catch (\Exception $exception) {
+            return redirect()->back()->withErrors( json_encode($exception->getMessage(), true) )->withInput($request->input());
+        }          
+    } 
+
 
     /**
      * Show the form for creating a new resource.
