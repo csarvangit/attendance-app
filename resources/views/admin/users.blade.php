@@ -38,7 +38,7 @@ use App\Http\Controllers\AttendanceController;
    
 </div>
 
-<table class="table">
+<table class="table users-listing">
     <tr>
         <th>User ID</th>
         <th>Name</th>
@@ -129,17 +129,18 @@ use App\Http\Controllers\AttendanceController;
 
                 </td>
                 <td>
-                    <a class="btn btn-info btn-sm my-1" href="{{route('userlog', $user->userId)}}" target="_blank">View Log</a>
-					<a class="btn btn-info btn-sm my-1" href="{{route('users.edit', $user->userId)}}" target="_blank">Edit User</a>
-					<form method="POST" action="{{route('users.delete', $user->userId)}}">
-						@csrf
-						<input name="userId" type="hidden" value="{{$user->userId}}">
-						<button type="submit" class="btn btn-sm btn-danger btn-flat show_confirm_delete" data-toggle="tooltip" data-method="trash" title='Delete'>Delete User</button>
-					</form>					
-					
-                    @if( empty($user->shiftName) ) 
-                    <a class="btn btn-info btn-sm my-1" href="{{route('shift.create', $user->userId)}}" target="_blank">Add Shift</a>
-                    @endif
+					<div class="action-btns">
+						<a class="btn btn-info btn-sm my-1" href="{{route('userlog', $user->userId)}}" target="_blank" title='View'><i class="fa-solid fa-eye"></i></a>
+						<a class="btn btn-info btn-sm my-1" href="{{route('users.edit', $user->userId)}}" target="_blank" title='Edit'><i class="fas fa-edit"></i></a>
+						<form method="POST" action="{{route('users.delete', $user->userId)}}">
+							@csrf
+							<input name="userId" type="hidden" value="{{$user->userId}}">
+							<button type="submit" class="btn btn-sm btn-danger btn-flat show_confirm_delete" data-toggle="tooltip" data-method="trash" title='Delete'><i class="fa-solid fa-trash-can"></i></i></button>
+						</form>
+						@if( empty($user->shiftName) ) 
+						<a class="btn btn-info btn-sm my-1" href="{{route('shift.create', $user->userId)}}" target="_blank" title='Shift Time'><i class="fa-solid fa-business-time"></i></a>
+						@endif
+					</div>
                 </td>
             </tr>
         @endforeach

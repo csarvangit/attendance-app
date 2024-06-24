@@ -46,3 +46,23 @@ input.form-control:focus{
 	right: 0;
 	display: block;
 }
+
+.action-btns {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  column-gap: 5px;
+}
+.action-btns a,
+.action-btns a i,
+.action-btns button,
+.action-btns button i {
+  color: #ffffff;
+}
+
+.action-btns a:focus,
+.action-btns a:active{
+  outline: none;
+  border: 0;
+  box-shadow: none;
+}

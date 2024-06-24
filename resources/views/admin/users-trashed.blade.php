@@ -53,17 +53,19 @@ use App\Http\Controllers\AttendanceController;
                 <td>{{ $user->firstName }} {{ $user->lastName }}</td>               
                 <td>{{ $user->email }}</td>
                 <td>{{ $user->mobile }}</td>
-                <td>                    
-					<form method="POST" action="{{route('users.restore', $user->userId)}}">
-						@csrf
-						<input name="userId" type="hidden" value="{{$user->userId}}">
-						<button type="submit" class="btn btn-sm btn-info show_confirm_delete my-1" data-toggle="tooltip" data-method="restore" title='Restore'>Restore</button>
-					</form>	
-					<form method="POST" action="{{route('users.deleteforever', $user->userId)}}">
-						@csrf
-						<input name="userId" type="hidden" value="{{$user->userId}}">
-						<button type="submit" class="btn btn-sm btn-danger show_confirm_delete" data-toggle="tooltip" data-method="delete" title='Delete'>Delete Forever</button>
-					</form>	
+                <td>     
+					<div class="action-btns">
+						<form method="POST" action="{{route('users.restore', $user->userId)}}">
+							@csrf
+							<input name="userId" type="hidden" value="{{$user->userId}}">
+							<button type="submit" class="btn btn-sm btn-info show_confirm_delete my-1" data-toggle="tooltip" data-method="restore" title='Restore'><i class="fa-regular fa-window-restore"></i></button>
+						</form>	
+						<form method="POST" action="{{route('users.deleteforever', $user->userId)}}">
+							@csrf
+							<input name="userId" type="hidden" value="{{$user->userId}}">
+							<button type="submit" class="btn btn-sm btn-danger show_confirm_delete" data-toggle="tooltip" data-method="delete" title='Delete'><i class="fa-solid fa-trash"></i></button>
+						</form>	
+					</div>
                 </td>
             </tr>
         @endforeach
