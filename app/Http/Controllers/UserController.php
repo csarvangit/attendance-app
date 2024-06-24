@@ -344,7 +344,7 @@ class UserController extends Controller
             $user = User::create($input); 
 
             if( isset($input['shiftId']) ) {
-                $sh_input['userId'] =  $user->id; 
+                $sh_input['userId'] =  $user->userId; 
                 $sh_input['shiftId'] =  $input['shiftId']; 
                 $sh_input['status'] =  'A'; 
                 $sh_input['effectiveFrom'] =  Carbon::now();
