@@ -91,11 +91,17 @@ class UserController extends Controller
                 }
                 
                 $success['token'] =  $user->createToken('MyApp')->accessToken; 
+
+                /* Save User Last Login Session */
+                $userInput['last_login'] = $currentTime->format('Y-m-d H:i:s');
+                $userInput['deviceInfo'] = ( request('deviceInfo') ) ? request('deviceInfo') : $_SERVER; 
+                $userSession = User::where('userId', $userId)->update($userInput);
+
                 return response()->json(['success' => $success], $this->successStatus); 
             } 
             else{ 
                 return response()->json(['error'=>'Invalid UserName or Password'], 401); 
-            } 
+            }             
         }
         catch (\Throwable $exception) {
             return response()->json(['error'=> json_encode($exception->getMessage(), true)], 400 );
