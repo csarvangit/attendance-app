@@ -7,7 +7,8 @@ use App\Http\Controllers\AttendanceController;
 @extends('layouts.base')
 
 @section('content') 
-
+<div class="card">
+<div class="card-body">
 @if($errors->any())
     <div class="alert alert-danger alert-dismissible" role="alert">
 		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -26,7 +27,7 @@ use App\Http\Controllers\AttendanceController;
 @endif
 
 
-<div class="container d-flex  justify-content-between my-2"> 
+<div class="container-fluid d-flex  justify-content-between my-2"> 
     
         <div class='text-left justify-content-start flex'>                
                 <h3>Users List</h3>
@@ -44,10 +45,14 @@ use App\Http\Controllers\AttendanceController;
         <th>Name</th>
         <th>Email</th>
         <th>Mobile</th>
-        <th>Shift Time</th>
-        <th>Punch In Time</th>
-        <th>Punch Out Time</th> 
-        <th>Current Day Photo</th>
+        <th>Punch InTime</th>
+        <th>Punch OutTime</th>		
+		<th>Today's Photo</th>
+		<th>Permission</th>
+		<th>Permission Photo</th>
+		<th>Leave</th>
+		<th>Late</th>	
+		<th>Login DeviceInfo</th>	
         <th>Action</th>
     </tr>
     @if( !$users->isEmpty() )
@@ -57,6 +62,10 @@ use App\Http\Controllers\AttendanceController;
         $startTime = '-'; 
         $endTime = '-'; 
         $imageUrl = ''; 
+		$permission =  '-';
+		$permission_imageUrl = '';
+		$leave =  '-';
+		$late =  [];
         @endphp
 
         @if( !$attendance->isEmpty() )
@@ -64,18 +73,25 @@ use App\Http\Controllers\AttendanceController;
                 @if( $attend->userId == $user->userId ) 
                     @php $startTime = $attend->startTime ? $attend->startTime : '-'; @endphp             
                     @php $endTime = $attend->endTime ? $attend->endTime : '-'; @endphp
-                    @php $imageUrl = $attend->imageUrl ? $attend->imageUrl : ''; @endphp
+                    @php $imageUrl = $attend->imageUrl ? $attend->imageUrl : ''; @endphp					
+					@php $permission = $attend->is_permission == 1 ? "<span class='btn bg-warning pl-wrapper'>P </span><br>$attend->permissionInHours <br><span class='reason-hvr'>$attend->reason</span>" : '-' @endphp
+					@php $permission_imageUrl = $attend->permission_imageUrl ? $attend->permission_imageUrl : ''; @endphp					
+					@php $leave = $attend->is_leave == 1 ? "<span class='btn bg-danger pl-wrapper'>L</span> <br><span class='reason-hvr'>$attend->reason</span>" : '-' @endphp 
+					@if( $attend->is_leave != 1 )
+						@php $late = AttendanceController::getPunchInLateTime($user->userId); @endphp 					
+					@endif	
                 @endif
              @endforeach
         @endif       
 
             <tr>
                 <td>{{ $user->userId }}</td>
-                <td>{{ $user->firstName }} {{ $user->lastName }}</td>               
+                <td>
+					{{ $user->firstName }} {{ $user->lastName }} <br/>
+					{{ Carbon::parse($user->shiftstartTime)->format('h:iA') }}-{{ Carbon::parse($user->shiftendTime)->format('h:iA') }}				
+				</td>               
                 <td>{{ $user->email }}</td>
-                <td>{{ $user->mobile }}</td>
-                <td>{{ Carbon::parse($user->shiftstartTime)->format('h:iA') }}-{{ Carbon::parse($user->shiftendTime)->format('h:iA') }}
-				</td>              
+                <td>{{ $user->mobile }}</td>                            
                 <td>
                    {{--  @if(isset($user->startTime) && !empty($user->startTime)) 
                     {{ $user->startTime ? $user->startTime : '-' }}
@@ -123,11 +139,31 @@ use App\Http\Controllers\AttendanceController;
                     @if( $selfie['is_exists'] )
                         <a href="{{ $selfie['img_src'] }}" data-toggle="lightbox" data-caption="{{ $user->firstName }} {{ $user->lastName }}" data-size="sm" data-constrain="true" class="col-sm-4" data-gallery="User Thumb">
                             <img class="img-fluid" src="{{ $selfie['img_src'] }}" width="48" height="48" />
-                        </a>
+                        </a>					
                     @endif 
-                @endif  
+				@else
+					 - 	
+                @endif 
+                </td>				
+				<td>{!! $permission !!} </td>
+				<td>                
+                @if(isset($permission_imageUrl) && !empty($permission_imageUrl))       
+                    @php 
+                        $selfie = AttendanceController::getUserMedia($permission_imageUrl) 
+                    @endphp  
 
-                </td>
+                    @if( $selfie['is_exists'] )
+                        <a href="{{ $selfie['img_src'] }}" data-toggle="lightbox" data-caption="{{ $user->firstName }} {{ $user->lastName }}" data-size="sm" data-constrain="true" class="col-sm-4" data-gallery="User Thumb">
+                            <img class="img-fluid" src="{{ $selfie['img_src'] }}" width="48" height="48" />
+                        </a>						
+                    @endif 
+				@else
+					 - 	
+                @endif 
+                </td>	
+                <td> {!! $leave !!} </td>
+				<td>{{ $late ? $late['lateBy'] : '-' }}</td>
+				<td> {{ $user->deviceInfo ? $user->deviceInfo : '-' }} </td>
                 <td>
 					<div class="action-btns d-flex gap-1">
 						<a class="btn btn-info btn-sm my-1" href="{{route('userlog', $user->userId)}}" target="_blank" title='View'><i class="fa-solid fa-eye"></i></a>
@@ -154,4 +190,6 @@ use App\Http\Controllers\AttendanceController;
 <div class="pagination-nav flex items-center justify-between">     
     {{ $users->links() }} 
 </div>
+
+</div></div>
 @endsection

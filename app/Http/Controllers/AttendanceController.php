@@ -74,7 +74,6 @@ class AttendanceController extends Controller
     }
 
     public function isPunchInLate(string $userId){
-
         $diffInHours = "";  
         $isPast = false;   
         $success['lateBy'] = $diffInHours;  
@@ -98,6 +97,45 @@ class AttendanceController extends Controller
             }        
             return $success;
         }  
+    }
+
+    public static function getPunchInLateTime(string $userId, string $startTime = null){
+        $diffInHours = "";  
+        $isPast = false;   
+        $success['lateBy'] = $diffInHours;
+
+        if($userId != NULL || $userId != ''){ 
+            /* To find Time Difference */                
+            $ShiftTime = (new ShiftTimeController)->getUserShiftTime($userId); 
+            $ShiftTime = $ShiftTime->getData();        
+            if( $ShiftTime->success == true ){   
+                $options = [
+                    'join' => ': ',
+                    'parts' => 2,
+                    'syntax' => CarbonInterface::DIFF_ABSOLUTE,
+                ];
+                $currentTime = Carbon::now(); 
+
+                if($startTime != NULL || $startTime != ''){
+                    $punchInTime = $startTime;
+                } else {
+                    $hasAttendance = Attendance::where('userId', $userId)
+                    ->where('startDate', $currentTime->toDateString())
+                    ->get();
+                    if( $hasAttendance->count() > 0 ){	                    
+                        $punchInTime = $hasAttendance[0]['startTime'];
+                    } 
+                }              
+
+                $punchInTime = Carbon::parse($punchInTime);  
+                $diffInHours = $punchInTime->diffForHumans($ShiftTime->data->startTime, $options); 
+                $diffInHoursText = $punchInTime->diffForHumans($ShiftTime->data->startTime);                     
+                if( str_contains($diffInHoursText, 'after') ){
+                    $success['lateBy'] = $diffInHours .' Late';
+                }                 
+            }  
+        }
+        return $success;
     }
 
     public function islogin(string $userId)
@@ -423,7 +461,7 @@ class AttendanceController extends Controller
                                
                 $attendancelogs =  DB::table('attendance as a1')
                 ->where('a1.userId', '=', $id)	
-                ->select( 'u.*', 'a1.userId as auId', 'a1.attandanceId', 'a1.startTime', 'a1.endTime', 'a1.startDate', 'a1.endDate', 'a1.imageUrl', 'a1.is_permission', 'a1.permission_startTime', 'a1.permission_endTime', 'a1.is_leave', 'a1.reason', 's.shiftId as shid', 's.shiftName', 's.startTime as shiftstartTime', 's.endTime as shiftendTime', DB::raw("TIME(a1.endTime) as eTime") , DB::raw("TIME(a1.startTime) as sTime") , DB::raw("TIME_FORMAT(SEC_TO_TIME((TIME_TO_SEC(CASE WHEN SUBTIME(IFNULL(TIME(a1.endTime),0),IFNULL(TIME(a1.startTime),0)) > '00:00:00' THEN SUBTIME(IFNULL(TIME(a1.endTime),0),IFNULL(TIME(a1.startTime),0)) ELSE '00:00:00' END))), '%H:%i:%s' )as total_hours"), DB::raw("IFNULL(TIME_FORMAT(SEC_TO_TIME(TIMESTAMPDIFF(SECOND, a1.permission_startTime, a1.permission_endTime)), '%H:%i:%S'), '00:00:00') as permissionInHours") )
+                ->select( 'u.*', 'a1.userId as auId', 'a1.attandanceId', 'a1.startTime', 'a1.endTime', 'a1.startDate', 'a1.endDate', 'a1.imageUrl', 'a1.is_permission', 'a1.permission_startTime', 'a1.permission_endTime', 'a1.permission_imageUrl', 'a1.is_leave', 'a1.reason', 's.shiftId as shid', 's.shiftName', 's.startTime as shiftstartTime', 's.endTime as shiftendTime', DB::raw("TIME(a1.endTime) as eTime") , DB::raw("TIME(a1.startTime) as sTime") , DB::raw("TIME_FORMAT(SEC_TO_TIME((TIME_TO_SEC(CASE WHEN SUBTIME(IFNULL(TIME(a1.endTime),0),IFNULL(TIME(a1.startTime),0)) > '00:00:00' THEN SUBTIME(IFNULL(TIME(a1.endTime),0),IFNULL(TIME(a1.startTime),0)) ELSE '00:00:00' END))), '%H:%i:%s' )as total_hours"), DB::raw("IFNULL(TIME_FORMAT(SEC_TO_TIME(TIMESTAMPDIFF(SECOND, a1.permission_startTime, a1.permission_endTime)), '%H:%i:%S'), '00:00:00') as permissionInHours") )
                 ->leftJoin('users as u', 'u.userId', '=', 'a1.userId')		
                 ->leftJoin('shifttime as s', 's.shiftId', '=', 'a1.shiftId') 									
                 ->groupBy('a1.userId')	

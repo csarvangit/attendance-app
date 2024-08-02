@@ -236,7 +236,14 @@ class UserController extends Controller
             'startDate',
             'startTime',
             'endTime',
-            'imageUrl'           
+            'imageUrl',
+            'is_permission',
+            'permission_startTime',
+            'permission_endTime',
+            'permission_imageUrl',
+            DB::raw("IFNULL(TIME_FORMAT(SEC_TO_TIME(TIMESTAMPDIFF(SECOND, permission_startTime, permission_endTime)), '%H:%i:%S'), '00:00:00') as permissionInHours"),
+            'is_leave',
+            'reason'  
         )        
         ->where('startDate', '=',  $currentTime->toDateString())
         ->orderBy('userId', 'asc')

@@ -56,7 +56,7 @@
   </div>
 </nav>
 
-    <div class="container py-5">
+    <div class="container-fluid py-5">
             @yield('content')
     </div>
     <!-- /.container -->

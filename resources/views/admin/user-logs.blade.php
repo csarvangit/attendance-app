@@ -5,6 +5,8 @@ use App\Http\Controllers\AttendanceController;
 @extends('layouts.base')
 
 @section('content') 
+<div class="card">
+<div class="card-body">
 
 @if ($errors->any())
     <div class="alert alert-danger  alert-dismissible">
@@ -53,6 +55,7 @@ use App\Http\Controllers\AttendanceController;
         <th>Punch Out Time</th>         
 		<th>Total Hours</th>        
         <th>Permission</th>
+		<th>Permission Photo</th>
         <th>Leave</th>
         <th>Late</th>
         <th>OverTime</th>
@@ -80,12 +83,42 @@ use App\Http\Controllers\AttendanceController;
                 <td>{{ Carbon::parse($attendancelog->shiftstartTime)->format('h:iA') }}-{{ Carbon::parse($attendancelog->shiftendTime)->format('h:iA') }}</td>            
                 <td>{{ $attendancelog->startTime ? $attendancelog->startTime : '-' }}</td>
                 <td>{{ $attendancelog->endTime ? $attendancelog->endTime : '-' }}</td>           
-                <td>{{ $attendancelog->total_hours }}</td>
+                <td>
+					@if( $attendancelog->is_leave != 1 )
+						{{ $attendancelog->total_hours }}
+					@else
+						 -	
+					@endif				
+				</td>
                 <td> 				 
 				{!! $attendancelog->is_permission == 1 ? "<span class='btn bg-warning pl-wrapper'>P </span><br>$attendancelog->permissionInHours <br><span class='reason-hvr'>$attendancelog->reason</span>" : '-' !!} 
 				</td>
+				<td>                
+                @if(isset($attendancelog->permission_imageUrl) && !empty($attendancelog->permission_imageUrl))       
+                    @php 
+                        $selfie = AttendanceController::getUserMedia($attendancelog->permission_imageUrl) 
+                    @endphp  
+
+                    @if( $selfie['is_exists'] )
+                        <a href="{{ $selfie['img_src'] }}" data-toggle="lightbox" data-caption="{{ $attendancelog->firstName }} {{ $attendancelog->lastName }}" data-size="sm" data-constrain="true" class="col-sm-4" data-gallery="User Thumb">
+                            <img class="img-fluid" src="{{ $selfie['img_src'] }}" width="48" height="48" />
+                        </a>						
+                    @endif 
+				@else
+					 - 	
+                @endif 
+                </td>	
                 <td> {!! $attendancelog->is_leave == 1 ? "<span class='btn bg-danger pl-wrapper'>L</span> <br><span class='reason-hvr'>$attendancelog->reason</span>" : '-' !!} </td>
-                <td> - </td>
+                <td> 
+
+				@if( $attendancelog->is_leave != 1 )
+					@php $late = AttendanceController::getPunchInLateTime($attendancelog->userId, $attendancelog->startTime); @endphp 	
+					{{ $late['lateBy'] ? $late['lateBy'] : '-' }}
+				@else
+					 -	
+				@endif	
+
+				</td>
                 <td> - </td>
             </tr>
         @endforeach
@@ -100,5 +133,6 @@ use App\Http\Controllers\AttendanceController;
 	{{ $attendancelogs->links() }} 
 </div>
 
+</div></div>
 @endsection
 
