@@ -94,7 +94,7 @@ class UserController extends Controller
 
                 /* Save User Last Login Session */
                 $userInput['last_login'] = $currentTime->format('Y-m-d H:i:s');
-                $userInput['deviceInfo'] = ( request('deviceInfo') ) ? request('deviceInfo') : $_SERVER; 
+                $userInput['deviceInfo'] = ( request('deviceInfo') ) ? request('deviceInfo') : NULL; 
                 $userSession = User::where('userId', $userId)->update($userInput);
 
                 return response()->json(['success' => $success], $this->successStatus); 
