@@ -69,8 +69,8 @@ Route::prefix('admin')->group(function () {
     });    
     
     /* Chit Fund Users - Import from Excel*/
-    //Route::get('/chitfund/import-user', [ChitFundUserImportController::class, 'chitfundImportIndex'])->name('chitfund.showimport'); 
-    //Route::post('/chitfund/save-import-user', [ChitFundUserImportController::class, 'chitfundImportExcel'])->name('chitfund.importExcel');
+    Route::get('/chitfund/import-user', [ChitFundUserImportController::class, 'chitfundImportIndex'])->name('chitfund.showimport'); 
+    Route::post('/chitfund/save-import-user', [ChitFundUserImportController::class, 'chitfundImportExcel'])->name('chitfund.importExcel');
 });
 
 /* User Discount Spin Wheel Routes */
@@ -81,6 +81,9 @@ Route::get('/spin-form', [SpinController::class, 'showForm'])->name('showForm');
 Route::post('/spin-form', [SpinController::class, 'saveInvoiceForm'])->name('saveInvoiceForm');
 Route::get('/spin/{invoice_number}', [SpinController::class, 'showSpinWheel'])->name('showSpinWheel');
 Route::get('/spin/{invoice_number}/{discount}', [SpinController::class, 'saveSpinWheel'])->name('saveSpinWheel');
+
+Route::get('/spin-invoice/import-invoice-form', [SpinController::class, 'ImportInvoice'])->name('importInvoice');
+Route::post('/spin-invoice/save-invoice-excel', [SpinController::class, 'spinImportInvoiceExcel'])->name('importInvoiceExcel');
 
 Route::group(['middleware' => 'prevent-back-button'],function(){	
 	Route::get('/spin-thankyou', [SpinController::class, 'thankYou'])->name('thankYou');

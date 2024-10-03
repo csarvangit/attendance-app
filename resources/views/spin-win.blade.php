@@ -73,7 +73,7 @@ img.arrow {
   position: absolute;
   width: 4em;
   top: 45%;
-  right: -8%;
+  right: -9%;
 }
 #final-value {
   font-size: 12px;
@@ -121,7 +121,7 @@ img.arrow {
       <div id="spin-container" class="container">
         <canvas id="wheel"></canvas>
         <button id="spin-btn">Spin</button>
-        <img class="arrow" src="https://cutewallpaper.org/24/yellow-arrow-png/155564497.jpg" alt="spinner arrow" />
+        <img class="arrow" src="{{ asset('resources/images/spin-arrow.png') }}" width="70" alt="spinner arrow" />
       </div>
       <div id="final-value">
         <p>Click On The Spin Button To Start</p>

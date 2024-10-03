@@ -85,7 +85,7 @@
                 <option value="">Select branch...</option>
                 <option value="Alanganallur">Alanganallur</option>
                 <option value="Valasai">Valasai</option>
-                <option value="Iyerbagalow">Iyerbagalow</option>
+                <option value="Iyerbungalow">Iyer Bungalow</option>
                 <option value="Palamedu">Palamedu</option>
               </select>
               <i class="arrow double"></i>
@@ -93,7 +93,7 @@
             {!! $errors->first('branch', '<p class="help-block">:message</p>') !!}
           </div><!-- end section -->
   
-          <div class="section {{ $errors->has('invoice_copy') ? 'has-error' : ''}}">
+          <!--<div class="section {{ $errors->has('invoice_copy') ? 'has-error' : ''}}">
             <label for="file1" class="field file">
               <span class="button btn-primary"> Choose invoice </span>
               <input type="file" class="gui-file @error('invoice_copy') is-invalid @enderror" name="invoice_copy" id="invoice_copy" onChange="document.getElementById('invoice_copy_name').value = this.value;">

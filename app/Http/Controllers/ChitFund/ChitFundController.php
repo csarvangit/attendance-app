@@ -17,6 +17,7 @@ use DB;
 use Illuminate\Support\Facades\File;
 use Session;
 use URL;
+use Illuminate\Support\Facades\Http;
 
 class ChitFundController extends Controller
 {
@@ -479,4 +480,26 @@ class ChitFundController extends Controller
     {
         //
     }
+
+    public function getChitUsersData()
+    {
+        $api = url('/api/v1/chit/users/');
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer your_token_here',
+            'Accept' => 'application/json',
+            'trusted_ip' => '192.168.1.1',
+            'bit-key' => '',
+            'ssl' => ''
+           // 'ssl_key' => ['/path/to/cert.pem', 'password.key']
+        ])->get('https://api.example.com/data');
+    
+        if ($response->successful()) {
+            // Handle the successful response
+            return $response->json();
+        } else {
+            // Handle the error response
+            return response()->json(['error' => 'Failed to fetch data'], $response->status());
+        }
+    }
+
 }

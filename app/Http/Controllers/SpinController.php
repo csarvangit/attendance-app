@@ -3,10 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Spin;
+use App\Models\Spin_Invoice;
 use Illuminate\Http\Request;
 use Validator;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
+
+use App\Imports\SpinImportInvoice;
+use Maatwebsite\Excel\Facades\Excel;
 
 use Config;
 use DB;
@@ -78,9 +82,10 @@ class SpinController extends Controller
             $validator = Validator::make($request->all(), [ 
                 'username' => 'required|min:3', 
                 'email' => 'required', 
-                'mobile' => 'required|unique:spins|min:10',  
+                //'mobile' => 'required|unique:spins|min:10',
+                'mobile' => 'required|min:10',  
                 'branch' => 'required',  
-                'invoice_copy' => 'required|mimes:pdf,jpg,jpeg,png|max:8192', //4MB
+                //'invoice_copy' => 'required|mimes:pdf,jpg,jpeg,png|max:8192', //4MB
                 'invoice_number' => 'required|min:3', 
                 'discount' => 'nullable', 
                 'expires_at' => 'nullable',
@@ -93,11 +98,15 @@ class SpinController extends Controller
 
             $input = $request->all(); 
 
-            $hasSpin = Spin::where('invoice_number', $input['invoice_number'])                
+           /* $hasSpin = Spin::where('invoice_number', $input['invoice_number'])                
                 ->where('branch', $input['branch'])
-                ->get();
-            if( $hasSpin->count() > 0 ){
-                $error['message'] = 'Your Invoice Number already registered!!';
+                ->get(); */
+            $hasSpin = Spin_Invoice::where($input['branch'], $input['invoice_number'])          
+            ->get();   
+
+            if( $hasSpin->count() <= 0 ){
+                //$error['message'] = 'Your Invoice Number already registered!!';
+                $error['message'] = 'Invalid Invoice!!';
                 return redirect()->back()->withErrors( $error )->withInput($request->input());  
             }
 
@@ -110,16 +119,15 @@ class SpinController extends Controller
             $invoice_number  = $input['invoice_number'];
             $spinFormData->invoice_number  = $invoice_number;
 
-            $this->createSpinDirectory($invoice_number);
+            /* $this->createSpinDirectory($invoice_number);
             $dir = $this->getSpinDirectory($invoice_number);
             $fileName = $invoice_number.'_'.time().'.'.$request->invoice_copy->extension(); 
-            $request->invoice_copy->move($dir['storagePath'], $fileName);   
-                     
-            $spinFormData->invoice_copy  = $dir['storageDir'].'/'.$fileName;
+            $request->invoice_copy->move($dir['storagePath'], $fileName);                        
+            $spinFormData->invoice_copy  = $dir['storageDir'].'/'.$fileName; */
                     
             $spinFormData->save();        
         
-            return redirect()->route('showSpinWheel', ['invoice_number' => $invoice_number]);
+            return redirect()->route('showSpinWheel', ['invoice_number' => $spinFormData->id]);
 
            // return redirect()->back()->with('success', 'Your Invoice submitted successfully!');
         }
@@ -166,7 +174,7 @@ class SpinController extends Controller
         $allowed = false;
 
         if( !empty($invoice_number) ){
-            $hasSpin = Spin::where('invoice_number', $invoice_number)
+            $hasSpin = Spin::where('id', $invoice_number)
                 ->where('discount', NULL)
                 ->get();
             if( $hasSpin->count() > 0 ){
@@ -190,8 +198,8 @@ class SpinController extends Controller
     public function saveSpinWheel(Request $request, $invoice_number, $discount )
     {
         if( !empty( $invoice_number ) && !empty( $discount ) ) {
-
-            Spin::where('invoice_number', $invoice_number)->update(['discount'=> $discount]);
+            //Spin::where('invoice_number', $invoice_number)->update(['discount'=> $discount]);
+            Spin::where('id', $invoice_number)->update(['discount'=> $discount]);
             return redirect()->route('thankYou');
         }       
     }
@@ -200,6 +208,37 @@ class SpinController extends Controller
     public function thankYou()
     {
         return view('spin-thankyou');
+    }  
+
+    public function ImportInvoice(){
+        return view('admin.spins-import-invoice');
+    }    
+    
+    public function spinImportInvoiceExcel(Request $request)
+    { 
+        // Validate the uploaded file
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls',
+        ]);
+
+        // Get the uploaded file
+        $file = $request->file('file');       
+
+        try {   
+             // Process the Excel file
+            Excel::import(new SpinImportInvoice, $file);
+        }
+        catch (\Throwable $exception) {
+            return redirect()->back()->withErrors( json_encode($exception->getMessage(), true) )->withInput($request->input());
+        } catch (\Illuminate\Database\QueryException $exception) {
+            return redirect()->back()->withErrors( json_encode($exception->getMessage(), true) )->withInput($request->input());
+        } catch (\PDOException $exception) {
+            return redirect()->back()->withErrors( json_encode($exception->getMessage(), true) )->withInput($request->input());
+        } catch (\Exception $exception) {
+            return redirect()->back()->withErrors( json_encode($exception->getMessage(), true) )->withInput($request->input());
+        } 
+
+        return redirect()->back()->with('success', 'Excel file imported successfully!');
     }  
 
     
