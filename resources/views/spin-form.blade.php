@@ -156,7 +156,58 @@ body {
   height: 20px;
   background-color: #ff6600;
   border-radius: 50%;
-  animation: float-diya 5s ease-in
+  animation: float-diya 5s ease-in-out infinite;
+  box-shadow: 0 0 20px rgba(255, 102, 0, 0.7), 0 0 40px rgba(255, 165, 0, 0.9);
+}
+
+@keyframes float-diya {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-100px) scale(1.2);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Diya Lights */
+.diya-container {
+  position: absolute;
+  bottom: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 20px;
+}
+
+.diya {
+  width: 30px;
+  height: 30px;
+  background-color: #ff6600;
+  border-radius: 50%;
+  animation: flicker 1s infinite alternate;
+  box-shadow: 0 0 20px rgba(255, 102, 0, 0.7), 0 0 40px rgba(255, 165, 0, 0.9);
+}
+
+@keyframes flicker {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.2);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
 
     </style>
     </head>
