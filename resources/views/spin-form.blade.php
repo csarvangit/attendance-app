@@ -23,10 +23,14 @@
 .spin-logo {
 	margin: 0 auto;
 }
+.smart-container {
+    margin: 0px auto;
+    box-shadow: none;
+}
     </style>
     </head>
     <body>
-<div class="smart-wrap pt-3">
+<div class="pt-3">
 	@if($errors->any())
 		<div class="alert alert-danger alert-dismissible" role="alert">
 			<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
