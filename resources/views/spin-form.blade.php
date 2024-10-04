@@ -33,7 +33,10 @@
 }
 .smart-forms .form-footer {
     background: none;
+    padding: 0px 25px;
+    padding-top: 10px;
 }
+
     </style>
     </head>
     <body>
