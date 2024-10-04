@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="https://s3-us-west-2.amazonaws.com/s.cdpn.io/172203/smart-forms.css" />
     <link rel="stylesheet" href="https://s3-us-west-2.amazonaws.com/s.cdpn.io/172203/font-awesome.min.css" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" >
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" >
     
     
 <style>
@@ -15,6 +16,13 @@
     .help-block {
       margin-top: 5px;
     }
+    .spin-logo-div {
+	width: 100%;
+	text-align: center;
+}
+.spin-logo {
+	margin: 0 auto;
+}
     </style>
     </head>
     <body>
