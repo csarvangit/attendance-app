@@ -27,6 +27,13 @@
     margin: 0px auto;
     box-shadow: none;
 }
+.smart-forms .form-body {
+    padding: 0px 30px;
+    padding-bottom: 0px;
+}
+.smart-forms .form-footer {
+    background: none;
+}
     </style>
     </head>
     <body>
