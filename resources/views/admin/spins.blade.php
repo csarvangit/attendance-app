@@ -44,11 +44,9 @@ use App\Http\Controllers\SpinController;
     <tr>
         <th>ID</th>
         <th>Name</th>
-        <th>Email</th>
         <th>Mobile</th>
         <th>Branch</th>
         <th>Invoive No</th>
-        <th>Invoive</th> 
         <th>Discount</th>
 		<th>Collected</th>
         <th>Action</th>
@@ -59,12 +57,11 @@ use App\Http\Controllers\SpinController;
 			@php $i++;  @endphp
             <tr>
                 <td>#{{ $spin->id }}</td>
-				<td>{{ $spin->name }}</td>              
-                <td>{{ $spin->email }}</td>
+				<td>{{ $spin->name }}</td> 
                 <td>{{ $spin->mobile }}</td>
                 <td>{{ $spin->branch }} </td> 
 				<td>{{ $spin->invoice_number }} </td>                
-                <td>
+                <!--<td>
                 @if(isset($spin->invoice_copy) && !empty($spin->invoice_copy))       
                     @php 
                         $invoice_copy = SpinController::getUserSpinMedia($spin->invoice_copy) 
@@ -76,7 +73,7 @@ use App\Http\Controllers\SpinController;
                         </a>
                     @endif 
                 @endif 
-                </td>
+                </td>-->
 				<td>{{ $spin->discount ? $spin->discount.'%' : '-' }} </td>  
 				<td>{{ $spin->is_redeemed ? 'Yes' : 'No' }} </td>  
                 <td>                    

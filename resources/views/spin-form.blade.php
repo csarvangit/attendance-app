@@ -57,7 +57,7 @@
 
         </div><!-- end .frm-row section -->
 
-        <div class="section {{ $errors->has('email') ? 'has-error' : ''}}">
+        <!--<div class="section {{ $errors->has('email') ? 'has-error' : ''}}">
             <label for="email" class="field prepend-icon">
               <input type="email" name="email" id="email" class="gui-input @error('email') is-invalid @enderror" placeholder="Email address" value="{{ old('email') }}">
               <label for="email" class="field-icon"><i class="fa fa-envelope"></i></label>

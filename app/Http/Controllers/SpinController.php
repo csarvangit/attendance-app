@@ -81,7 +81,7 @@ class SpinController extends Controller
         try {        
             $validator = Validator::make($request->all(), [ 
                 'username' => 'required|min:3', 
-                'email' => 'required', 
+                //'email' => 'required', 
                 //'mobile' => 'required|unique:spins|min:10',
                 'mobile' => 'required|min:10',  
                 'branch' => 'required',  
@@ -116,7 +116,7 @@ class SpinController extends Controller
 
             $spinFormData = new Spin();
             $spinFormData->name = $input['username'];            
-            $spinFormData->email = $input['email'];
+            //$spinFormData->email = $input['email'];
             $spinFormData->mobile = $input['mobile'];
             $spinFormData->branch = $input['branch'];
 
