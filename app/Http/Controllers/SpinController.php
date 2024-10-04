@@ -97,15 +97,19 @@ class SpinController extends Controller
             }
 
             $input = $request->all(); 
+            $branch = strtolower($input['branch']);
 
-           /* $hasSpin = Spin::where('invoice_number', $input['invoice_number'])                
+           $hasSpin = Spin::where('invoice_number', $input['invoice_number'])                
                 ->where('branch', $input['branch'])
-                ->get(); */
-            $hasSpin = Spin_Invoice::where($input['branch'], $input['invoice_number'])          
-            ->get();   
+                ->get();
+            if( $hasSpin->count() > 0 ){
+                $error['message'] = 'Your Invoice Number already registered!!';                
+                return redirect()->back()->withErrors( $error )->withInput($request->input());  
+            }
 
-            if( $hasSpin->count() <= 0 ){
-                //$error['message'] = 'Your Invoice Number already registered!!';
+            $hasSpinInvoice = Spin_Invoice::where($branch, $input['invoice_number'])          
+            ->get();   
+            if( $hasSpinInvoice->count() <= 0 ){
                 $error['message'] = 'Invalid Invoice!!';
                 return redirect()->back()->withErrors( $error )->withInput($request->input());  
             }

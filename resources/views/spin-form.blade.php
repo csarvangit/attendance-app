@@ -18,24 +18,23 @@
     </style>
     </head>
     <body>
-<div class="smart-wrap">
+<div class="smart-wrap pt-3">
+	@if($errors->any())
+		<div class="alert alert-danger alert-dismissible" role="alert">
+			<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+			@foreach($errors->all() as $error)
+				{{ $error }} <br/>
+			@endforeach
+		</div>
+	@endif
 
-@if($errors->any())
-    <div class="alert alert-danger alert-dismissible" role="alert">
-		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+	@if(session()->has('success'))
+		<div class="alert alert-success alert-dismissible" role="alert">
+			<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+			{{ session()->get('success') }}
+		</div>
+	@endif
 
-        @foreach($errors->all() as $error)
-            {{ $error }} <br/>
-        @endforeach
-    </div>
-@endif
-
-@if(session()->has('success'))
-    <div class="alert alert-success alert-dismissible" role="alert">
-		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        {{ session()->get('success') }}
-    </div>
-@endif
   <div class="smart-forms smart-container wrap-2">
 
     <div class="form-header header-primary">
