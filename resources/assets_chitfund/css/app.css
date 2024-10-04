@@ -39,7 +39,13 @@ html {
 	height: 100%;
 
 }
-
+.spin-logo-div {
+	width: 100%;
+	text-align: center;
+}
+.spin-logo {
+	margin: 0 auto;
+}
 body {
 
 	font-family: 'Open Sans', sans-serif;
