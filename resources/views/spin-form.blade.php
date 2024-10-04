@@ -40,6 +40,12 @@
 .smart-forms .tagline span {
     color: #000;
 }
+.smart-forms .btn-primary {
+    background-color: #dbac52;
+}
+.smart-forms .btn-primary:hover, .smart-forms .btn-primary:focus {
+    background-color: #784511;
+}
 body {
       height: 100vh;
       display: flex;
