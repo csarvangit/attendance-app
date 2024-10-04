@@ -66,3 +66,10 @@ input.form-control:focus{
   border: 0;
   box-shadow: none;
 }
+.spin-logo-div {
+	width: 100%;
+	text-align: center;
+}
+.spin-logo {
+	margin: 0 auto;
+}

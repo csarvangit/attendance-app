@@ -39,7 +39,7 @@
 
     <div class="spin-logo-div">
       <!-- <h4 style="text-align: center;">Spin & Win</h4> -->
-      <img class="spin-logo" src="{{ asset('resources/images/spin-logo.png') }}" height="120" alt="spinner arrow" />
+      <img class="spin-logo" src="{{ asset('resources/images/spin-logo.png') }}" height="200" alt="spinner arrow" />
 
     </div><!-- end .form-header section -->
     <form method="post" id="new_post" name="new_post" action="{{ route('saveInvoiceForm') }}" class="wpcf7-form" enctype="multipart/form-data">
