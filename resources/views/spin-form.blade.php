@@ -26,6 +26,7 @@
 .smart-container {
     margin: 0px auto;
     box-shadow: none;
+    background: transparent;
 }
 .smart-forms .form-body {
     padding: 0px 30px;
@@ -36,10 +37,111 @@
     padding: 0px 25px;
     padding-top: 10px;
 }
+.smart-forms .tagline span {
+    color: #000;
+}
+body {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #111;
+  overflow: hidden;
+}
 
+.diwali-background {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, #111, #222);
+}
+
+/* Fireworks */
+.firework {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background-color: #ffcc00;
+  border-radius: 50%;
+  animation: explode 3s ease-in-out infinite;
+  box-shadow: 0 0 10px #ffcc00, 0 0 20px #ffcc00, 0 0 40px #ff6600;
+}
+
+.firework1 {
+  top: 20%;
+  left: 30%;
+}
+
+.firework2 {
+  top: 50%;
+  left: 70%;
+}
+
+.firework3 {
+  top: 80%;
+  left: 50%;
+}
+
+@keyframes explode {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(4);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(0);
+    opacity: 0;
+  }
+}
+
+/* Diya Lights */
+.diya-container {
+  position: absolute;
+  bottom: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 20px;
+}
+
+.diya {
+  width: 30px;
+  height: 30px;
+  background-color: #ff6600;
+  border-radius: 50%;
+  animation: flicker 1s infinite alternate;
+  box-shadow: 0 0 20px rgba(255, 102, 0, 0.7), 0 0 40px rgba(255, 165, 0, 0.9);
+}
+
+@keyframes flicker {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.2);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
     </style>
     </head>
     <body>
+    <div class="diwali-background">
+    <div class="firework firework1"></div>
+    <div class="firework firework2"></div>
+    <div class="firework firework3"></div>
+    <div class="diya-container">
+      <div class="diya"></div>
+      <div class="diya"></div>
+      <div class="diya"></div>
+    </div>
+  </div>
 <div class="pt-3">
 	@if($errors->any())
 		<div class="alert alert-danger alert-dismissible" role="alert">
