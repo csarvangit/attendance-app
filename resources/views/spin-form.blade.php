@@ -136,11 +136,11 @@ body {
     <div class="firework firework1"></div>
     <div class="firework firework2"></div>
     <div class="firework firework3"></div>
-    <div class="diya-container">
+    <!-- <div class="diya-container">
       <div class="diya"></div>
       <div class="diya"></div>
       <div class="diya"></div>
-    </div>
+    </div> -->
 <div class="pt-3">
 	@if($errors->any())
 		<div class="alert alert-danger alert-dismissible" role="alert">
