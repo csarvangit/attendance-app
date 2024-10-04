@@ -40,193 +40,172 @@
 .smart-forms .tagline span {
     color: #000;
 }
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
 body {
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #111;
-  overflow: hidden;
-}
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #111;
+      overflow: hidden;
+    }
 
-.diwali-background {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(180deg, #111, #222);
-}
+    .diwali-background {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(180deg, #111, #222);
+    }
 
-/* Fireworks */
-.firework {
-  position: absolute;
-  width: 4px;
-  height: 4px;
-  background-color: #ffcc00;
-  border-radius: 50%;
-  animation: explode 3s ease-in-out infinite;
-  box-shadow: 0 0 10px #ffcc00, 0 0 20px #ffcc00, 0 0 40px #ff6600;
-}
 
-.firework1 {
-  top: 20%;
-  left: 30%;
-}
+    /* Firework Explosion */
+    .firework-explosion {
+      position: absolute;
+      top: 10%;
+      left: calc(50% - 75px);
+      transform: translateX(-50%);
+      width: 150px;
+      height: 150px;
+      background-color: transparent;
+      display: none;
+      animation: boom 1s ease-out infinite;
+    }
 
-.firework2 {
-  top: 50%;
-  left: 70%;
-}
+    .firework-explosion.active {
+      display: block;
+    }
 
-.firework3 {
-  top: 80%;
-  left: 50%;
-}
+    /* Sparks */
+    .spark {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background-color: #ffcc00;
+      border-radius: 50%;
+      box-shadow: 0 0 5px #ffcc00;
+    }
 
-.firework4 {
-  top: 40%;
-  left: 60%;
-  animation-delay: 1s;
-}
+    .spark1 { top: 50%; left: 50%; animation: spark1 1s ease-out infinite; }
+    .spark2 { top: 50%; left: 50%; animation: spark2 1s ease-out infinite; }
+    .spark3 { top: 50%; left: 50%; animation: spark3 1s ease-out infinite; }
+    .spark4 { top: 50%; left: 50%; animation: spark4 1s ease-out infinite; }
+    .spark5 { top: 50%; left: 50%; animation: spark5 1s ease-out infinite; }
+    .spark6 { top: 50%; left: 50%; animation: spark6 1s ease-out infinite; }
+    .spark7 { top: 50%; left: 50%; animation: spark7 1s ease-out infinite; }
+    .spark8 { top: 50%; left: 50%; animation: spark8 1s ease-out infinite; }
 
-@keyframes explode {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(4);
-    opacity: 0.5;
-  }
-  100% {
-    transform: scale(0);
-    opacity: 0;
-  }
-}
+    /* Boom Animation */
+    @keyframes boom {
+      0% {
+        display: block;
+        transform: scale(0);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1);
+        opacity: 0.8;
+      }
+      100% {
+        transform: scale(2);
+        opacity: 0;
+      }
+    }
 
-/* Sparkles */
-.sparkles::before, .sparkles::after {
-  content: '';
-  position: absolute;
-  width: 2px;
-  height: 2px;
-  background-color: #fff;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-  border-radius: 50%;
-  animation: sparkle 2s linear infinite;
-}
+    /* Spark Animations (Shooting out in different directions) */
+    @keyframes spark1 {
+      0% {
+        transform: translate(0, 0);
+      }
+      100% {
+        transform: translate(-50px, -50px);
+        opacity: 0;
+      }
+    }
 
-.sparkles::before {
-  top: 20%;
-  left: 40%;
-}
+    @keyframes spark2 {
+      0% {
+        transform: translate(0, 0);
+      }
+      100% {
+        transform: translate(50px, -50px);
+        opacity: 0;
+      }
+    }
 
-.sparkles::after {
-  top: 60%;
-  left: 80%;
-}
+    @keyframes spark3 {
+      0% {
+        transform: translate(0, 0);
+      }
+      100% {
+        transform: translate(-50px, 50px);
+        opacity: 0;
+      }
+    }
 
-@keyframes sparkle {
-  0%, 100% {
-    opacity: 0;
-    transform: scale(0);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.5);
-  }
-}
+    @keyframes spark4 {
+      0% {
+        transform: translate(0, 0);
+      }
+      100% {
+        transform: translate(50px, 50px);
+        opacity: 0;
+      }
+    }
 
-/* Floating Diyas */
-.floating-diya-container {
-  position: absolute;
-  bottom: 10%;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 50px;
-}
+    @keyframes spark5 {
+      0% {
+        transform: translate(0, 0);
+      }
+      100% {
+        transform: translate(-75px, -25px);
+        opacity: 0;
+      }
+    }
 
-.floating-diya {
-  width: 20px;
-  height: 20px;
-  background-color: #ff6600;
-  border-radius: 50%;
-  animation: float-diya 5s ease-in-out infinite;
-  box-shadow: 0 0 20px rgba(255, 102, 0, 0.7), 0 0 40px rgba(255, 165, 0, 0.9);
-}
+    @keyframes spark6 {
+      0% {
+        transform: translate(0, 0);
+      }
+      100% {
+        transform: translate(75px, -25px);
+        opacity: 0;
+      }
+    }
 
-@keyframes float-diya {
-  0% {
-    transform: translateY(0) scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: translateY(-100px) scale(1.2);
-    opacity: 0.8;
-  }
-  100% {
-    transform: translateY(0) scale(1);
-    opacity: 1;
-  }
-}
+    @keyframes spark7 {
+      0% {
+        transform: translate(0, 0);
+      }
+      100% {
+        transform: translate(-75px, 25px);
+        opacity: 0;
+      }
+    }
 
-/* Diya Lights */
-.diya-container {
-  position: absolute;
-  bottom: 5%;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 20px;
-}
-
-.diya {
-  width: 30px;
-  height: 30px;
-  background-color: #ff6600;
-  border-radius: 50%;
-  animation: flicker 1s infinite alternate;
-  box-shadow: 0 0 20px rgba(255, 102, 0, 0.7), 0 0 40px rgba(255, 165, 0, 0.9);
-}
-
-@keyframes flicker {
-  0% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.8;
-    transform: scale(1.2);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
+    @keyframes spark8 {
+      0% {
+        transform: translate(0, 0);
+      }
+      100% {
+        transform: translate(75px, 25px);
+        opacity: 0;
+      }
+    }
     </style>
     </head>
     <body>
     <div class="diwali-background">
-    <div class="firework firework1"></div>
-    <div class="firework firework2"></div>
-    <div class="firework firework3"></div>
-    <div class="firework firework4"></div>
-    <div class="sparkles"></div>
-    <div class="floating-diya-container">
-      <div class="floating-diya"></div>
-      <div class="floating-diya"></div>
-      <div class="floating-diya"></div>
+    <div class="rocket-container">
+      <div class="rocket"></div>
     </div>
-    <div class="diya-container">
-      <div class="diya"></div>
-      <div class="diya"></div>
-      <div class="diya"></div>
+    <div class="firework-explosion">
+      <div class="spark spark1"></div>
+      <div class="spark spark2"></div>
+      <div class="spark spark3"></div>
+      <div class="spark spark4"></div>
+      <div class="spark spark5"></div>
+      <div class="spark spark6"></div>
+      <div class="spark spark7"></div>
+      <div class="spark spark8"></div>
     </div>
 <div class="pt-3">
 	@if($errors->any())
@@ -332,6 +311,15 @@ body {
 </div><!-- end .smart-wrap section -->
 
 </div>
-
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+      setInterval(function() {
+        document.querySelector('.firework-explosion').classList.add('active');
+        setTimeout(function() {
+          document.querySelector('.firework-explosion').classList.remove('active');
+        }, 1000); // 1-second explosion duration
+      }, 3000); // Repeat every 3 seconds
+    });
+  </script>
 </body>
 </html>
