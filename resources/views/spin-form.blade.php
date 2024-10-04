@@ -141,7 +141,6 @@ body {
       <div class="diya"></div>
       <div class="diya"></div>
     </div>
-  </div>
 <div class="pt-3">
 	@if($errors->any())
 		<div class="alert alert-danger alert-dismissible" role="alert">
@@ -245,6 +244,7 @@ body {
   </div><!-- end .smart-forms section -->
 </div><!-- end .smart-wrap section -->
 
+</div>
 
 </body>
 </html>
