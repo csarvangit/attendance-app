@@ -40,6 +40,12 @@
 .smart-forms .tagline span {
     color: #000;
 }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
   height: 100vh;
   display: flex;
@@ -82,6 +88,12 @@ body {
   left: 50%;
 }
 
+.firework4 {
+  top: 40%;
+  left: 60%;
+  animation-delay: 1s;
+}
+
 @keyframes explode {
   0% {
     transform: scale(1);
@@ -96,39 +108,56 @@ body {
   }
 }
 
-/* Diya Lights */
-.diya-container {
+/* Sparkles */
+.sparkles::before, .sparkles::after {
+  content: '';
   position: absolute;
-  bottom: 5%;
+  width: 2px;
+  height: 2px;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  animation: sparkle 2s linear infinite;
+}
+
+.sparkles::before {
+  top: 20%;
+  left: 40%;
+}
+
+.sparkles::after {
+  top: 60%;
+  left: 80%;
+}
+
+@keyframes sparkle {
+  0%, 100% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.5);
+  }
+}
+
+/* Floating Diyas */
+.floating-diya-container {
+  position: absolute;
+  bottom: 10%;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 20px;
+  gap: 50px;
 }
 
-.diya {
-  width: 30px;
-  height: 30px;
+.floating-diya {
+  width: 20px;
+  height: 20px;
   background-color: #ff6600;
   border-radius: 50%;
-  animation: flicker 1s infinite alternate;
-  box-shadow: 0 0 20px rgba(255, 102, 0, 0.7), 0 0 40px rgba(255, 165, 0, 0.9);
-}
+  animation: float-diya 5s ease-in
 
-@keyframes flicker {
-  0% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.8;
-    transform: scale(1.2);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
     </style>
     </head>
     <body>
@@ -136,11 +165,18 @@ body {
     <div class="firework firework1"></div>
     <div class="firework firework2"></div>
     <div class="firework firework3"></div>
-    <!-- <div class="diya-container">
+    <div class="firework firework4"></div>
+    <div class="sparkles"></div>
+    <div class="floating-diya-container">
+      <div class="floating-diya"></div>
+      <div class="floating-diya"></div>
+      <div class="floating-diya"></div>
+    </div>
+    <div class="diya-container">
       <div class="diya"></div>
       <div class="diya"></div>
       <div class="diya"></div>
-    </div> -->
+    </div>
 <div class="pt-3">
 	@if($errors->any())
 		<div class="alert alert-danger alert-dismissible" role="alert">
