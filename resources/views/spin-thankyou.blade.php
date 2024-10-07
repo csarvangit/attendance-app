@@ -52,7 +52,7 @@
     display: flex;
     place-content: center space-between;
     align-items: center;
-    margin: 0 auto;
+    margin: 30px auto;
       }
       .social a {
         color:#fff;
