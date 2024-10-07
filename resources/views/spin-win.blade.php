@@ -26,7 +26,7 @@ body {
   width: 90%;
   max-width: 400px;
   max-height: 90vh;
-  background-color: #e91414;
+  background-color: transparent;
   position: absolute;
   transform: translate(-50%, -50%);
   /* top: 50%; */
@@ -34,7 +34,10 @@ body {
   left: 50%;
   padding: 3em;
   border-radius: 1em;
-  box-shadow: 0 4em 5em rgba(27, 8, 53, 0.2);
+  box-shadow: 0;
+}
+#final-value p {
+  color:green;
 }
 .container {
   position: relative;
@@ -79,7 +82,7 @@ img.arrow {
   font-size: 12px;
   text-align: center;
   margin-top: 1.5em;
-  color: #fff;
+  color: green;
   font-weight: 500;
 }
 @media screen and (max-width: 768px) {
@@ -154,12 +157,12 @@ img.arrow {
       const data = [16, 16, 16, 16, 16, 16];
       //background color for each piece
       var pieColors = [
-        "#8b35bc",
-        "#b163da",
-        "#8b35bc",
-        "#b163da",
-        "#8b35bc",
-        "#b163da",
+        "#ed1c24",
+        "#fff",
+        "#ed1c24",
+        "#fff",
+        "#ed1c24",
+        "#fff",
       ];
       //Create chart
       let myChart = new Chart(wheel, {
