@@ -18,7 +18,7 @@
 }
 body {
   height: 100vh;
-  background: #ffffbc;
+  background: #FFDE59;
   max-width: 400px;
     margin: 0 auto;
 }
@@ -59,7 +59,7 @@ body {
             <img src="{{ asset('resources/images/logo-1.png') }}" />
         </div>
         <div class="logo">
-            <img src="{{ asset('resources/images/SPINTOWIN_RGB-01.png') }}" height="80px" />
+            <img src="{{ asset('resources/images/spin-logo.png') }}" height="80px" />
         </div>
     </div>
     <div class="wrapper">

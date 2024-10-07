@@ -291,7 +291,7 @@ body {
 
 
         <div class="spacer-t40 spacer-b40">
-          <div class="tagline"><span> ProductPurchased Details </span></div><!-- .tagline -->
+          <div class="tagline"><span> Product Purchased Details </span></div><!-- .tagline -->
         </div>
 
         <div class="section {{ $errors->has('branch') ? 'has-error' : ''}}">
