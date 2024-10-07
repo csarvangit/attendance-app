@@ -38,13 +38,32 @@
     padding-top: 10px;
 }
 .smart-forms .tagline span {
-    color: #000;
+  background-color: #ff0000;
+  color: #fff;
+}
+.smart-forms .tagline {
+    height: 0;
+    border-top: 1px solid #ff0000;
+    text-align: center;
 }
 .smart-forms .btn-primary {
-    background-color: #dbac52;
+    background-color: #ff0000;
 }
 .smart-forms .btn-primary:hover, .smart-forms .btn-primary:focus {
-    background-color: #784511;
+    background-color: #ff00008c;
+}
+.smart-forms .gui-input:focus, .smart-forms .gui-textarea:focus, .smart-forms .select>select:focus, .smart-forms .select-multiple select:focus {
+    border-color: transparent;
+}
+.smart-forms .gui-input:focus ~ .field-icon i, .smart-forms .gui-textarea:focus ~ .field-icon i {
+    color: #B71C1C;
+}
+.smart-forms .button {
+    background: #ffffff;
+}
+.form-control:focus {
+    
+    box-shadow: 0;
 }
 body {
       height: 100vh;
