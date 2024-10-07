@@ -47,7 +47,7 @@
     text-align: center;
 }
 .smart-forms .btn-primary {
-    background-color: #ff0000;
+    background-color: #ff0000 !important;
 }
 .smart-forms .btn-primary:hover, .smart-forms .btn-primary:focus {
     background-color: #ff00008c;
