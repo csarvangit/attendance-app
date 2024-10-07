@@ -45,12 +45,17 @@
         margin: 0 auto;
       }
       .social {
-        max-width:300px;
-        flex-direction: row;
+        max-width: 300px;
+    width: 300px;
+    flex-direction: row;
     box-sizing: border-box;
     display: flex;
     place-content: center space-between;
     align-items: center;
+    margin: 0 auto;
+      }
+      .social a {
+        color:#fff;
       }
     </style>
 </head>
