@@ -158,7 +158,6 @@
         let discount = null;
         const valueGenerator = (angleValue) => {
   for (let i of rotationValues) {
-    // Check which value the angle corresponds to and update the text accordingly
     if (angleValue >= i.minDegree && angleValue <= i.maxDegree) {
       let displayText = "";
       switch (i.value) {
@@ -185,26 +184,23 @@
       discount = i.value;
       spinBtn.disabled = true;
 
-      // Increase the display time for the prize
+      // Prepare the URL for redirection
+      var url = "{{ route('saveSpinWheel', ['invoice_number' => request()->invoice_number, 'discount' => ':discount']) }}";
+      url = url.replace(':discount', discount); // Replace with the actual discount value
+
+      // Log the URL to debug
+      console.log(url); // Check the console to see if the URL is correct
+
+      // Redirect to the URL after 3 seconds
       window.setTimeout(() => {
-        spinContainer.remove();
-        spinWrapper.style.display = 'none';
-        
-        // Prepare the URL for redirection
-        var url = "{{ route('saveSpinWheel', ['invoice_number' => request()->invoice_number, 'discount' => ':discount']) }}";
-        url = url.replace(':discount', discount);
         window.location.href = url;
       }, 3000); // Keep this as is to show prize for 3 seconds
 
-      // Show the "Thank You" message after the prize display
-      window.setTimeout(() => {
-        finalValue.innerHTML = `<h2 class="spinned">Thank You. Your Spin Completed.</h2>`;
-        spinWrapper.style.display = 'block';
-      }, 2000); // Show Thank You message 2 seconds after redirect
       break;
     }
   }
 };
+
 
 
         let count = 0;

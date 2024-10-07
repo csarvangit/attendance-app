@@ -86,7 +86,9 @@ Route::get('/spin-invoice/import-invoice-form', [SpinController::class, 'ImportI
 Route::post('/spin-invoice/save-invoice-excel', [SpinController::class, 'spinImportInvoiceExcel'])->name('importInvoiceExcel');
 
 Route::group(['middleware' => 'prevent-back-button'],function(){	
-	Route::get('/spin-thankyou', [SpinController::class, 'thankYou'])->name('thankYou');
+	Route::get('/spin-thankyou/{invoice_number}/{discount}', [SpinController::class, 'thankYou'])->name('thankYou');
+    // Route::get('/save-spin-wheel/{invoice_number}/{discount}', [YourController::class, 'yourMethod'])->name('saveSpinWheel');
+
 });
 
 /* Happy Customer - Frame Routes */
