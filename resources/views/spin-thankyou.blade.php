@@ -23,9 +23,35 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
             color: white;
         }
+        .strech {
+        height: 100%;
+        flex-direction: column;
+        box-sizing: border-box;
+        display: flex;
+        place-content: stretch flex-start;
+        align-items: stretch;
+        max-width: 100%;
+      }
+      .logo {
+        width: 100%;
+        text-align: center;
+        margin-top: 30px;
+      }
+      .logo img {
+        max-width: 80%;
+        margin: 0 auto;
+      }
     </style>
 </head>
 <body>
+<div class="strech">
+      <div class="logo">
+        <img src="{{ asset('resources/images/logo-2.png') }}" />
+      </div>
+      <div class="logo" style="margin-top: 0px">
+        <img src="{{ asset('resources/images/spin-logo.png') }}" height="200px" />
+      </div>
+    </div>
     <div class="thank-you-wrapper">
         <h2>Thank You for Your Participation!</h2>
         <p>Your spin has been completed.</p>
