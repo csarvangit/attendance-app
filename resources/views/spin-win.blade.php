@@ -36,7 +36,7 @@
         box-shadow: 0;
       }
       #final-value p {
-        color: green;
+        color: #2e3192;
       }
       .container {
         position: relative;
@@ -81,7 +81,7 @@
         font-size: 12px;
         text-align: center;
         margin-top: 1.5em;
-        color: green;
+        color: #2e3192;
         font-weight: 500;
       }
       @media screen and (max-width: 768px) {
