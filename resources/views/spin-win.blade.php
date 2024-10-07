@@ -172,7 +172,7 @@ img.arrow {
         type: "pie",
         data: {
           //Labels(values which are to be displayed on chart)
-          labels: [1, 2, 3, 4, 5, 6],
+          labels: [test1, fhg, jhvjh, bkbj, 5, 6],
           //Settings for dataset/pie
           datasets: [
             {
