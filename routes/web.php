@@ -47,7 +47,7 @@ Route::prefix('admin')->group(function () {
     Route::get('/users/shift/create/{id}', [UserController::class, 'createUserShift'])->name('shift.create');
     Route::post('/users/shift/store', [UserController::class, 'storeUserShift'])->name('shift.store');
     
-    Route::get('/users/spins', [SpinController::class, 'index'])->name('home');
+    Route::get('/users/spins', [SpinController::class, 'index']);
     Route::get('/users/spins/update/{id}', [SpinController::class, 'updateInvoiceForm'])->name('updateInvoiceForm');
 
     Route::get('/chitfund/login',[AdminController::class,'login_form'])->name('login.form');
