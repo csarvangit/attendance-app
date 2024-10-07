@@ -40,8 +40,17 @@
         margin-top: 30px;
       }
       .logo img {
+        max-height:120px;
         max-width: 80%;
         margin: 0 auto;
+      }
+      .social {
+        max-width:300px;
+        flex-direction: row;
+    box-sizing: border-box;
+    display: flex;
+    place-content: center space-between;
+    align-items: center;
       }
     </style>
 </head>
@@ -57,6 +66,10 @@
         <h2>Thank You for Your Participation!</h2>
         <p>Your spin has been completed.</p>
         <p>You won: <strong>{{ $prize }}</strong></p> <!-- Display the prize here -->
+    </div>
+    <div class="social">
+      <a href="https://www.facebook.com/VasanthamHomeAppliances"> Facebook </div>
+      <a href="https://www.youtube.com/@vasanthamhomeappliances"> Youtube </div>
     </div>
     </div>
 
