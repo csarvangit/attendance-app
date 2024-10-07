@@ -51,7 +51,7 @@ body {
       display: flex;
       justify-content: center;
       align-items: center;
-      background-color: #111;
+      /* background-color: #111; */
       overflow: hidden;
     }
 
@@ -59,7 +59,7 @@ body {
       position: relative;
       width: 100%;
       height: 100%;
-      background: linear-gradient(180deg, #111, #222);
+      background: linear-gradient(180deg, #ffde59, #ffde59);
     }
 
 
