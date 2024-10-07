@@ -111,7 +111,7 @@
         margin: 0 auto;
       }
       h2.spinned p {
-        color: #000 !important;
+        color: green !important;
         font-size: 30px !important;
       }
     </style>
