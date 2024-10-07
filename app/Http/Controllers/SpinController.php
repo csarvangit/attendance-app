@@ -213,10 +213,17 @@ class SpinController extends Controller
     // {
     //     return view('spin-thankyou');
     // }  
+    // public function thankYou($invoice_number, $discount)
+    // {
+    //     return view('thankYou', compact('invoice_number', 'discount'));
+    // }
     public function thankYou($invoice_number, $discount)
-    {
-        return view('thankYou', compact('invoice_number', 'discount'));
-    }
+{
+    // Assuming you have a way to determine the prize based on the discount or some logic
+    $prize = $this->getPrizeByDiscount($discount);
+
+    return view('spin-thankyou', compact('prize', 'invoice_number', 'discount'));
+}
 
     public function ImportInvoice(){
         return view('admin.spins-import-invoice');
