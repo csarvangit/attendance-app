@@ -16,13 +16,15 @@
             justify-content: center;
         }
         .thank-you-wrapper {
-            text-align: center;
-            background-color: #e91414;
-            padding: 2em;
-            border-radius: 1em;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-            color: white;
-        }
+    text-align: center;
+    background-color: #e91414;
+    padding: 2em;
+    border-radius: 1em;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    color: white;
+    max-width: 80%;
+    margin: 0 auto;
+}
         .strech {
         height: 100%;
         flex-direction: column;
@@ -51,11 +53,12 @@
       <div class="logo" style="margin-top: 0px">
         <img src="{{ asset('resources/images/spin-logo.png') }}" height="200px" />
       </div>
-    </div>
     <div class="thank-you-wrapper">
         <h2>Thank You for Your Participation!</h2>
         <p>Your spin has been completed.</p>
         <p>You won: <strong>{{ $prize }}</strong></p> <!-- Display the prize here -->
     </div>
+    </div>
+
 </body>
 </html>
