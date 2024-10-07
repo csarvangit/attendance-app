@@ -87,7 +87,6 @@ Route::post('/spin-invoice/save-invoice-excel', [SpinController::class, 'spinImp
 
 Route::group(['middleware' => 'prevent-back-button'],function(){	
 	Route::get('/spin-thankyou/{invoice_number}/{discount}', [SpinController::class, 'thankYou'])->name('thankYou');
-    // Route::get('/save-spin-wheel/{invoice_number}/{discount}', [YourController::class, 'yourMethod'])->name('saveSpinWheel');
 
 });
 

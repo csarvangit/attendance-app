@@ -209,10 +209,14 @@ class SpinController extends Controller
     }
 
     /* Thank You */
-    public function thankYou()
+    // public function thankYou()
+    // {
+    //     return view('spin-thankyou');
+    // }  
+    public function thankYou($invoice_number, $discount)
     {
-        return view('spin-thankyou');
-    }  
+        return view('thankYou', compact('invoice_number', 'discount'));
+    }
 
     public function ImportInvoice(){
         return view('admin.spins-import-invoice');

@@ -207,53 +207,72 @@
       //display value based on the randomAngle
       let discount = null;
       const valueGenerator = (angleValue) => {
-        for (let i of rotationValues) {
-          // Check which value the angle corresponds to and update the text accordingly
-          if (angleValue >= i.minDegree && angleValue <= i.maxDegree) {
-            let displayText = "";
-            switch (i.value) {
-              case 1:
-                displayText = "Glass Set";
-                break;
-              case 2:
-                displayText = "Appa Chatty";
-                break;
-              case 3:
-                displayText = "Crakers Gift Box";
-                break;
-              case 4:
-                displayText = "Plastic Container Set";
-                break;
-              case 5:
-                displayText = "Hot Box";
-                break;
-              case 6:
-                displayText = "2Ltr Water Bottle ";
-                break;
-            }
-            finalValue.innerHTML = `<h2 class="spinned">Congrats!!! You have won <br/> <p><b>${displayText}</b></p> </h2>`;
-            discount = i.value;
-            spinBtn.disabled = true;
-            
-            window.setTimeout((i) => {
-              spinContainer.remove();
-              spinWrapper.style.display = 'none';    
-              var url = "{{ route('saveSpinWheel', [
-                'invoice_number' => request()->invoice_number,
-                'discount' => ":discount"
-              ]) }}";
-              url = url.replace(':discount', discount);
-              window.location.href = url;
-              
-              window.setTimeout((i) => {
-                finalValue.innerHTML = `<h2 class="spinned">Thank You. Your Spin Completed.</h2>`;
-                spinWrapper.style.display = 'block'; 
-              }, 2000);
-            }, 3000);
-            break;
-          }
-        }
-      };
+  for (let i of rotationValues) {
+    if (angleValue >= i.minDegree && angleValue <= i.maxDegree) {
+      let displayText = "";
+      switch (i.value) {
+        case 1:
+          displayText = "Glass Set";
+          break;
+        case 2:
+          displayText = "Appa Chatty";
+          break;
+        case 3:
+          displayText = "Crackers Gift Box";
+          break;
+        case 4:
+          displayText = "Plastic Container Set";
+          break;
+        case 5:
+          displayText = "Hot Box";
+          break;
+        case 6:
+          displayText = "2Ltr Water Bottle ";
+          break;
+      }
+      finalValue.innerHTML = `<h2 class="spinned">Congrats!!! You have won <br/> <p><b>${displayText}</b></p> </h2>`;
+      discount = i.value;
+      spinBtn.disabled = true;
+
+      // Prepare the URL for redirection to saveSpinWheel
+      var saveUrl = "{{ route('saveSpinWheel', ['invoice_number' => request()->invoice_number, 'discount' => ':discount']) }}";
+      saveUrl = saveUrl.replace(':discount', discount); // Replace with the actual discount value
+
+      // Log the save URL to debug
+      console.log("Save URL:", saveUrl);
+
+      // Redirect to the saveSpinWheel URL after 3 seconds
+      window.setTimeout((i) => {
+        spinContainer.remove();
+        spinWrapper.style.display = 'none';    
+        var url = "{{ route('thankYou', ['invoice_number' => request()->invoice_number, 'discount' => ':discount']) }}";
+        url = url.replace(':discount', discount);
+        window.location.href = url;
+
+        // This part is optional; it can show the thank you message after redirection
+        window.setTimeout((i) => {
+            finalValue.innerHTML = `<h2 class="spinned">Thank You. Your Spin Completed.</h2>`;
+            spinWrapper.style.display = 'block'; 
+        }, 2000);
+    }, 3000);
+
+      // Prepare the URL for thank you page
+      var thankYouUrl = "{{ route('thankYou', ['invoice_number' => request()->invoice_number, 'discount' => ':discount']) }}";
+      thankYouUrl = thankYouUrl.replace(':discount', discount); // Replace with the actual discount value
+
+      // Log the thank you URL to debug
+      console.log("Thank You URL:", thankYouUrl);
+
+      // Optionally, redirect to thank you page after saving
+      window.setTimeout(() => {
+        window.location.href = thankYouUrl;
+      }, 5000); // Redirect to thank you page after showing the prize for 5 seconds
+
+      break;
+    }
+  }
+};
+
 
       //Spinner count
       let count = 0;
