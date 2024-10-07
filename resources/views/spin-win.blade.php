@@ -201,10 +201,10 @@
             discount = i.value;
 
             setTimeout(() => {
-              var url = "{{ route('saveSpinWheel', ['invoice_number' => request()->invoice_number, 'discount' => ':discount']) }}";
-              url = url.replace(':discount', discount);
-              window.location.href = url;
-            }, 3000);
+        const prize = encodeURIComponent(displayText);
+        const url = `{{ route('thankYouPage') }}?prize=${prize}`;
+        window.location.href = url;
+      }, 3000);
             break;
           }
         }

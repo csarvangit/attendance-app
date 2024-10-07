@@ -42,7 +42,16 @@
     <div class="thankyou-container">
       <h1>Thank You!</h1>
       <p>Your Spin is Complete</p>
-      <p>Your prize will be sent to you shortly.</p>
+      <p>Your prize is: <span id="prize-name"></span></p>
     </div>
+
+    <script>
+      // Get the prize from the query parameter
+      const urlParams = new URLSearchParams(window.location.search);
+      const prize = urlParams.get('prize');
+
+      // Display the prize
+      document.getElementById('prize-name').textContent = prize ? prize : 'Unknown Prize';
+    </script>
   </body>
 </html>
