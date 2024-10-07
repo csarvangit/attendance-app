@@ -141,13 +141,13 @@
     <!-- Chart JS Plugin for displaying text over chart -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.1.0/chartjs-plugin-datalabels.min.js"></script>
     <!-- Script -->
-    <script>
+    <script> 
       const spinContainer = document.getElementById("spin-container");
       const spinWrapper = document.getElementById("spin-wrapper");
       const wheel = document.getElementById("wheel");
       const spinBtn = document.getElementById("spin-btn");
       const finalValue = document.getElementById("final-value");
-      // Object that stores values of minimum and maximum angle for a value
+      //Object that stores values of minimum and maximum angle for a value
       const rotationValues = [
         { minDegree: 0, maxDegree: 30, value: 2 },
         { minDegree: 31, maxDegree: 90, value: 1 },
@@ -157,9 +157,9 @@
         { minDegree: 271, maxDegree: 330, value: 3 },
         { minDegree: 331, maxDegree: 360, value: 2 },
       ];
-      // Size of each piece
+      //Size of each piece
       const data = [16, 16, 16, 16, 16, 16];
-      // Background color for each piece
+      //background color for each piece
       var pieColors = [
         "#ed1c24",
         "#fff",
@@ -168,16 +168,16 @@
         "#ed1c24",
         "#fff",
       ];
-      // Create chart
+      //Create chart
       let myChart = new Chart(wheel, {
-        // Plugin for displaying text on pie chart
+        //Plugin for displaying text on pie chart
         plugins: [ChartDataLabels],
-        // Chart Type Pie
+        //Chart Type Pie
         type: "pie",
         data: {
-          // Labels(values which are to be displayed on chart)
+          //Labels(values which are to be displayed on chart)
           labels: [1, 2, 3, 4, 5, 6],
-          // Settings for dataset/pie
+          //Settings for dataset/pie
           datasets: [
             {
               backgroundColor: pieColors,
@@ -186,16 +186,16 @@
           ],
         },
         options: {
-          // Responsive chart
+          //Responsive chart
           responsive: true,
           animation: { duration: 0 },
           plugins: {
-            // Hide tooltip and legend
+            //hide tooltip and legend
             tooltip: false,
             legend: {
               display: false,
             },
-            // Display labels inside pie chart
+            //display labels inside pie chart
             datalabels: {
               color: "#000",
               formatter: (_, context) => context.chart.data.labels[context.dataIndex],
@@ -204,7 +204,7 @@
           },
         },
       });
-      // Display value based on the randomAngle
+      //display value based on the randomAngle
       let discount = null;
       const valueGenerator = (angleValue) => {
         for (let i of rotationValues) {
@@ -212,55 +212,79 @@
           if (angleValue >= i.minDegree && angleValue <= i.maxDegree) {
             let displayText = "";
             switch (i.value) {
-              case 1: displayText = "Glass Set"; break;
-              case 2: displayText = "Appa Chatty"; break;
-              case 3: displayText = "Crackers Gift Box"; break;
-              case 4: displayText = "Plastic Container Set"; break;
-              case 5: displayText = "Hot Box"; break;
-              case 6: displayText = "2Ltr Water Bottle"; break;
+              case 1:
+                displayText = "Glass Set";
+                break;
+              case 2:
+                displayText = "Appa Chatty";
+                break;
+              case 3:
+                displayText = "Crakers Gift Box";
+                break;
+              case 4:
+                displayText = "Plastic Container Set";
+                break;
+              case 5:
+                displayText = "Hot Box";
+                break;
+              case 6:
+                displayText = "2Ltr Water Bottle ";
+                break;
             }
             finalValue.innerHTML = `<h2 class="spinned">Congrats!!! You have won <br/> <p><b>${displayText}</b></p> </h2>`;
             discount = i.value;
             spinBtn.disabled = true;
             
-            window.setTimeout(() => {
+            window.setTimeout((i) => {
               spinContainer.remove();
               spinWrapper.style.display = 'none';    
-              var url = "{{ route('thankYouPage', ['result' => discount, 'prize' => displayText]) }}";
+              var url = "{{ route('saveSpinWheel', [
+                'invoice_number' => request()->invoice_number,
+                'discount' => ":discount"
+              ]) }}";
+              url = url.replace(':discount', discount);
               window.location.href = url;
+              
+              window.setTimeout((i) => {
+                finalValue.innerHTML = `<h2 class="spinned">Thank You. Your Spin Completed.</h2>`;
+                spinWrapper.style.display = 'block'; 
+              }, 2000);
             }, 3000);
             break;
           }
         }
       };
 
-      // Spinner count
+      //Spinner count
       let count = 0;
-      // 100 rotations for animation and last rotation for result
+      //100 rotations for animation and last rotation for result
       let resultValue = 101;
-      // Start spinning
+      //Start spinning
       spinBtn.addEventListener("click", () => {
         spinBtn.disabled = true;
-        // Empty final value
+        //Empty final value
         finalValue.innerHTML = `<p>Good Luck! </p>`;
 
-        // Generate random degrees to stop at
+        //Generate random degrees to stop at
         let randomDegree = Math.floor(Math.random() * (355 - 0 + 1) + 0);
-        // Interval for rotation animation
+        //Interval for rotation animation
         let rotationInterval = window.setInterval(() => {
-          // Set rotation for piechart
-          myChart.options.rotation = myChart.options.rotation + resultValue; 
+          //Set rotation for piechart
+          myChart.options.rotation = myChart.options.rotation + resultValue;
+          //Update chart with new value
           myChart.update();
-          count++;
-          // Rotate wheel 
-          if (count >= 50) {
-            resultValue -= 2; 
-          }
-          if (count >= 101) {
-            clearInterval(rotationInterval);
+          //If rotation>360 reset it back to 0
+          if (myChart.options.rotation >= 360) {
+            count += 1;
+            resultValue -= 5;
+            myChart.options.rotation = 0;
+          } else if (count > 15 && myChart.options.rotation == randomDegree) {
             valueGenerator(randomDegree);
+            clearInterval(rotationInterval);
+            count = 0;
+            resultValue = 101;
           }
-        }, 20);
+        }, 10);
       });
     </script>
   </body>
