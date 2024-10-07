@@ -193,7 +193,7 @@ img.arrow {
             },
             //display labels inside pie chart
             datalabels: {
-              color: "#ffffff",
+              color: "#000",
               formatter: (_, context) => context.chart.data.labels[context.dataIndex],
               font: { size: 24 },
             },
