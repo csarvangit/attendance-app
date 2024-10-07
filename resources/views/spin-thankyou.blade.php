@@ -70,6 +70,7 @@
     <div class="social">
       <a href="https://www.facebook.com/VasanthamHomeAppliances"> Facebook </a>
       <a href="https://www.youtube.com/@vasanthamhomeappliances"> Youtube </a>
+      <a href="https://www.instagram.com/vasantham_furnitures"> Instagram </a>
     </div>
     </div>
 
