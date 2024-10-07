@@ -10,115 +10,116 @@
     <!-- Stylesheet -->
     <link rel="stylesheet" href="style.css" />
     <style>
-        * {
-  padding: 0;
-  margin: 0;
-  box-sizing: border-box;
-  font-family: "Poppins", sans-serif;
-}
-body {
-  height: 100vh;
-  background: #FFDE59;
-  max-width: 400px;
-    margin: 0 auto;
-}
-.wrapper {
-  width: 90%;
-  max-width: 400px;
-  max-height: 90vh;
-  background-color: transparent;
-  position: absolute;
-  transform: translate(-50%, -50%);
-  /* top: 50%; */
-  top: 440px;
-  left: 50%;
-  padding: 3em;
-  border-radius: 1em;
-  box-shadow: 0;
-}
-#final-value p {
-  color:green;
-}
-.container {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-#wheel {
-  max-height: inherit;
-  width: inherit;
-  top: 0;
-  padding: 0;
-}
-@keyframes rotate {
-  100% {
-    transform: rotate(360deg);
-  }
-}
-#spin-btn {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  top: 50%;
-  left: 50%;
-  height: 26%;
-  width: 26%;
-  border-radius: 50%;
-  cursor: pointer;
-  border: 0;
-  background: radial-gradient(#fdcf3b 50%, #d88a40 85%);
-  color: #c66e16;
-  text-transform: uppercase;
-  font-size: 1.8em;
-  letter-spacing: 0.1em;
-  font-weight: 600;
-}
-img.arrow {
-  position: absolute;
-  width: 4em;
-  top: 45%;
-  right: -9%;
-}
-#final-value {
-  font-size: 12px;
-  text-align: center;
-  margin-top: 1.5em;
-  color: green;
-  font-weight: 500;
-}
-@media screen and (max-width: 768px) {
-  .wrapper {
-    font-size: 12px;
-  }
-  img.arrow {
-    right: -5%;
-  }
-}
-.strech {    height: 100%;
-    flex-direction: column;
-    box-sizing: border-box;
-    display: flex;
-    place-content: stretch flex-start;
-    align-items: stretch;
-    max-width: 100%;}
-    .logo {
+      * {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+      body {
+        height: 100vh;
+        background: #FFDE59;
+        max-width: 400px;
+        margin: 0 auto;
+      }
+      .wrapper {
+        width: 90%;
+        max-width: 400px;
+        max-height: 90vh;
+        background-color: transparent;
+        position: absolute;
+        transform: translate(-50%, -50%);
+        top: 440px;
+        left: 50%;
+        padding: 3em;
+        border-radius: 1em;
+        box-shadow: 0;
+      }
+      #final-value p {
+        color: green;
+      }
+      .container {
+        position: relative;
+        width: 100%;
+        height: 100%;
+      }
+      #wheel {
+        max-height: inherit;
+        width: inherit;
+        top: 0;
+        padding: 0;
+      }
+      @keyframes rotate {
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+      #spin-btn {
+        position: absolute;
+        transform: translate(-50%, -50%);
+        top: 50%;
+        left: 50%;
+        height: 26%;
+        width: 26%;
+        border-radius: 50%;
+        cursor: pointer;
+        border: 0;
+        background: radial-gradient(#fdcf3b 50%, #d88a40 85%);
+        color: #c66e16;
+        text-transform: uppercase;
+        font-size: 1.8em;
+        letter-spacing: 0.1em;
+        font-weight: 600;
+      }
+      img.arrow {
+        position: absolute;
+        width: 4em;
+        top: 45%;
+        right: -9%;
+      }
+      #final-value {
+        font-size: 12px;
+        text-align: center;
+        margin-top: 1.5em;
+        color: green;
+        font-weight: 500;
+      }
+      @media screen and (max-width: 768px) {
+        .wrapper {
+          font-size: 12px;
+        }
+        img.arrow {
+          right: -5%;
+        }
+      }
+      .strech {
+        height: 100%;
+        flex-direction: column;
+        box-sizing: border-box;
+        display: flex;
+        place-content: stretch flex-start;
+        align-items: stretch;
+        max-width: 100%;
+      }
+      .logo {
         width: 100%;
         text-align: center;
         margin-top: 30px;
-    }
-    .logo img{
+      }
+      .logo img {
         max-width: 80%;
         margin: 0 auto;
-    }
-        </style>
+      }
+    </style>
   </head>
   <body>
     <div class="strech">
-        <div class="logo">
-            <img src="{{ asset('resources/images/logo-2.png') }}" />
-        </div>
-        <div class="logo" style="margin-top:0px">
-            <img src="{{ asset('resources/images/spin-logo.png') }}" height="200px" />
-        </div>
+      <div class="logo">
+        <img src="{{ asset('resources/images/logo-2.png') }}" />
+      </div>
+      <div class="logo" style="margin-top: 0px">
+        <img src="{{ asset('resources/images/spin-logo.png') }}" height="200px" />
+      </div>
     </div>
     <div id="spin-wrapper" class="wrapper">
       <div id="spin-container" class="container">
@@ -136,7 +137,6 @@ img.arrow {
     <!-- Chart JS Plugin for displaying text over chart -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.1.0/chartjs-plugin-datalabels.min.js"></script>
     <!-- Script -->
-   <!-- <script src="script.js"></script> -->
     <script> 
       const spinContainer = document.getElementById("spin-container");
       const spinWrapper = document.getElementById("spin-wrapper");
@@ -172,7 +172,7 @@ img.arrow {
         type: "pie",
         data: {
           //Labels(values which are to be displayed on chart)
-          labels: [1, 2, 3, 4, 5, 6, 7, 8],
+          labels: [1, 2, 3, 4, 5, 6],
           //Settings for dataset/pie
           datasets: [
             {
@@ -204,24 +204,45 @@ img.arrow {
       let discount = null;
       const valueGenerator = (angleValue) => {
         for (let i of rotationValues) {
-          //if the angleValue is between min and max then display it
+          // Check which value the angle corresponds to and update the text accordingly
           if (angleValue >= i.minDegree && angleValue <= i.maxDegree) {
-            finalValue.innerHTML = `<h2 class="spinned">Congrats!!! You have Recived <br/> <b> ${i.value}% </b> Discount</h2>`;
+            let displayText = "";
+            switch (i.value) {
+              case 1:
+                displayText = "Glass Set";
+                break;
+              case 2:
+                displayText = "Appa Chatty";
+                break;
+              case 3:
+                displayText = "Crakers Gift Box";
+                break;
+              case 4:
+                displayText = "Plastic Container Set";
+                break;
+              case 5:
+                displayText = "Hot Box";
+                break;
+              case 6:
+                displayText = "2Ltr Water Bottle ";
+                break;
+            }
+            finalValue.innerHTML = `<h2 class="spinned">Congrats!!! You have won <br/> <b>${displayText}</b></h2>`;
             discount = i.value;
             spinBtn.disabled = true;
             
             window.setTimeout((i) => {
-                         
-             spinContainer.remove();  
-             spinWrapper.style.display = 'none';    
+              spinContainer.remove();
+              spinWrapper.style.display = 'none';    
               var url = "{{ route('saveSpinWheel', [
-                      'invoice_number' => request()->invoice_number,
-                      'discount' => ":discount"
-                      ]) }}";
-              url = url.replace(':discount', discount );
-              window.location.href = url;  
+                'invoice_number' => request()->invoice_number,
+                'discount' => ":discount"
+              ]) }}";
+              url = url.replace(':discount', discount);
+              window.location.href = url;
+              
               window.setTimeout((i) => {
-                finalValue.innerHTML = `<h2 class="spinned"> Thank You. Your Spin Completed. </h2>`;
+                finalValue.innerHTML = `<h2 class="spinned">Thank You. Your Spin Completed.</h2>`;
                 spinWrapper.style.display = 'block'; 
               }, 2000);
             }, 3000);
@@ -245,11 +266,8 @@ img.arrow {
         //Interval for rotation animation
         let rotationInterval = window.setInterval(() => {
           //Set rotation for piechart
-          /*
-          Initially to make the piechart rotate faster we set resultValue to 101 so it rotates 101 degrees at a time and this reduces by 1 with every count. Eventually on last rotation we rotate by 1 degree at a time.
-          */
           myChart.options.rotation = myChart.options.rotation + resultValue;
-          //Update chart with new value;
+          //Update chart with new value
           myChart.update();
           //If rotation>360 reset it back to 0
           if (myChart.options.rotation >= 360) {
@@ -265,6 +283,5 @@ img.arrow {
         }, 10);
       });
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
   </body>
 </html>
