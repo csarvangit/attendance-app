@@ -30,7 +30,6 @@
         <h2>Thank You for Your Participation!</h2>
         <p>Your spin has been completed.</p>
         <p>You won: <strong>{{ $prize }}</strong></p> <!-- Display the prize here -->
-        <!-- <a href="{{ route('home') }}" class="btn btn-light">Back to Home</a>  -->
     </div>
 </body>
 </html>
