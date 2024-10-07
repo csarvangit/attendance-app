@@ -30,6 +30,7 @@ body {
   border-radius: 1em;
   box-shadow: 0;
   margin-top: 50px;
+  margin: 0 auto;
 }
 .container {
   position: relative;
