@@ -52,11 +52,17 @@
     display: flex;
     place-content: center space-between;
     align-items: center;
-    margin: 30px auto;
+	margin: 0 auto;
+    padding: 30px 15px;
       }
       .social a {
         color:#222;
       }
+	  .prize-img img {
+		width: 150px;
+		height: auto;
+		border-radius: 10px;
+	  }
     </style>
 </head>
 <body>
@@ -68,9 +74,19 @@
         <img src="{{ asset('resources/images/spin-logo.png') }}" height="200px" />
       </div>
     <div class="thank-you-wrapper">
-        <h2>Thank You for Your Participation!</h2>
+        <h2><strong>Dear {{ ucfirst($spindata['name']) }}</strong></h2>
+		<h2>Thank You for Your Participation!</h2>
         <p>Your spin has been completed.</p>
         <p>You won: <strong>{{ $prize }}</strong></p> <!-- Display the prize here -->
+		
+		<div class="prize-img" style="margin-top: 0px;">
+			<img src="{{ asset('resources/images/spin/'.$spindata['discount'].'.png') }}" />
+		</div>
+		
+		<p style="margin-top: 15px;">Mobile: <strong>{{ $spindata['mobile'] }}</strong></p> 
+		<p>Branch: <strong>{{ $spindata['branch'] }}</strong></p> 
+		<p>Invoice: <strong>{{ $spindata['invoice_number'] }}</strong></p> 
+		
     </div>
     <div class="social">
       <a href="https://www.facebook.com/VasanthamHomeAppliances" target="_blank"> Facebook </a>

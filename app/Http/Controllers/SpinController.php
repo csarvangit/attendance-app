@@ -204,7 +204,7 @@ class SpinController extends Controller
         if( !empty( $invoice_number ) && !empty( $discount ) ) {
             //Spin::where('invoice_number', $invoice_number)->update(['discount'=> $discount]);
             Spin::where('id', $invoice_number)->update(['discount'=> $discount]);
-            return redirect()->route('thankYou');
+            return redirect()->route('thankYou', ['invoice_number' => $invoice_number]);
         }       
     }
 
@@ -238,12 +238,16 @@ class SpinController extends Controller
         }
     }
    
-    public function thankYou($invoice_number, $discount)
+    public function thankYou($invoice_number)
     {
+        $spindata = Spin::find($invoice_number);
+        if (!$spindata) {
+            abort(404); // Record not found
+        }        
         // Get the prize based on the discount
-        $prize = $this->getPrizeByDiscount($discount);
+        $prize = $this->getPrizeByDiscount($spindata['discount']);
 
-        return view('spin-thankyou', compact('prize', 'invoice_number', 'discount'));
+        return view('spin-thankyou', compact('prize', 'spindata'));
     }
 
     public function ImportInvoice(){

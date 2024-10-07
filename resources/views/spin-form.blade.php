@@ -71,14 +71,16 @@ body {
       justify-content: center;
       align-items: center;
       /* background-color: #111; */
-      overflow: hidden;
+      overflow: scroll;
     }
 
     .diwali-background {
       position: relative;
       width: 100%;
       height: 100%;
-      background: linear-gradient(180deg, #ffde59, #ffde59);
+      background: linear-gradient(180deg, #ffde59, #ffde59);	  
+	  display: table;
+	  padding-bottom: 30px;
     }
 
 

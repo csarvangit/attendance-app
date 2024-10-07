@@ -232,20 +232,13 @@
       }
       finalValue.innerHTML = `<h2 class="spinned">Congrats!!! You have won <br/> <p><b>${displayText}</b></p> </h2>`;
       discount = i.value;
-      spinBtn.disabled = true;
-
-      // Prepare the URL for redirection to saveSpinWheel
-      var saveUrl = "{{ route('saveSpinWheel', ['invoice_number' => request()->invoice_number, 'discount' => ':discount']) }}";
-      saveUrl = saveUrl.replace(':discount', discount); // Replace with the actual discount value
-
-      // Log the save URL to debug
-      console.log("Save URL:", saveUrl);
+      spinBtn.disabled = true;   
 
       // Redirect to the saveSpinWheel URL after 3 seconds
-      window.setTimeout((i) => {
+     window.setTimeout((i) => {
         spinContainer.remove();
         spinWrapper.style.display = 'none';    
-        var url = "{{ route('thankYou', ['invoice_number' => request()->invoice_number, 'discount' => ':discount']) }}";
+        var url = "{{ route('saveSpinWheel', ['invoice_number' => request()->invoice_number, 'discount' => ':discount']) }}";
         url = url.replace(':discount', discount);
         window.location.href = url;
 
@@ -255,18 +248,6 @@
             spinWrapper.style.display = 'block'; 
         }, 2000);
     }, 3000);
-
-      // Prepare the URL for thank you page
-      var thankYouUrl = "{{ route('thankYou', ['invoice_number' => request()->invoice_number, 'discount' => ':discount']) }}";
-      thankYouUrl = thankYouUrl.replace(':discount', discount); // Replace with the actual discount value
-
-      // Log the thank you URL to debug
-      console.log("Thank You URL:", thankYouUrl);
-
-      // Optionally, redirect to thank you page after saving
-      window.setTimeout(() => {
-        window.location.href = thankYouUrl;
-      }, 5000); // Redirect to thank you page after showing the prize for 5 seconds
 
       break;
     }

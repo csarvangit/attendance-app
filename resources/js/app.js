@@ -51,6 +51,12 @@ $(document).ready(function() {
 				  form.submit();
 				}
 			  });
-		});
-    });
+		});		
+	
+		/* new DataTable('#spins-table', {
+			search: {
+				return: true
+			}
+		});	 */			
+	});
 });

@@ -40,17 +40,20 @@ use App\Http\Controllers\SpinController;
    
 </div>
 
-<table class="table">
-    <tr>
+<table id="spins-table" class="table table-striped">
+    <thead>
+	<tr>
         <th>ID</th>
         <th>Name</th>
         <th>Mobile</th>
         <th>Branch</th>
         <th>Invoive No</th>
-        <th>Discount</th>
+        <th>Prize</th>
 		<th>Collected</th>
         <th>Action</th>
     </tr>
+	</thead>
+	<tbody>
     @if( !$spins->isEmpty() )
 		@php $i= 0; @endphp
         @foreach($spins as $spin)      
@@ -74,7 +77,13 @@ use App\Http\Controllers\SpinController;
                     @endif 
                 @endif 
                 </td>-->
-				<td>{{ $spin->discount ? $spin->discount.'%' : '-' }} </td>  
+				<td>
+					@if( $spin->discount ) 
+                    <img src="{{ asset('resources/images/spin/'.$spin->discount.'.png') }}" width="100" />
+					@else
+					-
+                    @endif
+				</td>  
 				<td>{{ $spin->is_redeemed ? 'Yes' : 'No' }} </td>  
                 <td>                    
                     @if( !$spin->is_redeemed ) 
@@ -90,6 +99,7 @@ use App\Http\Controllers\SpinController;
             <td colspan="10" class="text-center">No Records Found</td>           
         </tr>
     @endif
+	</tbody>
 </table>
 
 <div class="pagination-nav flex items-center justify-between">     
