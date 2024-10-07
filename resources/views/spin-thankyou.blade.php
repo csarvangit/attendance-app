@@ -73,9 +73,9 @@
         <p>You won: <strong>{{ $prize }}</strong></p> <!-- Display the prize here -->
     </div>
     <div class="social">
-      <a href="https://www.facebook.com/VasanthamHomeAppliances"> Facebook </a>
-      <a href="https://www.youtube.com/@vasanthamhomeappliances"> Youtube </a>
-      <a href="https://www.instagram.com/vasantham_furnitures"> Instagram </a>
+      <a href="https://www.facebook.com/VasanthamHomeAppliances" target="_blank"> Facebook </a>
+      <a href="https://www.youtube.com/@vasanthamhomeappliances" target="_blank"> Youtube </a>
+      <a href="https://www.instagram.com/vasantham_furnitures" target="_blank"> Instagram </a>
     </div>
     </div>
 
