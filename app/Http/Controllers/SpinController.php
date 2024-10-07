@@ -28,7 +28,7 @@ class SpinController extends Controller
         $spins = Spin::orderByDesc('id')->paginate(20);
         return view('admin.spins', compact('spins'));
     } 
-    
+   
     /* Show Invoice Entry Form */
     public function showForm()
     {
@@ -237,6 +237,7 @@ class SpinController extends Controller
                 return "No prize";
         }
     }
+   
     public function thankYou($invoice_number, $discount)
     {
         // Get the prize based on the discount
