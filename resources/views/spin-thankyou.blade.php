@@ -55,14 +55,14 @@
     margin: 30px auto;
       }
       .social a {
-        color:#fff;
+        color:#222;
       }
     </style>
 </head>
 <body>
 <div class="strech">
       <div class="logo">
-        <img src="{{ asset('resources/images/logo-2.png') }}" height="200px" />
+        <img src="{{ asset('resources/images/logo-2.png') }}" style="max-height:200px;" />
       </div>
       <div class="logo" style="margin-top: 0px">
         <img src="{{ asset('resources/images/spin-logo.png') }}" height="200px" />
