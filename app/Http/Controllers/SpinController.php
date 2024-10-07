@@ -217,13 +217,33 @@ class SpinController extends Controller
     // {
     //     return view('thankYou', compact('invoice_number', 'discount'));
     // }
+    public function getPrizeByDiscount($discount)
+    {
+        // Determine the prize based on the discount value
+        switch ($discount) {
+            case 1:
+                return "Glass Set";
+            case 2:
+                return "Appa Chatty";
+            case 3:
+                return "Crackers Gift Box";
+            case 4:
+                return "Plastic Container Set";
+            case 5:
+                return "Hot Box";
+            case 6:
+                return "2Ltr Water Bottle";
+            default:
+                return "No prize";
+        }
+    }
     public function thankYou($invoice_number, $discount)
-{
-    // Assuming you have a way to determine the prize based on the discount or some logic
-    $prize = $this->getPrizeByDiscount($discount);
+    {
+        // Get the prize based on the discount
+        $prize = $this->getPrizeByDiscount($discount);
 
-    return view('spin-thankyou', compact('prize', 'invoice_number', 'discount'));
-}
+        return view('spin-thankyou', compact('prize', 'invoice_number', 'discount'));
+    }
 
     public function ImportInvoice(){
         return view('admin.spins-import-invoice');
