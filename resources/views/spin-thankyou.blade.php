@@ -68,8 +68,8 @@
         <p>You won: <strong>{{ $prize }}</strong></p> <!-- Display the prize here -->
     </div>
     <div class="social">
-      <a href="https://www.facebook.com/VasanthamHomeAppliances"> Facebook </div>
-      <a href="https://www.youtube.com/@vasanthamhomeappliances"> Youtube </div>
+      <a href="https://www.facebook.com/VasanthamHomeAppliances"> Facebook </a>
+      <a href="https://www.youtube.com/@vasanthamhomeappliances"> Youtube </a>
     </div>
     </div>
 
