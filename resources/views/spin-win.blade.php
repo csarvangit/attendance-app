@@ -110,6 +110,10 @@
         max-width: 80%;
         margin: 0 auto;
       }
+      .spinned span {
+        color: #000;
+        font-size: 30px
+      }
     </style>
   </head>
   <body>
@@ -227,7 +231,7 @@
                 displayText = "2Ltr Water Bottle ";
                 break;
             }
-            finalValue.innerHTML = `<h2 class="spinned">Congrats!!! You have won <br/> <b>${displayText}</b></h2>`;
+            finalValue.innerHTML = `<h2 class="spinned">Congrats!!! You have won <br/> <span><b>${displayText}</b></span> </h2>`;
             discount = i.value;
             spinBtn.disabled = true;
             
