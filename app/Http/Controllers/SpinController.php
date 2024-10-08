@@ -25,7 +25,8 @@ class SpinController extends Controller
     /* Show Invoice Entry Form */
     public function index()
     {
-        $spins = Spin::orderByDesc('id')->paginate(20);
+        //$spins = Spin::orderByDesc('id')->paginate(20);
+        $spins = Spin::orderByDesc('id')->get();
         return view('admin.spins', compact('spins'));
     } 
    

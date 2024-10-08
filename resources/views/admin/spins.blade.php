@@ -40,7 +40,8 @@ use App\Http\Controllers\SpinController;
    
 </div>
 
-<table id="spins-table" class="table table-striped">
+<div class="container-fluid"> 
+<table id="spins-table" class="table table-striped spins-table">
     <thead>
 	<tr>
         <th>ID</th>
@@ -101,8 +102,6 @@ use App\Http\Controllers\SpinController;
     @endif
 	</tbody>
 </table>
-
-<div class="pagination-nav flex items-center justify-between">     
-    {{ $spins->links() }} 
 </div>
+
 @endsection

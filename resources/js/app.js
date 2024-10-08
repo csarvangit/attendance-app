@@ -53,10 +53,18 @@ $(document).ready(function() {
 			  });
 		});		
 	
-		/* new DataTable('#spins-table', {
+		// Draw #Spins table
+		let spinstable = new DataTable('#spins-table', {
 			search: {
 				return: true
-			}
-		});	 */			
+			},
+			responsive: true,
+			pageLength: 25
+		});	
+
+		// #Spins table search
+		$('#spins-table_wrapper #dt-search-0').on('keyup', function () {
+			spinstable.search(this.value).draw();
+		});
 	});
 });

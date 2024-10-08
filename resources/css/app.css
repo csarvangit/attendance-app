@@ -66,3 +66,7 @@ input.form-control:focus{
   border: 0;
   box-shadow: none;
 }
+
+#spins-table_wrapper .dt-search .form-control{
+	width: auto;
+}
