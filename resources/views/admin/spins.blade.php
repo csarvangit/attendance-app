@@ -48,8 +48,9 @@ use App\Http\Controllers\SpinController;
         <th>Name</th>
         <th>Mobile</th>
         <th>Branch</th>
-        <th>Invoive No</th>
+        <th>Invoive No</th>		
         <th>Prize</th>
+		<th>Spin Date</th>
 		<th>Collected</th>
         <th>Action</th>
     </tr>
@@ -85,6 +86,7 @@ use App\Http\Controllers\SpinController;
 					-
                     @endif
 				</td>  
+				<td>{{ Carbon::parse($spin->created_at)->format('d-M-Y') }} </td> 
 				<td>{{ $spin->is_redeemed ? 'Yes' : 'No' }} </td>  
                 <td>                    
                     @if( !$spin->is_redeemed ) 

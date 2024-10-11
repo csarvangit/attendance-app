@@ -259,15 +259,29 @@ class SpinController extends Controller
     { 
         // Validate the uploaded file
         $request->validate([
-            'file' => 'required|mimes:xlsx,xls',
-        ]);
-
-        // Get the uploaded file
-        $file = $request->file('file');       
+            'invoice' => 'required|mimes:xlsx,xls,csv',
+        ]);               
 
         try {   
-             // Process the Excel file
-            Excel::import(new SpinImportInvoice, $file);
+            // Get the uploaded file
+            $file = $request->file('invoice');
+
+           /* $file_name = $file->getClientOriginalName();
+            $file_Extension = $file->getClientOriginalExtension();
+
+            $destinationPath = public_path().'\uploads\spin';
+            $file->move($destinationPath,$file->getClientOriginalName());
+
+            $import_file = $destinationPath .'/'. $file_name; */           
+
+            // Process the Excel file
+            $result = Excel::import(new SpinImportInvoice, $file);
+
+            if($result){
+                return redirect()->back()->with('success','Invoice file imported successfully');
+            }else{
+                return redirect()->back()->with('error','Something Went Wrong');
+            }
         }
         catch (\Throwable $exception) {
             return redirect()->back()->withErrors( json_encode($exception->getMessage(), true) )->withInput($request->input());
@@ -277,10 +291,6 @@ class SpinController extends Controller
             return redirect()->back()->withErrors( json_encode($exception->getMessage(), true) )->withInput($request->input());
         } catch (\Exception $exception) {
             return redirect()->back()->withErrors( json_encode($exception->getMessage(), true) )->withInput($request->input());
-        } 
-
-        return redirect()->back()->with('success', 'Excel file imported successfully!');
-    }  
-
-    
+        }         
+    }      
 }
