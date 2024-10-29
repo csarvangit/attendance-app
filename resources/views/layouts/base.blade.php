@@ -47,8 +47,13 @@
 		<li class="nav-item">
             <a class="nav-link active" aria-current="page" href="{{ url('/spin-form')}}">  Spin Form</a>
         </li> 
-        <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="{{ url('/admin/users/spins')}}">  Spins</a>
+        <li class="nav-item dropdown">
+            <a class="nav-link active dropdown-toggle" aria-current="page" href="#" role="button" id="spindropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false"> Spins</a>
+			<ul class="dropdown-menu" aria-labelledby="spindropdownMenuLink">
+				<li><a class="dropdown-item" href="{{ url('/admin/users/spins')}}">All Spins</a></li>
+				<li><a class="dropdown-item" href="{{route('spinInvoices')}}">View Invoice</a></li>
+				<li><a class="dropdown-item" href="{{route('importInvoice')}}" target="_blank">Import Invoice</a></li>
+			</ul>
         </li>   
       </ul>      
   

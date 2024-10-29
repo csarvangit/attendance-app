@@ -28,20 +28,27 @@
 	@endif
 	
 	<div class="container mt-5 text-center">
-	<h2 class="mb-4">
-		Import Invoice Excel to Database
-	</h2>
-	<form action="{{ route('importInvoiceExcel') }}" method="POST" enctype="multipart/form-data">
-		@csrf
-		<div class="form-group mb-4" style="max-width: 500px; margin: 0 auto;">
-			<div class="custom-file text-left">
-				<input type="file" name="invoice" class="custom-file-input" id="customFile">
-				<label class="custom-file-label" for="customFile">Choose file</label>
+		<div class="row justify-content-center">
+			<div class="col-6 align-self-center">
+				<div class="border border-2 p-5">
+					<h2 class="mb-4">
+						Import CSV file to Database
+					</h2>
+				
+					<form action="{{ route('importInvoiceExcel') }}" method="POST" enctype="multipart/form-data">
+						@csrf
+						<div class="form-group mb-4" style="max-width: 500px; margin: 0 auto;">
+							<div class="custom-file text-left">
+								<input type="file" name="invoice" class="custom-file-input" id="customFile">
+								<label class="custom-file-label" for="customFile">Choose file</label>
+							</div>
+						</div>
+						<button class="btn btn-primary">Import data</button>
+					</form>
+				</div>
 			</div>
-		</div>
-		<button class="btn btn-primary">Import data</button>
-	</form>
-</div>
+		</div>	
+	</div>
 
 </div>
 <!--end row-->

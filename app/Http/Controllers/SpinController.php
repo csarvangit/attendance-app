@@ -292,5 +292,12 @@ class SpinController extends Controller
         } catch (\Exception $exception) {
             return redirect()->back()->withErrors( json_encode($exception->getMessage(), true) )->withInput($request->input());
         }         
-    }      
+    } 
+    
+    /* Show All Spin Invoices */
+    public function spinInvoices()
+    {        
+        $invoices = Spin_Invoice::orderByDesc('id')->get();
+        return view('admin.spins-invoices', compact('invoices'));
+    } 
 }
